@@ -1,0 +1,23 @@
+.App{
+  height: 100vh;
+  width: 100vw;
+  display: grid;
+  grid-template-columns: 20vw 80vw;
+  grid-template-rows: 10vh 90vh;
+}
+
+.navbar{
+  grid-column: 1/3;
+  height: 10vh;
+}
+
+.sidebar{
+  height: 90vh;
+  width: 20vw;
+
+}
+
+.mapcomponent{
+  height: 90vh;
+  width: 80vw;
+}
