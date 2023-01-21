@@ -1,16 +1,18 @@
 import React, {useState} from "react";
 import './App.css';
 import Navbar from "./components/navbar/navbar";
-import MapComponent from './components/map/mapComponent'
-import Sidebar from './components/sidebar/sidebar'
+import Content from "./components/content/content";
+
 
 
 function App() {
+
+  
+
   return (
     <div className="App">
-      <div className="navbar"><Navbar/></div>
-      <div className="sidebar"><Sidebar/></div>
-      <div className="mapcomponent"><MapComponent/></div>
+      <div id="navbar" className="appComponents"><Navbar/></div>
+      <div id="content" className="appComponents"><Content/></div>
     </div>
   );
 }

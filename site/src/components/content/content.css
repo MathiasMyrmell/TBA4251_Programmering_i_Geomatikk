@@ -1,0 +1,22 @@
+#Content{
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 20vw 80vw;
+  }
+
+  #sidebar{
+    height: 90vh;
+    width: 20vw;
+  
+  }
+  
+  #mapcomponent{
+    height: 80vh;
+    width: 80vw;
+  }
+
+
+  .appComponents{
+    border: 1px solid black;
+  }
