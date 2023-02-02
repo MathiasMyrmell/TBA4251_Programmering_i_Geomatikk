@@ -7,8 +7,13 @@ const DataContext = createContext(undefined);
 const DataProvider = ({ children }) => {
   const [data, setDataRaw] = useState([]);
 
-  const setData = (item) => {
-    setDataRaw(data => uniqBy([...data, item], 'id'))
+
+  const setData = (item, i = null) => {
+    if(i === null){
+      setDataRaw(data => uniqBy([...data, item], 'id'));
+    }else{
+      setDataRaw(data => uniqBy([...data.slice(0, i), item, ...data.slice(i + 1)], 'id'));
+    }
   }
 
   const clearData = () => {
@@ -22,10 +27,30 @@ const DataProvider = ({ children }) => {
 
   }
 
+  const handleCheckboxChange = (id) => {
+    let card = data.find(item => item.id === id);
+    let index = data.findIndex(item => item.id === id);
+    // removeItemFromData(id);
+    card.value = !card.value;
+    setData(card, index);
+    // console.log(data);
+    // console.log("checkbox changed");
+  }
+
+  const handleColourChange = (id, colour) => {
+    let card = data.find(item => item.id === id);
+    let index = data.findIndex(item => item.id === id);
+    // removeItemFromData(id);
+    card.colour = colour;
+    setData(card, index);
+    // console.log(data);
+    // console.log("colour changed");
+  }
+
   
 
 
-  const value = [data, setData, clearData, removeItemFromData];
+  const value = [data, setData, clearData, removeItemFromData, handleCheckboxChange, handleColourChange];
 
   return (
     <DataContext.Provider value={value}>

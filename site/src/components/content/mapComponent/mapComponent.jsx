@@ -7,7 +7,6 @@ import "./mapComponent.css";
 import { v4 as uuid } from "uuid";
 
 function MapComponent () {
-    // const [layers, setLayers] = useState(props.layers);
     const [data, _setData] = useData()
 
     const mapStyle = {
@@ -15,21 +14,10 @@ function MapComponent () {
         width: "100vw",
     }
 
-    var vannStyle = {
-        fillColor: "green",
-        weight: 1,
-    }
-
-    const onEachLayer = (areal, layer ) => {
-        const arealNavn = areal.properties.ADMIN;
-        layer.bindPopup(arealNavn);
-    }
-
     function buttonClick(){
         console.log("layers");
         
     }
-
 
     return (
         <>
@@ -37,28 +25,16 @@ function MapComponent () {
             <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" style = {{mapStyle}}
             />
-            {/* <ul>
-                <li>
-                    <GeoJSON style={{color:"red"}} data={vann.features} />
-                </li>
-                <li>
-                    <GeoJSON style = {{color:"green"}} data={arealbruk.features} onEachLayer/>
-                </li>
-            </ul> */}
-            
-
             <ul>
                 {data.map((layer, i) => {
                     return(
+                        (layer.value === true) ? (
                         <li id={i} key={i} >
                             <GeoJSON style={{color:layer.colour}} data={layer.data.features} />
-                        </li>)
-                    }
-                )}
+                        </li>) : null
+                    )
+                })}
             </ul>
-            
-
-
             {/* <Marker position={[63.42153656907081, 10.538810010949685]}>
                 <Popup onClick>
                     somethin cool

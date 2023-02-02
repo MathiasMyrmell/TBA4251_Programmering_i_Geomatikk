@@ -16,9 +16,12 @@ function Sidebar(props) {
     function addLayer(layer){
         // setLayers([...layers, layer]);
         layer.colour = getRandomColour();
+        
         setData(layer);
         // addLayerCard(layer);
     }
+
+
 
     function getRandomColour(){
         var letters = '0123456789ABCDEF';
@@ -32,8 +35,8 @@ function Sidebar(props) {
     return (
         <div>
             <div style={{border:"1px solid black", width:"100%", height:"100px"}}>
-                <label> <a>Vann</a><button onClick={()=> addLayer({ id: uuid(), name:"vann", colour: "", data: vann})}>Add layer</button></label><br/>
-                <label> <a>Arealbruk</a><button onClick={()=> addLayer({ id: uuid(), name:"Arealbruk", colour: getRandomColour, data: arealbruk})}>Add layer</button></label>
+                <label> <a>Vann</a><button onClick={()=> addLayer({ id: uuid(), name:"vann", colour: "", data: vann, value: true})}>Add layer</button></label><br/>
+                <label> <a>Arealbruk</a><button onClick={()=> addLayer({ id: uuid(), name:"Arealbruk", colour: "", data: arealbruk, value: true})}>Add layer</button></label>
                
             </div>
             
@@ -44,9 +47,9 @@ function Sidebar(props) {
                     {_data.map((layer, i) => {
                         return(
                             <li id={i} key={i}>
-                                <LayerCard key={layer.id} id = {layer.id} name = {layer.name} colour = {layer.colour} data = {layer.data} value = {false}/>
+                                <LayerCard key={layer.id} id = {layer.id} name = {layer.name} colour = {layer.colour} data = {layer.data} value = {layer.value}/>
                             </li>
-                        )
+                        ) 
                     })}
                 </ul>
             </div>
