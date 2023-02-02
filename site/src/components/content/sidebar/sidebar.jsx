@@ -16,7 +16,7 @@ function Sidebar(props) {
     function addLayer(layer){
         // setLayers([...layers, layer]);
         layer.colour = getRandomColour();
-        
+        console.log(layer);
         setData(layer);
         // addLayerCard(layer);
     }

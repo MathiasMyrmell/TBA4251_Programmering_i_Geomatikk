@@ -5,6 +5,7 @@ import { useData } from "../../../contexts/DataContext";
 import "./mapComponent.css";
 
 import { v4 as uuid } from "uuid";
+import AnalysisMenu from "./analysisMenu/analysisMenu";
 
 function MapComponent () {
     const [data, _setData] = useData()
@@ -41,7 +42,7 @@ function MapComponent () {
                 </Popup>
             </Marker> */}
             </MapContainer>
-            <button onClick={buttonClick}>log layers</button>
+            <AnalysisMenu id = "analysis"/>
         </>
     )
 }
