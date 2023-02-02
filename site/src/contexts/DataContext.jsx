@@ -10,6 +10,8 @@ const DataProvider = ({ children }) => {
 
   const setData = (item, i = null) => {
     if(i === null){
+      item.colour = getRandomColour();
+      console.log(item)
       setDataRaw(data => uniqBy([...data, item], 'id'));
     }else{
       setDataRaw(data => uniqBy([...data.slice(0, i), item, ...data.slice(i + 1)], 'id'));
@@ -26,6 +28,15 @@ const DataProvider = ({ children }) => {
     //Remove layercard from sidebar
 
   }
+
+  function getRandomColour(){
+    var letters = '0123456789ABCDEF';
+    var colour = '#';
+    for (var i = 0; i < 6; i++) {
+      colour += letters[Math.floor(Math.random() * 16)];
+    }
+    return colour;
+}
 
   const handleCheckboxChange = (id) => {
     let card = data.find(item => item.id === id);
