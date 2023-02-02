@@ -11,35 +11,14 @@ function Sidebar(props) {
 
     const [layers, setLayers] = useState([]);
     const [layerCards, setLayerCards] = useState([]);
-    const [_data, setData, clearData, removeItemFromData] = useData()
-
-    function addLayer(layer){
-        // setLayers([...layers, layer]);
-        layer.colour = getRandomColour();
-        console.log(layer);
-        setData(layer);
-        // addLayerCard(layer);
-    }
-
-
-
-    function getRandomColour(){
-        var letters = '0123456789ABCDEF';
-        var colour = '#';
-        for (var i = 0; i < 6; i++) {
-          colour += letters[Math.floor(Math.random() * 16)];
-        }
-        return colour;
-    }
+    const [_data, setData, clearData, removeItemFromData] = useData();
 
     return (
         <div>
             <div style={{border:"1px solid black", width:"100%", height:"100px"}}>
-                <label> <a>Vann</a><button onClick={()=> addLayer({ id: uuid(), name:"vann", colour: "", data: vann, value: true})}>Add layer</button></label><br/>
-                <label> <a>Arealbruk</a><button onClick={()=> addLayer({ id: uuid(), name:"Arealbruk", colour: "", data: arealbruk, value: true})}>Add layer</button></label>
-               
+                <label> <a>Vann</a><button onClick={()=> setData({ id: uuid(), name:"vann", colour: "", data: vann, value: true})}>Add layer</button></label><br/>
+                <label> <a>Arealbruk</a><button onClick={()=> setData({ id: uuid(), name:"Arealbruk", colour: "", data: arealbruk, value: true})}>Add layer</button></label>
             </div>
-            
             <button onClick={() => clearData()}> Remove layers</button>
             <button onClick={() => removeItemFromData("Vann")}> Remove vann</button>
             <div id="layerCardContainer">
@@ -54,7 +33,6 @@ function Sidebar(props) {
                 </ul>
             </div>
         </div>
-        
     )
 }
 
