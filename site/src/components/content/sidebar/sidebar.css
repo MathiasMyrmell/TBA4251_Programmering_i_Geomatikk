@@ -5,3 +5,8 @@ ul{
     padding: 0;
     margin-top: 10px;
 }
+
+#layerCardContainer{
+    height: 100%;
+    overflow: scroll;
+}

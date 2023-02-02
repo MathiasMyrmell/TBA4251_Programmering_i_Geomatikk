@@ -6,7 +6,7 @@ import "./mapComponent.css";
 
 import { v4 as uuid } from "uuid";
 
-function MapComponent (props) {
+function MapComponent () {
     // const [layers, setLayers] = useState(props.layers);
     const [data, _setData] = useData()
 
@@ -50,7 +50,7 @@ function MapComponent (props) {
             <ul>
                 {data.map((layer, i) => {
                     return(
-                        <li id={i} key={i} style={{display:"false"}}>
+                        <li id={i} key={i} >
                             <GeoJSON style={{color:layer.colour}} data={layer.data.features} />
                         </li>)
                     }

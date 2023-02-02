@@ -16,7 +16,10 @@ const DataProvider = ({ children }) => {
   }
 
   const removeItemFromData = (id) => {
+    //Remove layer from map
     setDataRaw(data.filter(item => item.id !== id))
+    //Remove layercard from sidebar
+
   }
 
   
