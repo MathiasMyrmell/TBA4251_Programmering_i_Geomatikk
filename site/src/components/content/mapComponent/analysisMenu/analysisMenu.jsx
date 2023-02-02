@@ -11,6 +11,13 @@ import { useTheme } from '@mui/material/styles';
 import { LayersControl } from "react-leaflet";
 import _ from "lodash";
 
+import * as turf from '@turf/turf'
+import { clustersDbscan, point } from '@turf/turf';
+
+
+import { MapContainer, TileLayer, Marker, Popup, GeoJSON } from 'react-leaflet';
+import arealbruk from "../../../../files/arealbruk.json";
+
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -126,13 +133,35 @@ function AnalysisMenu() {
   };
 
 
+  ////Buffer analysis
+  function bufferAnalysis(){
+    console.log("buffer analysis")
+    var point = turf.point([10.538810010949685,63.42153656907081]);
+    var layer = arealbruk;
+    var buffered = turf.buffer(layer, 100, {units: 'meters'});
+    // console.log("buffered")
+    // console.log(buffered)
+    var dataSet = createDataSet(buffered);
+    let newLayer = {id:uuid(), name:"bufferAnalysis", colour:"red", data:dataSet, value:true};
+    // console.log("newLayer");
+    // console.log(newLayer);
+    setData(newLayer);
+  }
+
+  function createDataSet(dataSet){
+    // console.log("oldDataSet");
+    // console.log(dataSet);
+    let newDataSet = {type:"FeatureCollection", features:[dataSet]};
+    return newDataSet;
+  }
+
 
 
   return (
     <>
       <div id = "analysisContainer">
         <button className="button" onClick={()=>featureSelection(true)}>Feature Selection</button>
-        <button>Buffer analysis</button>
+        <button onClick={()=> bufferAnalysis()}>Buffer analysis</button>
       </div>
       <div id = "analysisWindow" style={{display: "None"}} >{/*onClick={() => featureSelection(false)}*/}
         <div id = "analysisWindowContainer">

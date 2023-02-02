@@ -11,7 +11,7 @@ const DataProvider = ({ children }) => {
   const setData = (item, i = null) => {
     if(i === null){
       item.colour = getRandomColour();
-      console.log(item)
+      console.log(item.data);
       setDataRaw(data => uniqBy([...data, item], 'id'));
     }else{
       setDataRaw(data => uniqBy([...data.slice(0, i), item, ...data.slice(i + 1)], 'id'));
