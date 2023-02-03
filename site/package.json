@@ -11,6 +11,8 @@
     "@testing-library/user-event": "^13.5.0",
     "@turf/buffer": "^6.5.0",
     "@turf/collect": "^6.5.0",
+    "@turf/combine": "^6.5.0",
+    "@turf/dissolve": "^6.5.0",
     "@turf/helpers": "^6.5.0",
     "@turf/turf": "^6.5.0",
     "leaflet": "^1.9.3",

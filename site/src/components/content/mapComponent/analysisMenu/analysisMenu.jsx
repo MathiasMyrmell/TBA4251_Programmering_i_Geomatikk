@@ -19,6 +19,10 @@ import { MapContainer, TileLayer, Marker, Popup, GeoJSON } from 'react-leaflet';
 import arealbruk from "../../../../files/arealbruk.json";
 
 
+import FeatureSelection from "./featureSelection/featureSelection";
+import excludeVariablesFromRoot from "@mui/material/styles/excludeVariablesFromRoot";
+import BufferAnalysis from "./bufferAnalysis/bufferAnalysis";
+
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -48,31 +52,17 @@ function AnalysisMenu() {
   const [features, setFeatures] = useState([]);
   const [chosenFeatures, setChosenFeatures] = useState([]);
   const [data, setData, clearData, removeItemFromData, handleCheckboxChange, handleColourChange] = useData()
+  const [fSShow, setfSShow] = useState("none");
+  const [bAShow, setbAShow] = useState("none");
 
-
-  function featureSelection(close){
-    var analysisWindow = document.getElementById("analysisWindow");
-    var analysisWindowContainer = document.getElementById("analysisWindowContainer");
-    if(close){
-      analysisWindow.style.display = "block";
-      let containerHeight = analysisWindowContainer.clientHeight;
-      let paddingTop = (height/2)-(containerHeight/2);
-      analysisWindowContainer.style.marginTop = paddingTop + "px";
-      analysisWindowContainer.style.marginBottom = paddingTop + "px";
-    }else{
-      clearInput();
-      analysisWindow.style.display = "none";
-
-    }
-  }
 
   //Chose layer for feature selection
-  function choseLayer(target){
-    setLayer(target);
-    let layerData = data.find((layer) => layer.id === target.value).data.features;
-    // console.log(layerData);
-    filterFeatures(layerData);
-  }
+  // function choseLayer(target){
+  //   setLayer(target);
+  //   let layerData = data.find((layer) => layer.id === target.value).data.features;
+  //   // console.log(layerData);
+  //   filterFeatures(layerData);
+  // }
 
   //Filter features
   function filterFeatures(data){
@@ -133,20 +123,7 @@ function AnalysisMenu() {
   };
 
 
-  ////Buffer analysis
-  function bufferAnalysis(){
-    console.log("buffer analysis")
-    var point = turf.point([10.538810010949685,63.42153656907081]);
-    var layer = arealbruk;
-    var buffered = turf.buffer(layer, 100, {units: 'meters'});
-    // console.log("buffered")
-    // console.log(buffered)
-    var dataSet = createDataSet(buffered);
-    let newLayer = {id:uuid(), name:"bufferAnalysis", colour:"red", data:dataSet, value:true};
-    // console.log("newLayer");
-    // console.log(newLayer);
-    setData(newLayer);
-  }
+
 
   function createDataSet(dataSet){
     // console.log("oldDataSet");
@@ -155,73 +132,43 @@ function AnalysisMenu() {
     return newDataSet;
   }
 
+  function displayAnalysisWindow(show){
+    if(show == "featureSelection"){
+      setfSShow("block");
+      console.log("fSShow");
+      console.log(fSShow);
+    }else if(show == "bufferAnalysis"){
+      setbAShow("block");
+    }
+    else if(show=="close"){
+      setfSShow("none");
+      setbAShow("none");
+    }
+  }
+  function centerAnalysisWindow(){
+    let analysisWindowContainer = document.getElementById("analysisWindowContainer");
+    let analysisWindowWidth = analysisWindowContainer.offsetWidth;
+    let analysisWindowHeight = analysisWindowContainer.offsetHeight;
 
+    let x = (width/2)-(analysisWindowWidth/2);
+    let y = (height/2)-(analysisWindowHeight/2);
+    analysisWindowContainer.style.marginLeft = x+"px";
+    analysisWindowContainer.style.marginTop = y+"px";
+}
+
+useEffect(() => {
+  centerAnalysisWindow();
+}, [width, height]);
 
   return (
     <>
       <div id = "analysisContainer">
-        <button className="button" onClick={()=>featureSelection(true)}>Feature Selection</button>
-        <button onClick={()=> bufferAnalysis()}>Buffer analysis</button>
+        <button className="button" onClick={() => displayAnalysisWindow("featureSelection")}>Feature Selection</button>
+        <button className="button" onClick={() => displayAnalysisWindow("bufferAnalysis")}>Buffer analysis</button>
       </div>
-      <div id = "analysisWindow" style={{display: "None"}} >{/*onClick={() => featureSelection(false)}*/}
-        <div id = "analysisWindowContainer">
-          <button id = "closeButton" onClick={() => featureSelection(false)}>Close</button>
-          <FormControl sx={{ m: 1, width: 300 }}>
-            <InputLabel id="demo-simple-select-label">Layer</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="select"
-              value={layer.value}
-              label="Layer"
-              onChange={(e) => choseLayer(e.target)}
-            >
-              <MenuItem id="chosenColour" key={uuid()} >
-                <em></em>
-              </MenuItem>
-              {data.map((layer) => (
-                <MenuItem
-                    key={layer.id}
-                    value={layer.id}
-                >
-                    {layer.name}
-                </MenuItem>
-                
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl sx={{ m: 1, width: 300 }}>
-              <InputLabel id="demo-multiple-chip-label">Features</InputLabel>
-              <Select
-                labelId="demo-multiple-chip-label"
-                id="featureSelect"
-                multiple
-                value={chosenFeatures}
-                onChange={handleChange}
-                input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
-                label="Features"
-                renderValue={(selected) => (
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                    {selected.map((value) => (
-                      <Chip key={value} label={value} />
-                    ))}
-                  </Box>
-                )}
-                MenuProps={MenuProps}
-              >
-                {features.map((feature) => (
-                  <MenuItem
-                    key={uuid()}
-                    value={feature}
-                    style={getStyles(feature, chosenFeatures, theme)}
-                  >
-                    {feature}
-                  </MenuItem>
-                ))}
-              </Select>
-          </FormControl>
-          <button id="executeAnalysis" onClick={()=> createNewLayer()}>Select features</button>
-        </div>
-      </div>
+      <BufferAnalysis display = {bAShow} displayAnalysisWindow = {displayAnalysisWindow}/>
+      <FeatureSelection display = {fSShow} displayAnalysisWindow = {displayAnalysisWindow}/>
+      
     </>
     )
 }
