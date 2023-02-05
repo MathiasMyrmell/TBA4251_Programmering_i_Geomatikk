@@ -143,4 +143,7 @@ export const InputField = styled(TextField)({
     width: "400px",
     margin: "0 0 5px 0",
     zIndex: "3",
+    "& .MuiFormHelperText-root ":{
+        color: "red",
+    },
 });

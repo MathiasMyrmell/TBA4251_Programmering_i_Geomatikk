@@ -9,27 +9,40 @@ import CircleIcon from '@mui/icons-material/Circle';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import SettingsIcon from '@mui/icons-material/Settings';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
+import ChangeName from "./changeName/changeName";
 
 function LayerCard(props) {
     //initialize layer object
     const [id, setId] = useState(props.id);
-    const [name, setName] = useState(props.name);
+    const [name, setCardName] = useState();//props.name
     const [colour, setColour] = useState();
     const [colourChanger, setColourChanger] = useState(null);
     const [settingsMenu, setSettingsMenu] = useState(null);
+    const [showChangeName, setShowChangeName] = useState("none");
     const [data, setData, layer, setLayer, bufferDistance, setBufferDistance, analysis, setAnalysis, clearData, removeItemFromData, handleCheckboxChange, handleColourChange] = useData()
 
     //checkbox value
-    const [value, setValue] = useState(props.value);
+    const [checkboxValue, setCheckboxValue] = useState(props.value);
     
  
     useEffect (() => {
         setColour(props.colour);
+        setName();
     }, [])
 
-    
+    useEffect(() => {
+        let layer = data.find((layer) => layer.id === id);
+        setCardName(layer.name);
+    }, [data])
+
+    function setName(){
+        let layer = data.find((layer) => layer.id === id);
+        setCardName(layer.name);
+
+    }
+ 
     function handleCheckbox(id){
-        setValue(!value)
+        setCheckboxValue(!checkboxValue)
         handleCheckboxChange(id);
     }
 
@@ -73,10 +86,11 @@ function LayerCard(props) {
     }
 
     function changeName(){
-    //TODO
+        setShowChangeName("block");
+        setSettingsMenu(null);
     }
 
-      const settingsChoices = [
+    const settingsChoices = [
         {
             title: "Change Name",
             icon: <DriveFileRenameOutlineIcon/>,
@@ -89,6 +103,9 @@ function LayerCard(props) {
         },
     ];
 
+    function closeChangeName(){
+        setShowChangeName("none");
+    }
 
     return (
         <LCard className="card" variant="outlined">
@@ -99,14 +116,14 @@ function LayerCard(props) {
                 variant="standard"
                 InputProps={{
                     readOnly: true,
-                    disableUnderline: true
+                    disableUnderline: true,
                   }}
                 defaultValue={name}
             > 
                 {name}
             </CardName>
 
-            <ShowSwitch margin="auto" checked = {value} onClick={()=>handleCheckbox(id)} />
+            <ShowSwitch margin="auto" checked = {checkboxValue} onClick={()=>handleCheckbox(id)} />
             
             <ButtonIcon
                 onClick={openColourChanger}
@@ -144,12 +161,13 @@ function LayerCard(props) {
                 onClose={closeSettingsMenu}
             >
                 {settingsChoices.map(item => (
-                    <MenuItem onClick={()=>item.handler()} key={uuid()}>
+                    <MenuItem onClick={()=> item.handler()} key={uuid()}>
                         {item.icon}
                     </MenuItem>
                 ))}
             </Menu>
-
+            
+            <ChangeName id={id} name ={"Change Name"} oldName = {name} display={showChangeName} closeChangeName={closeChangeName}/>
         </LCard>
     )
 }

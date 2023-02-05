@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useData } from "../../../../../contexts/DataContext";
 
 
-import { InputLabel, Select, MenuItem } from "@mui/material";
+import { InputLabel, Select, MenuItem, FormHelperText} from "@mui/material";
 import { v4 as uuid } from "uuid";
 import * as turf from '@turf/turf';
 import { ButtonIcon, DropDownMenu, InputField} from "../../../../muiElements/styles";
@@ -13,6 +13,8 @@ import NoteAddIcon from '@mui/icons-material/NoteAdd';
 function BufferAnalysis(props){
     const [layer, setLayer] = useState({id:"none", name:"none", colour:"none", data:"none", value:""});
     const [bufferDistance, setBufferDistance] = useState("");
+    const [bufferDistanceErrorMessage, setbufferDistanceErrorMessage] = useState("");
+    const [layerErrorMessage, setLayerErrorMessage] = useState("");
     const [data, setData] = useData()
 
     // //Functions for execute button
@@ -36,11 +38,17 @@ function BufferAnalysis(props){
     }
     //Buffer Analysis
     function bufferAnalysis(){
+        let validBuffer= checkValidBufferDistance();
+        let validLayer = checkValidLayer();
+        if(validBuffer !== true || validLayer !== true){
+            return;
+        }
+
         //Get data from layer with given id
-        let baseLayer = data.find((l) => l.id === layer.value).data;
+        let baseLayer = data.find((l) => l.id === layer.value);
 
         //Merge layer features if there are more than one
-        let dissolve = mergeLayerFeatures(baseLayer);
+        let dissolve = mergeLayerFeatures(baseLayer.data);
 
         //Get buffer area with given distance
         let buffer = turf.buffer(dissolve, bufferDistance, {units: 'meters'});
@@ -49,7 +57,7 @@ function BufferAnalysis(props){
         let mergedBuffers = mergeLayerFeatures(buffer);
         
         //Create new layer
-        let newLayer = {id:uuid(), name:"bufferAnalysis", colour:"", data:mergedBuffers, value:true};
+        let newLayer = {id:uuid(), name:baseLayer.name+"-buffer-"+bufferDistance+"m", colour:"", data:mergedBuffers, value:true};
         
         //Add new layer to data
         setData(newLayer);
@@ -97,6 +105,28 @@ function BufferAnalysis(props){
         let newData = {type:"FeatureCollection", features:nF};
         return newData;
     }
+
+
+
+    function checkValidLayer(){
+        if(layer.id === "none"){
+            setLayerErrorMessage("A layer must be selected");
+            return false;
+        }else{
+            setLayerErrorMessage("");
+            return true;
+        }
+    }
+
+    function checkValidBufferDistance(){
+        if(bufferDistance <=0){
+            setbufferDistanceErrorMessage("At least one feature must be selected");
+            return false;
+        }else{
+            setbufferDistanceErrorMessage("");
+            return true;
+        }
+    }
     
     return(
         <>
@@ -121,13 +151,16 @@ function BufferAnalysis(props){
                     </MenuItem>
                 ))}
             </Select>
+            <FormHelperText style={{color:"red"}}>{layerErrorMessage}</FormHelperText>
         </DropDownMenu>
         <InputField 
             // id="outlined-basic"
             label="Buffer Distance"
             variant="outlined"
             value={bufferDistance}
+            helperText = {bufferDistanceErrorMessage}
             onChange = {(e) => setBufferDistance(e.target.value)}
+           
         />
         <ButtonIcon
             onClick={()=> bufferAnalysis()}
