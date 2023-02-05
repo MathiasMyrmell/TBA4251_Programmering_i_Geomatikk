@@ -1,31 +1,80 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useCallback,  useMemo} from "react";
 
-import { MapContainer, TileLayer, Marker, Popup, GeoJSON } from 'react-leaflet';
+import { MapContainer, TileLayer,GeoJSON} from 'react-leaflet';
 import { useData } from "../../../contexts/DataContext";
 import "./mapComponent.css";
 
-import { v4 as uuid } from "uuid";
 import AnalysisMenu from "./analysisMenu/analysisMenu";
+import {HomeButton}from "../../muiElements/styles";
+import LocationOnSharpIcon from '@mui/icons-material/LocationOnSharp';
+
+
+
+function DisplayPosition({ map }) {
+    const [position, setPosition] = useState(() => map.getCenter())
+    const center = [63.42153656907081, 10.538810010949685]
+    const zoom = 13
+    const onClick = useCallback(() => {
+        map.setView(center, zoom)
+    }, [map])
+
+    const onMove = useCallback(() => {
+        setPosition(map.getCenter())
+    }, [map])
+
+    useEffect(() => {
+        map.on('move', onMove)
+        return () => {
+        map.off('move', onMove)
+        }
+    }, [map, onMove])
+
+
+    return (
+
+        <>
+            <p style={{fontSize: "13px",position: "fixed", top:"97vh", right:"100px", zIndex: "2"}}>
+                lat: {position.lat}, lng: {position.lng}{' '}
+            </p>
+            <HomeButton style={{position:"fixed", top:"10vh", right:"0", zIndex: "2"}}> 
+                <LocationOnSharpIcon 
+                    style={{color: "black", fontSize: "50px"}}
+                    onClick={onClick}
+                />
+            </HomeButton>
+        </>
+    )
+}
+
 
 function MapComponent () {
     const [data, _setData] = useData()
+    const [homePosition, setHomePosition] = useState([63.42153656907081, 10.538810010949685])
+    const [map, setMap] = useState(null)
+
+
+   
 
     const mapStyle = {
         height: "100vh",
         width: "100vw",
+        zIndex: "0",
     }
 
-    function buttonClick(){
-        console.log("layers");
+    const displayMap = useMemo(
         
-    }
+        () => (
+            <MapContainer 
+                center={homePosition} 
+                zoom={13} 
+                scrollWheelZoom={false}
+                ref={setMap}
 
-    return (
-        <>
-            <MapContainer center={[63.42153656907081, 10.538810010949685]} zoom={13} scrollWheelZoom={false}>
+            >
             <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" style = {{mapStyle}}
             />
+            
             <ul>
                 {data.map((layer, i) => {
                     return(
@@ -36,13 +85,19 @@ function MapComponent () {
                     )
                 })}
             </ul>
-            {/* <Marker position={[63.42153656907081, 10.538810010949685]}>
-                <Popup onClick>
-                    somethin cool
-                </Popup>
-            </Marker> */}
-            </MapContainer>
-            <AnalysisMenu id = "analysis"/>
+        </MapContainer>
+        ),[data],
+    )
+
+
+
+
+    return (
+       
+        <>
+            {map ? <DisplayPosition map={map} /> : null}    
+            {displayMap}
+            <AnalysisMenu id = "analysis"/> 
         </>
     )
 }
