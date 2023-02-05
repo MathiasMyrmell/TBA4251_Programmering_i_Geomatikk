@@ -1,32 +1,19 @@
-import React from "react";
-import { useState, useEffect } from 'react';
-import { useData } from "../../../../../contexts/DataContext";
-// import "./bufferAnalysis.css";
+ import React from "react";
+ import { useState, useEffect } from 'react';
+ import { useData } from "../../../../../contexts/DataContext";
+ // import "./bufferAnalysis.css";
+ 
+ import { TextField, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+ import { v4 as uuid } from "uuid";
+ import * as turf from '@turf/turf';
+ import { AnalysisBackground, AnalysisC } from "../../../../muiElements/styles";
+ 
 
-import { TextField, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
-import { v4 as uuid } from "uuid";
-import * as turf from '@turf/turf';
-import { AnalysisBackground, AnalysisC } from "../../../../muiElements/styles";
-
-
-
-function BufferAnalysis(props){
-
-    const [layer, setLayer] = useState({id:"none", name:"none", colour:"none", data:"none", value:""});
-    const [data, setData] = useData()
-    const [show, setShow] = useState(props.display);
-
+ function BufferAnalysisC(props){
+    // const [layer, setLayer] = useState({id:"none", name:"none", colour:"none", data:"none", value:""});
+    const [data, setData, layer, setLayer, chosenFeatures, setChosenFeatures] = useData()
     const [bufferDistance, setBufferDistance] = useState("");
 
-    
-    useEffect(() => {
-        setShow(props.display);
-    }, [props.display]);
-
-    function closeWindow(){
-        clearInput();
-        props.displayAnalysisWindow("close");
-    }
 
     function clearInput(){
         setBufferDistance("");
@@ -99,35 +86,29 @@ function BufferAnalysis(props){
         let newData = {type:"FeatureCollection", features:nF};
         return newData;
     }
-    
-
-    return(
-        //id = "analysisWindow"
-        <AnalysisBackground  style={{display: show}} >{/*onClick={() => featureSelection(false)}*/}
-            <AnalysisC >
-                <button id = "closeButton" onClick={() => closeWindow()}>Close</button>
-                <FormControl sx={{ m: 1, width: 300 }}>
-                    <InputLabel id="demo-simple-select-label">Layer</InputLabel>
-                    <Select
-                        labelId="demo-simple-select-label"
-                        id="select"
-                        value={layer.value}
-                        label="Layer"
-                        onChange={(e) => choseLayer(e.target)}
-                    >
-                        <MenuItem id="chosenColour" key={uuid()} >
+     return(
+         <>
+            <FormControl sx={{ m: 1, width: 300 }}>
+                <InputLabel id="demo-simple-select-label">Layer</InputLabel>
+                <Select
+                    labelId="demo-simple-select-label"
+                    id="select"
+                    value={layer.value}
+                    label="Layer"
+                    onChange={(e) => choseLayer(e.target)}
+                >
+                    <MenuItem id="chosenColour" key={uuid()} >
                         <em></em>
-                        </MenuItem>
-                        {data.map((layer) => (
+                    </MenuItem>
+                    {data.map((layer) => (
                         <MenuItem
                             key={layer.id}
                             value={layer.id}
                         >
                             {layer.name}
                         </MenuItem>
-                        
-                        ))}
-                    </Select>
+                    ))}
+                </Select>
                 </FormControl>
                 <TextField 
                     sx={{ m: 1, width: 300 }}
@@ -137,13 +118,8 @@ function BufferAnalysis(props){
                     value={bufferDistance}
                     onChange = {(e) => setBufferDistance(e.target.value)}
                 />
+         </>
+     )
+ };
 
-
-                <button id="executeAnalysis" onClick={()=> bufferAnalysis()}>Execute</button>
-            </AnalysisC>
-        </AnalysisBackground>
-
-    )
-}
-
-export default BufferAnalysis;
+export default BufferAnalysisC;

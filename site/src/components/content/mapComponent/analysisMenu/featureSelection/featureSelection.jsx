@@ -8,7 +8,10 @@ import { Box, Chip,  FormControl, InputLabel, Select, MenuItem, OutlinedInput} f
 import { v4 as uuid } from "uuid";
 import { useTheme } from '@mui/material/styles';
 import _ from "lodash";
-
+import { AnalysisBackground, AnalysisC, DropDownMenu , ButtonIcon} from "../../../../muiElements/styles";
+import NoteAddIcon from '@mui/icons-material/NoteAdd';
+import CloseIcon from '@mui/icons-material/Close';
+import AnalysisContainer from "../analysis/analysisContainer";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -119,10 +122,19 @@ function FeatureSelection(props) {
   
 
     return (
-        <div id = "analysisWindow" style={{display: show}} >{/*onClick={() => featureSelection(false)}*/}
-            <div id = "analysisWindowContainer">
+        <AnalysisBackground style={{display: show}}>
+            <AnalysisC >
                 <h1>Feature Selection</h1>
-                <FormControl sx={{ m: 1, width: 300 }}>
+                {/* <button style={{ width: "20px", top: "0px", right:"0px" }} onClick={() => closeWindow()}>Close</button> */}
+                <ButtonIcon
+                onClick={() => closeWindow()}
+                style={{position: "fixed",right:"0", top: "0", margin: "10px"}}
+            >
+                <CloseIcon style={{color: "black", fontSize: "40px"}}/>
+            </ButtonIcon>
+
+
+                <DropDownMenu >
                     <InputLabel id="demo-simple-select-label">Layer</InputLabel>
                     <Select
                         labelId="demo-simple-select-label"
@@ -131,9 +143,9 @@ function FeatureSelection(props) {
                         label="Layer"
                         onChange={(e) => choseLayer(e.target)}
                     >
-                        <MenuItem id="chosenColour" key={uuid()} >
+                        {/* <MenuItem id="chosenColour" key={uuid()} >
                         <em></em>
-                        </MenuItem>
+                        </MenuItem> */}
                         {data.map((layer) => (
                         <MenuItem
                             key={layer.id}
@@ -144,8 +156,8 @@ function FeatureSelection(props) {
                         
                         ))}
                     </Select>
-                </FormControl>
-                <FormControl sx={{ m: 1, width: 300 }}>
+                </DropDownMenu>
+                <DropDownMenu >
                     <InputLabel id="demo-multiple-chip-label">Features</InputLabel>
                     <Select
                     labelId="demo-multiple-chip-label"
@@ -174,38 +186,25 @@ function FeatureSelection(props) {
                         </MenuItem>
                     ))}
                     </Select>
-                </FormControl>
-                <button id = "closeButton" onClick={() => closeWindow()}>Close</button>
-                <button id="executeAnalysis" onClick={()=> createNewLayer()}>Select features</button>
-            </div>
-        </div>
+                </DropDownMenu>
+
+                
+                <ButtonIcon
+                    onClick={()=> createNewLayer()}
+                    style={{position: "fixed",right:"0", bottom: "0", margin: "10px"}}
+                >
+                    <NoteAddIcon style={{width: "50px", color: "black", fontSize: "40px"}}/>
+                </ButtonIcon>
+            </AnalysisC>
+        </AnalysisBackground>
+
+        
+
+
+
 
     );
 }
 
 export default FeatureSelection;
-
-
-// function getWindowDimensions() {
-//     const { innerWidth: width, innerHeight: height } = window;
-//     return {
-//       width,
-//       height
-//     };
-//   }
-  
-//   function useWindowDimensions() {
-//     const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
-  
-//     useEffect(() => {
-//       function handleResize() {
-//         setWindowDimensions(getWindowDimensions());
-//       }
-  
-//       window.addEventListener('resize', handleResize);
-//       return () => window.removeEventListener('resize', handleResize);
-//     }, []);
-  
-//     return windowDimensions;
-//   }
   

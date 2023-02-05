@@ -2,18 +2,18 @@
     height: 100%;
     width: 100%;
     display: grid;
-    grid-template-columns: 20vw 80vw;
+    grid-template-columns: 300px auto;
   }
 
   #sidebar{
-    height: 90vh;
-    width: 20vw;
+    /* height: 90vh; */
+    width: 100%;
   
   }
   
   #mapcomponent{
     height: 90vh;
-    width: 80vw;
+    width: 100%;
   }
 
 

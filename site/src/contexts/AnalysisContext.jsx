@@ -6,8 +6,6 @@ const DataContext = createContext(undefined);
 
 const DataProvider = ({ children }) => {
   const [data, setDataRaw] = useState([]);
-  const [layer, setLayer] = useState({id:"none", name:"none", colour:"none", data:"none", value:""});
-  const [chosenFeatures, setChosenFeatures] = useState([]);
 
 
   const setData = (item, i = null) => {
@@ -19,10 +17,6 @@ const DataProvider = ({ children }) => {
       setDataRaw(data => uniqBy([...data.slice(0, i), item, ...data.slice(i + 1)], 'id'));
     }
   }
-
-  // const setLayer = (item) => {
-  //   setChosenLayer(item);
-  // }
 
   const clearData = () => {
     setDataRaw([])
@@ -67,7 +61,7 @@ const DataProvider = ({ children }) => {
   
 
 
-  const value = [data, setData, layer, setLayer, chosenFeatures, setChosenFeatures, clearData, removeItemFromData, handleCheckboxChange, handleColourChange];
+  const value = [data, setData, clearData, removeItemFromData, handleCheckboxChange, handleColourChange];
 
   return (
     <DataContext.Provider value={value}>
