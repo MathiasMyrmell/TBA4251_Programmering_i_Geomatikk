@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import uniqBy from 'lodash/uniqBy';
 const DataContext = createContext(undefined);
 
@@ -21,6 +21,8 @@ const DataProvider = ({ children }) => {
   // const setLayer = (item) => {
   //   setChosenLayer(item);
   // }
+
+
 
   const clearData = () => {
     setDataRaw([])
@@ -59,10 +61,17 @@ const DataProvider = ({ children }) => {
 
   }
 
+  function changeLayerName(id, newName){
+    let layer = data.find(item => item.id === id);
+    layer.name = newName;
+    setData(layer);
+
+  }
+
   
 
 
-  const value = [data, setData, layer, setLayer, bufferDistance, setBufferDistance, analysis, setAnalysis, clearData, removeItemFromData, handleCheckboxChange, handleColourChange];
+  const value = [data, setData, layer, setLayer, bufferDistance, setBufferDistance, analysis, setAnalysis, clearData, removeItemFromData, handleCheckboxChange, handleColourChange, changeLayerName];
 
   return (
     <DataContext.Provider value={value}>

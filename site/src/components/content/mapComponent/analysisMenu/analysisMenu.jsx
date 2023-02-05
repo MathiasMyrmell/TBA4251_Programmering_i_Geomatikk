@@ -1,6 +1,5 @@
 import React from "react";
 import { useState, useEffect } from 'react';
-import "./analysisMenu.css";
 import { v4 as uuid } from "uuid";
 
 import _ from "lodash";
@@ -22,12 +21,11 @@ function AnalysisMenu() {
 
   function displayAnalysisWindow(show){
 
-    if(show == "featureSelection"){//analysis = {<FeatureSelectionC />}
+    if(show == "featureSelection"){
       setAnalysis({name: "Feature Analysis", analysis: <FeatureSelection displayAnalysisWindow = {displayAnalysisWindow}/>});
       setShow("block");
     }
-    // if(show == "featureSelection"){
-    //   setfSShow("block");
+
     else if(show == "bufferAnalysis"){
       setAnalysis({name: "Buffer Analysis", analysis: <BufferAnalysis  displayAnalysisWindow = {displayAnalysisWindow}/>});
       setShow("block");
@@ -46,10 +44,7 @@ function AnalysisMenu() {
         <AnalysisButton onClick={() => displayAnalysisWindow("featureSelection")}>Feature Selection</AnalysisButton>
         <AnalysisButton onClick={() => displayAnalysisWindow("bufferAnalysis")}>Buffer analysis</AnalysisButton>
       </AnalysisMenuContainer>
-      {/* <BufferAnalysis display = {bAShow} displayAnalysisWindow = {displayAnalysisWindow}/>
-      <FeatureSelection display = {fSShow} displayAnalysisWindow = {displayAnalysisWindow}/> */}
-      {/* <AnalysisContainer display = {fSShow} analysis ={<BufferAnalysisC />} displayAnalysisWindow = {displayAnalysisWindow}/> */}
-      
+
       <AnalysisContainer display = {show} name = {analysis.name} analysis ={analysis.analysis} displayAnalysisWindow = {displayAnalysisWindow}/>
       
     </>

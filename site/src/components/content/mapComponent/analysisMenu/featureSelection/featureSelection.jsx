@@ -1,8 +1,8 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useData } from "../../../../../contexts/DataContext";
 
-import { Box, Chip, InputLabel, Select, MenuItem, OutlinedInput} from "@mui/material";
+import { Box, Chip, InputLabel, Select, MenuItem, OutlinedInput, FormHelperText} from "@mui/material";
 import { v4 as uuid } from "uuid";
 import { useTheme } from '@mui/material/styles';
 import _ from "lodash";
@@ -34,8 +34,16 @@ function getStyles(name, personName, theme) {
 function FeatureSelection(props){
     const [features, setFeatures] = useState([]);
     const [chosenFeatures, setChosenFeatures] = useState([]);
+    const [featureErrorMessage, setFeatureErrorMessage] = useState("");
+    const [layerErrorMessage, setLayerErrorMessage] = useState("");
     const [data, setData, layer, setLayer, analysis, setAnalysis] = useData()
     const theme = useTheme();
+
+    useEffect(() => {
+
+    }, [chosenFeatures])
+
+
 
     // //Functions for execute button
     // Clear input fields
@@ -49,6 +57,7 @@ function FeatureSelection(props){
     // Close Analysis window
     function closeWindow(){
         clearInput();
+        setFeatureErrorMessage("");
         props.displayAnalysisWindow("close");
     }
 
@@ -92,6 +101,12 @@ function FeatureSelection(props){
 
     // Create new layer
     function createNewLayer(){
+        let validFeatures = checkValidFeatures();
+        let validLayer = checkValidLayer();
+        if(validFeatures !== true || validLayer !== true){
+            return;
+        }
+    
         console.log("Create new layer");
         console.log(layer)
         let baseLayer = data.find((l) => l.id === layer.value);
@@ -110,16 +125,37 @@ function FeatureSelection(props){
         closeWindow();
     }
 
+    function checkValidLayer(){
+        if(layer.id === "none"){
+            setLayerErrorMessage("A layer must be selected");
+            return false;
+        }else{
+            setLayerErrorMessage("");
+            return true;
+        }
+    }
+
+    function checkValidFeatures(){
+        if(chosenFeatures.length === 0){
+            setFeatureErrorMessage("At least one feature must be selected");
+            return false;
+        }else{
+            setFeatureErrorMessage("");
+            return true;
+        }
+    }
+
 
     return (
         <>
             <DropDownMenu >
-                <InputLabel id="demo-simple-select-label">Layer</InputLabel>
+                <InputLabel id="demo-simple-select-label" >Layer</InputLabel>
                 <Select
                     labelId="demo-simple-select-label"
                     id="select"
                     value={layer.value}
                     label="Layer"
+                    
                     onChange={(e) => choseLayer(e.target)}
                 >
                     {data.map((layer) => (
@@ -132,9 +168,10 @@ function FeatureSelection(props){
                     
                     ))}
                 </Select>
+                <FormHelperText style={{color:"red"}}>{layerErrorMessage}</FormHelperText>
             </DropDownMenu>
             <DropDownMenu >
-                <InputLabel id="demo-multiple-chip-label">Features</InputLabel>
+                <InputLabel id="demo-multiple-chip-label" >Features</InputLabel>
                 <Select
                 labelId="demo-multiple-chip-label"
                 id="featureSelect"
@@ -162,9 +199,10 @@ function FeatureSelection(props){
                     </MenuItem>
                 ))}
                 </Select>
+                <FormHelperText style={{color: "red" }}>{featureErrorMessage}</FormHelperText>
             </DropDownMenu>
-            
-            
+        
+
             <ButtonIcon
                     onClick={()=> createNewLayer()}
                     style={{position: "fixed",right:"0", bottom: "0", margin: "10px"}}
