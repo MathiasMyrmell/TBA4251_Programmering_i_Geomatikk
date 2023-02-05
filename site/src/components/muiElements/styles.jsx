@@ -1,6 +1,21 @@
 import { Button, IconButton, Card, FormControl, styled, Switch, TextField } from "@mui/material";
 
 
+// //MapComponent
+// HomeButton
+export const HomeButton = styled(Button)({
+    height: "60px",
+    width: "60px",
+    margin: "10px",
+    border: "1px solid black",
+    borderRadius: "30px",
+    backgroundColor: "white",
+    "&:hover": {
+        backgroundColor: "rgba(220, 220, 220, 1)",
+    },
+
+});
+
 //Sidebar
 export const FileContainer = styled(Card)({
     height: "150px",
@@ -88,7 +103,7 @@ export const AnalysisMenuContainer = styled(Card)({
     width: "100%",
     position: "fixed",
     bottom: "0",
-    zIndex: "1",
+    zIndex: "1", 
 
 });
 
