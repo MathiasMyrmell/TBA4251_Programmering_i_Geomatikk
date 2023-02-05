@@ -12,9 +12,10 @@ import vann from "../../../files/vann.json";
 
 function Sidebar(props) {
 
-    const [layers, setLayers] = useState([]);
-    const [layerCards, setLayerCards] = useState([]);
+    // const [layers, setLayers] = useState([]);
+    // const [layerCards, setLayerCards] = useState([]);
     const [_data, setData, clearData, removeItemFromData] = useData();
+
 
     return (
         <div style={{height: "90vh"}}>

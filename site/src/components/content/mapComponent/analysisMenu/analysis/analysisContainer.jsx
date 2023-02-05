@@ -9,15 +9,15 @@ import _ from "lodash";
 import { AnalysisBackground, AnalysisC, DropDownMenu , ButtonIcon} from "../../../../muiElements/styles";
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import CloseIcon from '@mui/icons-material/Close';
-import FeatureSelectionC from "../featureSelection/featureSelectionC";
-import BufferAnalysisC from "../bufferAnalysis/bufferAnalysisC";
+import FeatureSelection from "../featureSelection/featureSelection";
+import BufferAnalysis from "../bufferAnalysis/bufferAnalysis";
 
 
 function AnalysisContainer(props){
     // const [layer, setLayer] = useState({id:"none", name:"none", colour:"none", data:"none", value:""});
     const [features, setFeatures] = useState([]);
     // const [chosenFeatures, setChosenFeatures] = useState([]);
-    const [data, setData,layer, setLayer, chosenFeatures, setChosenFeatures] = useData()
+    const [data, setData,layer, setLayer, chosenFeatures, setChosenFeatures,analysis, setAnalysis] = useData()
     const theme = useTheme();
     const [show, setShow] = useState(props.display);
     
@@ -56,6 +56,7 @@ function AnalysisContainer(props){
         setChosenFeatures([]);
         setLayer({id:"none", name:"none", colour:"none", data:"none", value:""});
         setFeatures([]);
+        setAnalysis("none");
     }
 
 
@@ -70,16 +71,16 @@ function AnalysisContainer(props){
                     <CloseIcon style={{color: "black", fontSize: "40px"}}/>
                 </ButtonIcon>
 
-                {/* <FeatureSelectionC /> */}
-                {/* <BufferAnalysisC /> */}
+                {/* <FeatureSelection /> */}
+                {/* <BufferAnalysis /> */}
                 {props.analysis}
                 
-                <ButtonIcon
+                {/* <ButtonIcon
                     onClick={()=> createNewLayer()}
                     style={{position: "fixed",right:"0", bottom: "0", margin: "10px"}}
                 >
                     <NoteAddIcon style={{width: "50px", color: "black", fontSize: "40px"}}/>
-                </ButtonIcon>
+                </ButtonIcon> */}
             </AnalysisC>
         </AnalysisBackground>
 

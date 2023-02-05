@@ -1,14 +1,12 @@
 import React, { createContext, useContext, useState } from 'react';
-import arealbruk from "../files/arealbruk.json";
-import vann from "../files/vann.json";
 import uniqBy from 'lodash/uniqBy';
 const DataContext = createContext(undefined);
 
 const DataProvider = ({ children }) => {
   const [data, setDataRaw] = useState([]);
   const [layer, setLayer] = useState({id:"none", name:"none", colour:"none", data:"none", value:""});
-  const [chosenFeatures, setChosenFeatures] = useState([]);
-
+  const [bufferDistance, setBufferDistance] = useState("");
+  const [analysis, setAnalysis] = useState("none");
 
   const setData = (item, i = null) => {
     if(i === null){
@@ -44,14 +42,12 @@ const DataProvider = ({ children }) => {
     return colour;
 }
 
-  const handleCheckboxChange = (id) => {
+  function handleCheckboxChange(id) {
     let card = data.find(item => item.id === id);
     let index = data.findIndex(item => item.id === id);
     // removeItemFromData(id);
     card.value = !card.value;
     setData(card, index);
-    // console.log(data);
-    // console.log("checkbox changed");
   }
 
   const handleColourChange = (id, colour) => {
@@ -60,14 +56,13 @@ const DataProvider = ({ children }) => {
     // removeItemFromData(id);
     card.colour = colour;
     setData(card, index);
-    // console.log(data);
-    // console.log("colour changed");
+
   }
 
   
 
 
-  const value = [data, setData, layer, setLayer, chosenFeatures, setChosenFeatures, clearData, removeItemFromData, handleCheckboxChange, handleColourChange];
+  const value = [data, setData, layer, setLayer, bufferDistance, setBufferDistance, analysis, setAnalysis, clearData, removeItemFromData, handleCheckboxChange, handleColourChange];
 
   return (
     <DataContext.Provider value={value}>

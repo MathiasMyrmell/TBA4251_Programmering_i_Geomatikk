@@ -5,47 +5,39 @@ import { v4 as uuid } from "uuid";
 
 import _ from "lodash";
 
+import { useData } from "../../../../contexts/DataContext";
 
-
+import AnalysisContainer from "./analysis/analysisContainer";
 import FeatureSelection from "./featureSelection/featureSelection";
 import BufferAnalysis from "./bufferAnalysis/bufferAnalysis";
-import AnalysisContainer from "./analysis/analysisContainer";
-import FeatureSelectionC from "./featureSelection/featureSelectionC";
-import BufferAnalysisC from "./bufferAnalysis/bufferAnalysisC";
 
 import { AnalysisButton, AnalysisMenuContainer } from "../../../muiElements/styles";
 
 
 function AnalysisMenu() {
-  const [fSShow, setfSShow] = useState("none");
-  const [bAShow, setbAShow] = useState("none");
+
+  const [data, setData,layer, setLayer, chosenFeatures, setChosenFeatures, analysis, setAnalysis] = useData()
+  const [show, setShow] = useState("none");
+
 
   function displayAnalysisWindow(show){
-    if(show == "featureSelection"){
-      setfSShow("block");
-    }else if(show == "bufferAnalysis"){
-      setbAShow("block");
+
+    if(show == "featureSelection"){//analysis = {<FeatureSelectionC />}
+      setAnalysis({name: "Feature Analysis", analysis: <FeatureSelection displayAnalysisWindow = {displayAnalysisWindow}/>});
+      setShow("block");
+    }
+    // if(show == "featureSelection"){
+    //   setfSShow("block");
+    else if(show == "bufferAnalysis"){
+      setAnalysis({name: "Buffer Analysis", analysis: <BufferAnalysis  displayAnalysisWindow = {displayAnalysisWindow}/>});
+      setShow("block");
     }
     else if(show=="close"){
-      setfSShow("none");
-      setbAShow("none");
+ 
+      setShow("none");
     }
   }
 
-  const analyses = [
-    {
-      name:"Feature Selection",
-      id: uuid(),
-      content: <FeatureSelectionC display = {fSShow} displayAnalysisWindow = {displayAnalysisWindow}/>,
-      display: fSShow,
-    },
-    {
-      name:"Buffer Analysis",
-      id: uuid(),
-      content: <BufferAnalysisC display = {bAShow} displayAnalysisWindow = {displayAnalysisWindow}/>,
-      display: bAShow,
-    }
-  ]
 
 
   return (
@@ -57,11 +49,8 @@ function AnalysisMenu() {
       {/* <BufferAnalysis display = {bAShow} displayAnalysisWindow = {displayAnalysisWindow}/>
       <FeatureSelection display = {fSShow} displayAnalysisWindow = {displayAnalysisWindow}/> */}
       {/* <AnalysisContainer display = {fSShow} analysis ={<BufferAnalysisC />} displayAnalysisWindow = {displayAnalysisWindow}/> */}
-      <ul>
-        {analyses.map((analysis) => (
-          <AnalysisContainer key={analysis.id} name = {analysis.name} display = {analysis.display} analysis ={analysis.content} displayAnalysisWindow = {displayAnalysisWindow}/>
-        ))}
-      </ul>
+      
+      <AnalysisContainer display = {show} name = {analysis.name} analysis ={analysis.analysis} displayAnalysisWindow = {displayAnalysisWindow}/>
       
     </>
     )

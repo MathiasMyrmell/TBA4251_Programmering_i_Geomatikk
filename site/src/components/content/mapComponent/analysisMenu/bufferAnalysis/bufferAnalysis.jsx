@@ -1,44 +1,41 @@
 import React from "react";
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useData } from "../../../../../contexts/DataContext";
-// import "./bufferAnalysis.css";
 
-import { TextField, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+
+import { InputLabel, Select, MenuItem } from "@mui/material";
 import { v4 as uuid } from "uuid";
 import * as turf from '@turf/turf';
-import { AnalysisBackground, AnalysisC } from "../../../../muiElements/styles";
-
-
+import { ButtonIcon, DropDownMenu, InputField} from "../../../../muiElements/styles";
+import NoteAddIcon from '@mui/icons-material/NoteAdd';
+ 
 
 function BufferAnalysis(props){
-
     const [layer, setLayer] = useState({id:"none", name:"none", colour:"none", data:"none", value:""});
-    const [data, setData] = useData()
-    const [show, setShow] = useState(props.display);
-
     const [bufferDistance, setBufferDistance] = useState("");
+    const [data, setData] = useData()
 
-    
-    useEffect(() => {
-        setShow(props.display);
-    }, [props.display]);
-
-    function closeWindow(){
-        clearInput();
-        props.displayAnalysisWindow("close");
-    }
-
+    // //Functions for execute button
+    // Clear input fields
     function clearInput(){
         setBufferDistance("");
         setLayer({id:"none", name:"none", colour:"none", data:"none", value:""});
     }
 
+    // Close Analysis window
+    function closeWindow(){
+        clearInput();
+        props.displayAnalysisWindow("close");
+    }
+
+
+    // //Functions for buffer analysis
+    //Chose layer for feature selection
     function choseLayer(target){
         setLayer(target);
     }
-
+    //Buffer Analysis
     function bufferAnalysis(){
-
         //Get data from layer with given id
         let baseLayer = data.find((l) => l.id === layer.value).data;
 
@@ -59,9 +56,10 @@ function BufferAnalysis(props){
 
         //Clear input
         clearInput();
-        
+        closeWindow();
     }
 
+    // Merge layers that intersect
     function mergeLayerFeatures(layer){
         //Create one layer
         var dissolve = turf.dissolve(layer);
@@ -95,55 +93,50 @@ function BufferAnalysis(props){
         for(let j = 0; j<newGeometry.length; j++){
             nF.push({type:"Feature", geometry: {type:"Polygon", coordinates:[newGeometry[j]]}});
         }
-    
+
         let newData = {type:"FeatureCollection", features:nF};
         return newData;
     }
     
-
     return(
-        //id = "analysisWindow"
-        <AnalysisBackground  style={{display: show}} >{/*onClick={() => featureSelection(false)}*/}
-            <AnalysisC >
-                <button id = "closeButton" onClick={() => closeWindow()}>Close</button>
-                <FormControl sx={{ m: 1, width: 300 }}>
-                    <InputLabel id="demo-simple-select-label">Layer</InputLabel>
-                    <Select
-                        labelId="demo-simple-select-label"
-                        id="select"
-                        value={layer.value}
-                        label="Layer"
-                        onChange={(e) => choseLayer(e.target)}
+        <>
+        <DropDownMenu >
+            <InputLabel id="demo-simple-select-label">Layer</InputLabel>
+            <Select
+                labelId="demo-simple-select-label"
+                id="select"
+                value={layer.value}
+                label="Layer"
+                onChange={(e) => choseLayer(e.target)}
+            >
+                <MenuItem id="chosenColour" key={uuid()} >
+                    <em></em>
+                </MenuItem>
+                {data.map((layer) => (
+                    <MenuItem
+                        key={layer.id}
+                        value={layer.id}
                     >
-                        <MenuItem id="chosenColour" key={uuid()} >
-                        <em></em>
-                        </MenuItem>
-                        {data.map((layer) => (
-                        <MenuItem
-                            key={layer.id}
-                            value={layer.id}
-                        >
-                            {layer.name}
-                        </MenuItem>
-                        
-                        ))}
-                    </Select>
-                </FormControl>
-                <TextField 
-                    sx={{ m: 1, width: 300 }}
-                    id="outlined-basic"
-                    label="Buffer Distance"
-                    variant="outlined"
-                    value={bufferDistance}
-                    onChange = {(e) => setBufferDistance(e.target.value)}
-                />
-
-
-                <button id="executeAnalysis" onClick={()=> bufferAnalysis()}>Execute</button>
-            </AnalysisC>
-        </AnalysisBackground>
-
+                        {layer.name}
+                    </MenuItem>
+                ))}
+            </Select>
+        </DropDownMenu>
+        <InputField 
+            // id="outlined-basic"
+            label="Buffer Distance"
+            variant="outlined"
+            value={bufferDistance}
+            onChange = {(e) => setBufferDistance(e.target.value)}
+        />
+        <ButtonIcon
+            onClick={()=> bufferAnalysis()}
+            style={{position: "fixed",right:"0", bottom: "0", margin: "10px"}}
+        >
+            <NoteAddIcon style={{width: "50px", color: "black", fontSize: "40px"}}/>
+        </ButtonIcon>
+        </>
     )
-}
+};
 
 export default BufferAnalysis;

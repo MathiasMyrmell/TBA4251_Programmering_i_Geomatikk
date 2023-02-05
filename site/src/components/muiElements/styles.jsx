@@ -138,3 +138,9 @@ export const DropDownMenu = styled(FormControl)({
     margin: "0 0 5px 0",
     zIndex: "3",
 });
+
+export const InputField = styled(TextField)({
+    width: "400px",
+    margin: "0 0 5px 0",
+    zIndex: "3",
+});
