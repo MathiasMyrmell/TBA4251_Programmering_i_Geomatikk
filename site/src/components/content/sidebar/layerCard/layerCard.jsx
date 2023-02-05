@@ -1,57 +1,36 @@
 import React, {useState} from "react";
 import "@mui/material";
-import { Card, Checkbox, FormControl, InputLabel, Select, MenuItem, OutlinedInput, Input, InputAdornment  } from "@mui/material";
-import { MapContainer, TileLayer, Marker, Popup, GeoJSON } from 'react-leaflet';
-import { ColourChanger, LCard } from "../../../muiElements/styles";
+import { MenuItem, Menu } from "@mui/material";
+import { LCard, ButtonIcon, ShowSwitch, CardName} from "../../../muiElements/styles";
 import { v4 as uuid } from "uuid";
 import { useData } from "../../../../contexts/DataContext";
 import { useEffect } from "react";
+import CircleIcon from '@mui/icons-material/Circle';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import SettingsIcon from '@mui/icons-material/Settings';
+import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 
 function LayerCard(props) {
     //initialize layer object
     const [id, setId] = useState(props.id);
     const [name, setName] = useState(props.name);
     const [colour, setColour] = useState();
-    const [data, setLayerData] = useState(props.data);
-    const [layer, setLayer] = useState([ name, colour, data])
-    // const [layer, setLayer] = useState(<GeoJSON id = {props.id} style = {{color:colour}} data={props.data.features} onEachLayer/>);
-    
+    const [colourChanger, setColourChanger] = useState(null);
+    const [settingsMenu, setSettingsMenu] = useState(null);
+    const [data, setData, layer, setLayer, bufferDistance, setBufferDistance, analysis, setAnalysis, clearData, removeItemFromData, handleCheckboxChange, handleColourChange] = useData()
+
     //checkbox value
     const [value, setValue] = useState(props.value);
     
-
+ 
     useEffect (() => {
         setColour(props.colour);
     }, [])
-   
-    
-    const colours = [
-        "Red",
-        "Blue",
-        "Green",
-        "Yellow",
-        "Orange",
-        "Purple",
-        "Pink",
-        "Brown",
-        "Grey",
-        "Black",
-        "White",
-    ];
-    function getColour(colour){
-        return {
-            backgroundColor: colour,
-            color: colour,
-        }
-    }
 
-    function getLayer(){
-        return layer;
-    }
     
     function handleCheckbox(id){
         setValue(!value)
-        handleCheckboxChange(id, !value);
+        handleCheckboxChange(id);
     }
 
     function handleColour(c){
@@ -59,43 +38,118 @@ function LayerCard(props) {
         handleColourChange(id, c);
     }
 
-    const [_data, setData, clearData, removeItemFromData, handleCheckboxChange, handleColourChange] = useData()
+    const colours = [
+        "red",
+        "blue",
+        "green",
+        "yellow",
+        "orange",
+        "purple",
+        "pink",
+        "brown",
+        "grey",
+        "black",
+        "white"
+    ]
+
+
+    const openColourChanger = e => {
+    setColourChanger(e.currentTarget);
+    };
+    const closeColourChanger = () => {
+    setColourChanger(null);
+    };
+
+    const openSettingsMenu = e => {
+    setSettingsMenu(e.currentTarget);
+    };
+    const closeSettingsMenu = () => {
+    setSettingsMenu(null);
+    };
+
+    function deleteLayer(){
+        console.log("delete layer");
+        removeItemFromData(id);
+    }
+
+    function changeName(){
+    //TODO
+    }
+
+      const settingsChoices = [
+        {
+            title: "Change Name",
+            icon: <DriveFileRenameOutlineIcon/>,
+            handler: changeName
+        },
+        {
+            title: "Delete Layer",
+            icon: <DeleteForeverIcon />,
+            handler: deleteLayer
+        },
+    ];
+
 
     return (
         <LCard className="card" variant="outlined">
-            <h5>{name}</h5>
-            <Checkbox className="elements" checked = {value} onClick={()=>handleCheckbox(id)} ></Checkbox>
-            <button onClick={() => removeItemFromData(id)} >Delete</button>
-            <ColourChanger className="elements" sx={{width:40, height: 60}} > {/*sx={{ m: 1, mt: 5 }}*/}
-                <Select 
-                    multiple
-                    displayEmpty
-                    value={[]}
-                    style={{backgroundColor: colour, color: "black", fontWeight: "bold"}}
-                    input={<OutlinedInput />}
-                    renderValue={(selected) => {
-                        if (selected.length === 0) {
-                            return <em>{}</em>;
-                        } else{
-                            return <em>{}</em>;
-                        }
-                    }}
-                    >
-                    <MenuItem id="chosenColour" >
-                        <em></em>
+
+            <CardName
+                id="standard-textarea"
+                multiline
+                variant="standard"
+                InputProps={{
+                    readOnly: true,
+                    disableUnderline: true
+                  }}
+                defaultValue={name}
+            > 
+                {name}
+            </CardName>
+
+            <ShowSwitch margin="auto" checked = {value} onClick={()=>handleCheckbox(id)} />
+            
+            <ButtonIcon
+                onClick={openColourChanger}
+                // disableRipple
+            >
+                <CircleIcon style={{color: colour}}/>
+            </ButtonIcon>
+            <Menu
+                id="simple-menu"
+                anchorEl={colourChanger}
+                keepMounted
+                open={Boolean(colourChanger)}
+                onClose={closeColourChanger}
+            >
+                {colours.map(colour => (
+                <MenuItem onClick={()=>handleColour(colour)} key={uuid()}>
+                    {/* {item.icon} */}
+                    {<CircleIcon style={{color:colour}}/>}
+                </MenuItem>
+                ))}
+            </Menu>
+            
+            <ButtonIcon
+                onClick={openSettingsMenu}
+            >
+                <SettingsIcon 
+                    style={{color: "black"}}
+                />
+            </ButtonIcon>
+            <Menu 
+                id="settings-menu"
+                anchorEl = {settingsMenu}
+                keepMounted
+                open={Boolean(settingsMenu)}
+                onClose={closeSettingsMenu}
+            >
+                {settingsChoices.map(item => (
+                    <MenuItem onClick={()=>item.handler()} key={uuid()}>
+                        {item.icon}
                     </MenuItem>
-                    {colours.map((colour) => (
-                        <MenuItem
-                            key={colour}
-                            style={getColour(colour)}
-                            // onClick={() => setColour(colour)}
-                            onClick={() => handleColour(colour)}
-                        >
-                            {colour}
-                        </MenuItem>
-                    ))}
-                </Select>
-            </ColourChanger>
+                ))}
+            </Menu>
+
         </LCard>
     )
 }

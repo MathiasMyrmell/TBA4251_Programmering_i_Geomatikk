@@ -3,7 +3,7 @@ import Sidebar from "./sidebar/sidebar";
 import MapComponent from "./mapComponent/mapComponent";
 import "./content.css";
 import LayerCard from "./sidebar/layerCard/layerCard";
-import { unstable_composeClasses } from "@mui/material";
+import { Card, FormControl, styled, Box} from "@mui/material";
 import { GeoJSON } from "react-leaflet";
 import vann from "../../files/vann.json";
 import { DataProvider } from "../../contexts/DataContext";
@@ -17,7 +17,7 @@ function Content(){
         });
         console.log(layers);
     }
-
+ 
     function handleChange(data){
         // data = [id,value]
         var newList = [];

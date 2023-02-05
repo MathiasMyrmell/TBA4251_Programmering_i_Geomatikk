@@ -2,26 +2,32 @@ import React, {useEffect, useState} from "react";
 import "./sidebar.css";
 import { v4 as uuid } from "uuid";
 import LayerCard from "./layerCard/layerCard";
+
+import { useData } from "../../../contexts/DataContext";
+import { FileContainer, LayerContainer, LCard } from "../../muiElements/styles";
+import FileCard from "./fileCard/fileCard";
+//Files
 import arealbruk from "../../../files/arealbruk.json";
 import vann from "../../../files/vann.json";
-import { useData } from "../../../contexts/DataContext";
-import { LCard } from "../../muiElements/styles";
 
 function Sidebar(props) {
 
-    const [layers, setLayers] = useState([]);
-    const [layerCards, setLayerCards] = useState([]);
+    // const [layers, setLayers] = useState([]);
+    // const [layerCards, setLayerCards] = useState([]);
     const [_data, setData, clearData, removeItemFromData] = useData();
 
+
     return (
-        <div>
-            <div style={{border:"1px solid black", width:"100%", height:"100px"}}>
-                <label> <a>Vann</a><button onClick={()=> setData({ id: uuid(), name:"vann", colour: "", data: vann, value: true})}>Add layer</button></label><br/>
-                <label> <a>Arealbruk</a><button onClick={()=> setData({ id: uuid(), name:"Arealbruk", colour: "", data: arealbruk, value: true})}>Add layer</button></label>
-            </div>
-            <button onClick={() => clearData()}> Remove layers</button>
-            <button onClick={() => removeItemFromData("Vann")}> Remove vann</button>
-            <div id="layerCardContainer">
+        <div style={{height: "90vh"}}>
+            <FileContainer >
+                <FileCard fileName = {"Vann"} file ={vann}/>
+                <FileCard fileName = {"Arealbruk"} file ={arealbruk}/>
+                <FileCard fileName = {"Arealbruk"} file ={arealbruk}/>
+            </FileContainer> 
+            {/* <button onClick={() => clearData()}> Remove layers</button>
+            <button onClick={() => removeItemFromData("Vann")}> Remove vann</button> */}
+            <LayerContainer>
+                <h1>Layers</h1>
                 <ul>
                     {_data.map((layer, i) => {
                         return(
@@ -31,7 +37,7 @@ function Sidebar(props) {
                         ) 
                     })}
                 </ul>
-            </div>
+            </LayerContainer>
         </div>
     )
 }
