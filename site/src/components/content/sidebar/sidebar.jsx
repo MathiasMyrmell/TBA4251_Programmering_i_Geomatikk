@@ -4,7 +4,7 @@ import { v4 as uuid } from "uuid";
 import LayerCard from "./layerCard/layerCard";
 
 import { useData } from "../../../contexts/DataContext";
-import { FileContainer, LayerContainer, LCard } from "../../muiElements/styles";
+import { FileContainer, LayerContainer, SidebarContainer, Headings} from "../../muiElements/styles";
 import FileCard from "./fileCard/fileCard";
 //Files
 import arealbruk from "../../../files/arealbruk.json";
@@ -18,16 +18,19 @@ function Sidebar(props) {
 
 
     return (
-        <div style={{height: "90vh"}}>
+        <SidebarContainer style={{height: "90vh"}}>
+            <Headings>
+                <h1>Files</h1>
+            </Headings>
             <FileContainer >
                 <FileCard fileName = {"Vann"} file ={vann}/>
                 <FileCard fileName = {"Arealbruk"} file ={arealbruk}/>
                 <FileCard fileName = {"Arealbruk"} file ={arealbruk}/>
             </FileContainer> 
-            {/* <button onClick={() => clearData()}> Remove layers</button>
-            <button onClick={() => removeItemFromData("Vann")}> Remove vann</button> */}
-            <LayerContainer>
+            <Headings>
                 <h1>Layers</h1>
+            </Headings>
+            <LayerContainer>
                 <ul>
                     {_data.map((layer, i) => {
                         return(
@@ -38,7 +41,7 @@ function Sidebar(props) {
                     })}
                 </ul>
             </LayerContainer>
-        </div>
+        </SidebarContainer>
     )
 }
 

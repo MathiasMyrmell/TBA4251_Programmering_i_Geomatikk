@@ -13,9 +13,9 @@ function FileCard(props){
     return(
         <FileCardContainer>
             <h4 style={{margin:"auto 0", display:"inline"}}>{fileName}</h4>
-            <IconButton style={{width: "40px"}} aria-label="add" size="small" color="primary" onClick={()=> setData({ id: uuid(), name:fileName, colour: "", data: file, value: true})}>
+            <AddButton style={{width: "40px"}} aria-label="add" size="small" color="primary" onClick={()=> setData({ id: uuid(), name:fileName, colour: "", data: file, value: true})}>
                 <AddIcon />
-            </IconButton>
+            </AddButton>
         </FileCardContainer>
     )
 }

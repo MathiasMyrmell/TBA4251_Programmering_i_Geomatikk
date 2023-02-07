@@ -2,33 +2,13 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { useData } from "../../../../../contexts/DataContext";
 
-import { Box, Chip, InputLabel, Select, MenuItem, OutlinedInput, FormHelperText} from "@mui/material";
+import { Box, Chip, InputLabel, Select, MenuItem, OutlinedInput} from "@mui/material";
 import { v4 as uuid } from "uuid";
 import { useTheme } from '@mui/material/styles';
 import _ from "lodash";
-import { DropDownMenu , ButtonIcon} from "../../../../muiElements/styles";
+import { DropDownMenu , ButtonIcon, DropDownFieldError, DropDownField, DropDownItem, DDChip, DropDownFeatureSelect} from "../../../../muiElements/styles";
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
-
-function getStyles(name, personName, theme) {
-  return {
-    fontWeight:
-      personName.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
-  };
-}
 
 
 function FeatureSelection(props){
@@ -150,7 +130,7 @@ function FeatureSelection(props){
         <>
             <DropDownMenu >
                 <InputLabel id="demo-simple-select-label" >Layer</InputLabel>
-                <Select
+                <DropDownField
                     labelId="demo-simple-select-label"
                     id="select"
                     value={layer.value}
@@ -159,56 +139,54 @@ function FeatureSelection(props){
                     onChange={(e) => choseLayer(e.target)}
                 >
                     {data.map((layer) => (
-                    <MenuItem
+                    <DropDownItem
                         key={layer.id}
                         value={layer.id}
                     >
                         {layer.name}
-                    </MenuItem>
+                    </DropDownItem>
                     
                     ))}
-                </Select>
-                <FormHelperText style={{color:"red"}}>{layerErrorMessage}</FormHelperText>
+                </DropDownField>
+                <DropDownFieldError >{layerErrorMessage}</DropDownFieldError>
             </DropDownMenu>
             <DropDownMenu >
                 <InputLabel id="demo-multiple-chip-label" >Features</InputLabel>
-                <Select
+                <DropDownField
                 labelId="demo-multiple-chip-label"
                 id="featureSelect"
                 multiple
                 value={chosenFeatures}
                 onChange={chooseFeatures}
-                input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
                 label="Features"
+
                 renderValue={(selected) => (
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                    <DropDownFeatureSelect > 
                     {selected.map((value) => (
                         <Chip key={value} label={value} />
                     ))}
-                    </Box>
+                    </DropDownFeatureSelect>
                 )}
-                MenuProps={MenuProps}
                 >
                 {features.map((feature) => (
-                    <MenuItem
+                    <DropDownItem
                     key={uuid()}
                     value={feature}
-                    style={getStyles(feature, chosenFeatures, theme)}
                     >
                     {feature}
-                    </MenuItem>
+                    </DropDownItem>
                 ))}
-                </Select>
-                <FormHelperText style={{color: "red" }}>{featureErrorMessage}</FormHelperText>
+                </DropDownField>
+                <DropDownFieldError >{featureErrorMessage}</DropDownFieldError>
             </DropDownMenu>
         
 
             <ButtonIcon
-                    onClick={()=> createNewLayer()}
-                    style={{position: "fixed",right:"0", bottom: "0", margin: "10px"}}
-                >
-                    <NoteAddIcon style={{width: "50px", color: "black", fontSize: "40px"}}/>
-                </ButtonIcon>
+                onClick={()=> createNewLayer()}
+                style={{position: "fixed",right:"0", bottom: "0", margin: "10px"}}
+            >
+                <NoteAddIcon style={{fontSize: "40px"}}/>
+            </ButtonIcon>
 
         </>
     );

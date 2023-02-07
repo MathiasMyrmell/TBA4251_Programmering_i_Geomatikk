@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import "@mui/material";
 import { MenuItem, Menu } from "@mui/material";
-import { LCard, ButtonIcon, ShowSwitch, CardName} from "../../../muiElements/styles";
+import { LCard, ButtonIcon, ShowSwitch, CardName, LCardDropDown} from "../../../muiElements/styles";
 import { v4 as uuid } from "uuid";
 import { useData } from "../../../../contexts/DataContext";
 import { useEffect } from "react";
@@ -109,7 +109,6 @@ function LayerCard(props) {
 
     return (
         <LCard className="card" variant="outlined">
-
             <CardName
                 id="standard-textarea"
                 multiline
@@ -122,16 +121,14 @@ function LayerCard(props) {
             > 
                 {name}
             </CardName>
-
             <ShowSwitch margin="auto" checked = {checkboxValue} onClick={()=>handleCheckbox(id)} />
-            
             <ButtonIcon
                 onClick={openColourChanger}
                 // disableRipple
             >
                 <CircleIcon style={{color: colour}}/>
             </ButtonIcon>
-            <Menu
+            <LCardDropDown
                 id="simple-menu"
                 anchorEl={colourChanger}
                 keepMounted
@@ -144,16 +141,14 @@ function LayerCard(props) {
                     {<CircleIcon style={{color:colour}}/>}
                 </MenuItem>
                 ))}
-            </Menu>
+            </LCardDropDown>
             
             <ButtonIcon
                 onClick={openSettingsMenu}
             >
-                <SettingsIcon 
-                    style={{color: "black"}}
-                />
+                <SettingsIcon/>
             </ButtonIcon>
-            <Menu 
+            <LCardDropDown 
                 id="settings-menu"
                 anchorEl = {settingsMenu}
                 keepMounted
@@ -161,11 +156,11 @@ function LayerCard(props) {
                 onClose={closeSettingsMenu}
             >
                 {settingsChoices.map(item => (
-                    <MenuItem onClick={()=> item.handler()} key={uuid()}>
-                        {item.icon}
+                    <MenuItem key={uuid()} style={{width: "50px", padding:"0px"}}>
+                        <ButtonIcon onClick={()=> item.handler()}>{item.icon}</ButtonIcon>
                     </MenuItem>
                 ))}
-            </Menu>
+            </LCardDropDown>
             
             <ChangeName id={id} name ={"Change Name"} oldName = {name} display={showChangeName} closeChangeName={closeChangeName}/>
         </LCard>

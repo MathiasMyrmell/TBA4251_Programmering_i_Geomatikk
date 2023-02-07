@@ -82,7 +82,7 @@ function ChangeName(props){
                     onClick={()=> changeName()}
                     style={{position: "fixed",right:"0", bottom: "0", margin: "10px"}}
                 >
-                    <DriveFileRenameOutlineIcon style={{width: "50px", color: "black", fontSize: "40px"}}/>
+                    <DriveFileRenameOutlineIcon style={{width: "50px", fontSize: "40px"}}/>
                 </ButtonIcon>
             </AnalysisC>
             

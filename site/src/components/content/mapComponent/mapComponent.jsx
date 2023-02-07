@@ -5,7 +5,7 @@ import { useData } from "../../../contexts/DataContext";
 import "./mapComponent.css";
 
 import AnalysisMenu from "./analysisMenu/analysisMenu";
-import {HomeButton}from "../../muiElements/styles";
+import {HomeButton, ButtonIcon}from "../../muiElements/styles";
 import LocationOnSharpIcon from '@mui/icons-material/LocationOnSharp';
 
 
@@ -36,11 +36,13 @@ function DisplayPosition({ map }) {
             <p style={{fontSize: "13px",position: "fixed", top:"97vh", right:"100px", zIndex: "2"}}>
                 lat: {position.lat}, lng: {position.lng}{' '}
             </p>
-            <HomeButton style={{position:"fixed", top:"10vh", right:"0", zIndex: "2"}}> 
-                <LocationOnSharpIcon 
-                    style={{color: "black", fontSize: "50px"}}
-                    onClick={onClick}
-                />
+            <HomeButton style={{position:"fixed", top:"10vh", right:"0", zIndex: "2"}}>
+                <ButtonIcon>
+                    <LocationOnSharpIcon 
+                        style={{fontSize: "50px"}}
+                        onClick={onClick}
+                    />
+                </ButtonIcon>
             </HomeButton>
         </>
     )
