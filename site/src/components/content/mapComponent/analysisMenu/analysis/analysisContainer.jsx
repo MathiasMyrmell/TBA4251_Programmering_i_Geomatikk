@@ -6,7 +6,7 @@ import { useTheme } from '@mui/material/styles';
 
 import { v4 as uuid } from "uuid";
 import _ from "lodash";
-import { AnalysisBackground, AnalysisC, DropDownMenu , ButtonIcon} from "../../../../muiElements/styles";
+import { AnalysisBackground, AnalysisC, DropDownMenu , ButtonIcon, Headings} from "../../../../muiElements/styles";
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import CloseIcon from '@mui/icons-material/Close';
 import FeatureSelection from "../featureSelection/featureSelection";
@@ -63,12 +63,14 @@ function AnalysisContainer(props){
     return(
         <AnalysisBackground style={{display: show}}>
             <AnalysisC >
-                <h1>{props.name}</h1>
+                <Headings>
+                    <h1>{props.name}</h1>
+                </Headings>
                 <ButtonIcon
                     onClick={() => closeWindow()}
                     style={{position: "fixed",right:"0", top: "0", margin: "10px"}}
                 >
-                    <CloseIcon style={{color: "black", fontSize: "40px"}}/>
+                    <CloseIcon style={{fontSize: "40px"}}/>
                 </ButtonIcon>
 
                 {/* <FeatureSelection /> */}

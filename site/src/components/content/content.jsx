@@ -3,7 +3,7 @@ import Sidebar from "./sidebar/sidebar";
 import MapComponent from "./mapComponent/mapComponent";
 import "./content.css";
 import LayerCard from "./sidebar/layerCard/layerCard";
-import { Card, FormControl, styled, Box} from "@mui/material";
+import { ContentContainer, SidebarContainer } from "../muiElements/styles";
 import { GeoJSON } from "react-leaflet";
 import vann from "../../files/vann.json";
 import { DataProvider } from "../../contexts/DataContext";
@@ -36,12 +36,12 @@ function Content(){
     }
 
     return (
-        <div id="Content">
+        <ContentContainer>
             <DataProvider>
                 <div id="sidebar" className="appComponents"><Sidebar addLayers={addLayers} handleChange={handleChange}/></div>
                 <div id="mapcomponent" className="appComponents" ><MapComponent layers={layers}/></div>
             </DataProvider>
-        </div>
+        </ContentContainer>
     );
 }
 

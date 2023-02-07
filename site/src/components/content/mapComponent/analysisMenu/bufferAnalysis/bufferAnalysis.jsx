@@ -6,14 +6,14 @@ import { useData } from "../../../../../contexts/DataContext";
 import { InputLabel, Select, MenuItem, FormHelperText} from "@mui/material";
 import { v4 as uuid } from "uuid";
 import * as turf from '@turf/turf';
-import { ButtonIcon, DropDownMenu, InputField} from "../../../../muiElements/styles";
+import { ButtonIcon, DropDownMenu, InputField, DropDownFieldError, DropDownField} from "../../../../muiElements/styles";
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
  
 
 function BufferAnalysis(props){
     const [layer, setLayer] = useState({id:"none", name:"none", colour:"none", data:"none", value:""});
     const [bufferDistance, setBufferDistance] = useState("");
-    const [bufferDistanceErrorMessage, setbufferDistanceErrorMessage] = useState("");
+    const [bufferDistanceErrorMessage, setbufferDistanceErrorMessage] = useState(" ");
     const [layerErrorMessage, setLayerErrorMessage] = useState("");
     const [data, setData] = useData()
 
@@ -123,7 +123,7 @@ function BufferAnalysis(props){
             setbufferDistanceErrorMessage("At least one feature must be selected");
             return false;
         }else{
-            setbufferDistanceErrorMessage("");
+            setbufferDistanceErrorMessage(" ");
             return true;
         }
     }
@@ -132,7 +132,7 @@ function BufferAnalysis(props){
         <>
         <DropDownMenu >
             <InputLabel id="demo-simple-select-label">Layer</InputLabel>
-            <Select
+            <DropDownField
                 labelId="demo-simple-select-label"
                 id="select"
                 value={layer.value}
@@ -150,12 +150,12 @@ function BufferAnalysis(props){
                         {layer.name}
                     </MenuItem>
                 ))}
-            </Select>
-            <FormHelperText style={{color:"red"}}>{layerErrorMessage}</FormHelperText>
+            </DropDownField>
+            <DropDownFieldError >{layerErrorMessage}</DropDownFieldError>
         </DropDownMenu>
         <InputField 
             // id="outlined-basic"
-            label="Buffer Distance"
+            label="Buffer Distance (m)"
             variant="outlined"
             value={bufferDistance}
             helperText = {bufferDistanceErrorMessage}
@@ -166,7 +166,7 @@ function BufferAnalysis(props){
             onClick={()=> bufferAnalysis()}
             style={{position: "fixed",right:"0", bottom: "0", margin: "10px"}}
         >
-            <NoteAddIcon style={{width: "50px", color: "black", fontSize: "40px"}}/>
+            <NoteAddIcon style={{fontSize: "40px"}}/>
         </ButtonIcon>
         </>
     )
