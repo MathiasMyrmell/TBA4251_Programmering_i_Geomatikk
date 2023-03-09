@@ -70,6 +70,8 @@ function BufferAnalysis(props){
     // Merge layers that intersect
     function mergeLayerFeatures(layer){
         //Create one layer
+        console.log("layer")
+        console.log(layer)
         var dissolve = turf.dissolve(layer);
         console.log("dissolve");
         console.log(dissolve);
