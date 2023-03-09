@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useCallback, useMemo} from "react";
 
-import { MapContainer, TileLayer,GeoJSON} from 'react-leaflet';
+import { MapContainer, TileLayer,GeoJSON, Popup} from 'react-leaflet';
 import { useData } from "../../../contexts/DataContext";
 import "./mapComponent.css";
 
@@ -9,8 +9,6 @@ import {HomeButton, ButtonIcon}from "../../muiElements/styles";
 import LocationOnSharpIcon from '@mui/icons-material/LocationOnSharp';
 import LayersIcon from '@mui/icons-material/Layers';
 import ChangeBaseMap from "./changeBaseMap/changeBaseMap";
-
-
 
 function DisplayPosition({ map }) {
     const [position, setPosition] = useState(() => map.getCenter())
@@ -30,10 +28,7 @@ function DisplayPosition({ map }) {
         map.off('move', onMove)
         }
     }, [map, onMove])
-
-
     return (
-
         <>
             <p style={{fontSize: "13px",position: "fixed", top:"97vh", right:"100px", zIndex: "2"}}>
                 lat: {position.lat}, lng: {position.lng}{' '}
@@ -51,10 +46,6 @@ function DisplayPosition({ map }) {
 }
 
 function MapLayerButton(props){
-
-
-
-
     const onClick = useCallback(() => {
         props.setShow((show) => (show === "none" ? "block" : "none"))
     }, [props.map])
@@ -82,14 +73,16 @@ function MapComponent () {
     const [show, setShow] = useState("none");
 
 
-
+    // Adding popup to geojson
+    function onEachFeature(feature, layer){
+        layer.on({click: _whenClick}); 
+    }
     
-    
+    function _whenClick(e){
+        e.target.bindPopup(e.target.feature.properties.OBJTYPE).openPopup();
+    }
 
-
-
-   
-
+    // Mapstyle
     const mapStyle = {
         height: "100vh",
         width: "100vw",
@@ -97,26 +90,22 @@ function MapComponent () {
     }
 
     const displayMap = useMemo(
-        
         () => (
             <MapContainer 
                 center={homePosition} 
                 zoom={13} 
                 scrollWheelZoom={false}
                 ref={setMap}
-
             >
             <TileLayer
                 url={baseMap} style = {{mapStyle}}
-                // url='https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png' style = {{mapStyle}}
             />
-            
             <ul>
                 {data.map((layer, i) => {
                     return(
                         (layer.value === true) ? (
                         <li id={i} key={i} >
-                            <GeoJSON style={{color:layer.colour}} data={layer.data.features} />
+                            <GeoJSON style={{color:layer.colour}} data={layer.data.features} onEachFeature={onEachFeature}/>
                         </li>) : null
                     )
                 })}
@@ -125,11 +114,7 @@ function MapComponent () {
         ),[data, baseMap],
     )
 
-
-
-
     return (
-       
         <>
             {map ? <DisplayPosition map={map} /> : null}    
             {displayMap}
