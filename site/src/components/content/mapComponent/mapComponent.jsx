@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback,  useMemo} from "react";
+import React, {useEffect, useState, useCallback, useMemo} from "react";
 
 import { MapContainer, TileLayer,GeoJSON} from 'react-leaflet';
 import { useData } from "../../../contexts/DataContext";
@@ -7,6 +7,8 @@ import "./mapComponent.css";
 import AnalysisMenu from "./analysisMenu/analysisMenu";
 import {HomeButton, ButtonIcon}from "../../muiElements/styles";
 import LocationOnSharpIcon from '@mui/icons-material/LocationOnSharp';
+import LayersIcon from '@mui/icons-material/Layers';
+import ChangeBaseMap from "./changeBaseMap/changeBaseMap";
 
 
 
@@ -48,11 +50,42 @@ function DisplayPosition({ map }) {
     )
 }
 
+function MapLayerButton(props){
+
+
+
+
+    const onClick = useCallback(() => {
+        props.setShow((show) => (show === "none" ? "block" : "none"))
+    }, [props.map])
+
+
+    return (
+        <HomeButton style={{position:"fixed", top:"20vh", right:"0", zIndex: "2"}}>
+                <ButtonIcon>
+                    <LayersIcon 
+                        style={{fontSize: "50px"}}
+                        onClick={onClick}
+                    />
+                </ButtonIcon>
+            </HomeButton>
+    )
+}
+
+
 
 function MapComponent () {
     const [data, _setData] = useData()
     const [homePosition, setHomePosition] = useState([63.42153656907081, 10.538810010949685])
-    const [map, setMap] = useState(null)
+    const [map, setMap] = useState(null);
+    const [baseMap, setBaseMap] = useState("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
+    const [show, setShow] = useState("none");
+
+
+
+    
+    
+
 
 
    
@@ -74,7 +107,8 @@ function MapComponent () {
 
             >
             <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" style = {{mapStyle}}
+                url={baseMap} style = {{mapStyle}}
+                // url='https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png' style = {{mapStyle}}
             />
             
             <ul>
@@ -88,7 +122,7 @@ function MapComponent () {
                 })}
             </ul>
         </MapContainer>
-        ),[data],
+        ),[data, baseMap],
     )
 
 
@@ -99,7 +133,9 @@ function MapComponent () {
         <>
             {map ? <DisplayPosition map={map} /> : null}    
             {displayMap}
-            <AnalysisMenu id = "analysis"/> 
+            {map ? <MapLayerButton map={map} setShow={setShow} show={show}/> : null}
+            <AnalysisMenu id = "analysis"/>
+            <ChangeBaseMap name = {"Change Basemap"} display = {show} setShow={setShow} setBaseMap = {setBaseMap}/>
         </>
     )
 }

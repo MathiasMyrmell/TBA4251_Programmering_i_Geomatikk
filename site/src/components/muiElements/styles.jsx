@@ -284,6 +284,18 @@ export const DropDownFeatureSelect = styled(Box)({
 });
 
 
+////Change Map Layer
+export const BaseMapContainer = styled(Card)({
+    height: "100px",
+    width: "100px",
+    padding: "10px",
+    margin: "10px",
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    display: "inline-block",
+    zIndex: "10",
+});
+
+
 
 ////General components
 export const ButtonIcon = styled(IconButton)({
