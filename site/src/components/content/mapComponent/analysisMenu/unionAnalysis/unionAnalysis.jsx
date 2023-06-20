@@ -12,7 +12,7 @@ import NoteAddIcon from '@mui/icons-material/NoteAdd';
 
 
 
-function IntersectAnalysis(props){
+function UnionAnalysis(props){
     const [firstLayer, setFirstLayer] = useState({id:"none", name:"none", colour:"none", data:"none", value:""});
     const [secondLayer, setSecondLayer] = useState({id:"none", name:"none", colour:"none", data:"none", value:""});
     const [data, setData] = useData()
@@ -35,7 +35,8 @@ function IntersectAnalysis(props){
 
     }, [firstLayer,secondLayer])
 
-    ///Functions for execute button
+
+    // //Functions for execute button
     // Clear input fields
     function clearInput(){
         setFirstLayer({id:"none", name:"none", colour:"none", data:"none", value:""});
@@ -49,16 +50,17 @@ function IntersectAnalysis(props){
         props.displayAnalysisWindow("close");
     }
 
-    // Perform intersection between two layers
-    function executeIntersectAnalysis(){
+    function executeUnionAnalysis(){
 
         //Check if chosen layers are valid
         let validLayer = _checkValidLayer();
         if(validLayer !== true){
             return;
         }
-        intersectionAnalysis();
+        unionAnalysis();
 
+        //Clear input
+        // clearInput();
         closeWindow();
         
     }
@@ -76,7 +78,7 @@ function IntersectAnalysis(props){
         }
     }
 
-    function intersectionAnalysis(){
+    function unionAnalysis(){
         //Get layers for analysis
         let fL = data.find((layer) => layer.id === firstLayer.value);
         let sL = data.find((layer) => layer.id === secondLayer.value);
@@ -85,18 +87,24 @@ function IntersectAnalysis(props){
         let fLdissolved = turf.dissolve(fL.data);
         let sLdissolved = turf.dissolve(sL.data);
 
-        // Find intersection between layers
-        let layerData = _intersection([fLdissolved, sLdissolved]);
+        // Find union between layers
+        let layerData = _union([fLdissolved, sLdissolved]);
 
-        // Create new layer with intersection data
-        let layerName = "Intersection_"+fL.name + "_" + sL.name;
-        let newLayer = {id:uuid(), name:layerName, colour:"", data:layerData, value:true};
+        // Create new layer with union data
+        let newLayer = {
+            id: uuid(),
+            name: "Union of " + fL.name + " and " + sL.name,
+            colour: "",
+            data: layerData
+        };
 
         // Display new layer on map
         setData(newLayer)
+
+
     }
 
-    function _intersection(layers){
+    function _union(layers){
         let fL = layers[0]
         let sL = layers[1]
         // Extract polygons in layers
@@ -113,31 +121,100 @@ function IntersectAnalysis(props){
             }
         }
 
-        // Find intersection between layers
-        let intersections = []
+        // Find union between layers
+        let union = []
         for(let i = 0; i<layers[0].length; i++){
             for(let j = 0; j<layers[1].length; j++){
-                let intersection = turf.intersect(layers[0][i], layers[1][j])
-                if(intersection != null){
-                    intersections.push(intersection)
+                let unionPolygon = turf.union(layers[0][i], layers[1][j])
+                if(unionPolygon.geometry.type === "Polygon"){
+                    union.push(unionPolygon.geometry)
+                }
+                else{
+                    for(let k = 0; k<unionPolygon.geometry.coordinates.length; k++){
+                        union.push(turf.polygon(unionPolygon.geometry.coordinates[k]))
+                    }
                 }
             }
         }
-
-        // Create FeatureCollection
-        let nFeatures = [];
-        for(let j = 0; j<intersections.length; j++){
-            nFeatures.push({type:"Feature", geometry: intersections[j].geometry});
-        }
-        let featureCollection = {type:"FeatureCollection", features:nFeatures};
-
-        return featureCollection
-
-
-
-
-
+        return turf.featureCollection(union)
     }
+
+    // // Perform intersection between two layers
+    // function executeIntersectAnalysis(){
+
+    //     //Check if chosen layers are valid
+    //     let validLayer = _checkValidLayer();
+    //     if(validLayer !== true){
+    //         return;
+    //     }
+    //     intersectionAnalysis();
+        
+    // }
+
+
+
+    // function intersectionAnalysis(){
+    //     //Get layers for analysis
+    //     let fL = data.find((layer) => layer.id === firstLayer.value);
+    //     let sL = data.find((layer) => layer.id === secondLayer.value);
+
+    //     // Dissolve layer data
+    //     let fLdissolved = turf.dissolve(fL.data);
+    //     let sLdissolved = turf.dissolve(sL.data);
+
+    //     // Find intersection between layers
+    //     let layerData = _intersection([fLdissolved, sLdissolved]);
+
+    //     // Create new layer with intersection data
+    //     let layerName = "Intersection_"+fL.name + "_" + sL.name;
+    //     let newLayer = {id:uuid(), name:layerName, colour:"", data:layerData, value:true};
+
+    //     // Display new layer on map
+    //     setData(newLayer)
+    // }
+
+    // function _intersection(layers){
+    //     let fL = layers[0]
+    //     let sL = layers[1]
+    //     // Extract polygons in layers
+    //     for(let i = 0; i<layers.length; i++){
+    //         if(layers[i].features.length == 1){
+    //             layers[i] = [layers[i].features[0].geometry]
+    //         }
+    //         else{
+    //             let polygons = []
+    //             for(let j = 0; j<layers[i].features.length; j++){
+    //                 polygons.push(layers[i].features[j].geometry)
+    //             }
+    //             layers[i] = polygons
+    //         }
+    //     }
+
+    //     // Find intersection between layers
+    //     let intersections = []
+    //     for(let i = 0; i<layers[0].length; i++){
+    //         for(let j = 0; j<layers[1].length; j++){
+    //             let intersection = turf.intersect(layers[0][i], layers[1][j])
+    //             if(intersection != null){
+    //                 intersections.push(intersection)
+    //             }
+    //         }
+    //     }
+
+    //     // Create FeatureCollection
+    //     let nFeatures = [];
+    //     for(let j = 0; j<intersections.length; j++){
+    //         nFeatures.push({type:"Feature", geometry: intersections[j].geometry});
+    //     }
+    //     let featureCollection = {type:"FeatureCollection", features:nFeatures};
+
+    //     return featureCollection
+
+
+
+
+
+    // }
 
     return (
         <>
@@ -187,7 +264,7 @@ function IntersectAnalysis(props){
                 <DropDownFieldError >{layerErrorMessage}</DropDownFieldError>
             </DropDownMenu>
             <ButtonIcon
-                onClick={()=> executeIntersectAnalysis()}
+                onClick={()=> executeUnionAnalysis()}
                 style={{position: "fixed",right:"0", bottom: "0", margin: "10px"}}
             >
                 <NoteAddIcon style={{fontSize: "40px"}}/>
@@ -196,4 +273,4 @@ function IntersectAnalysis(props){
     );
 }
 
-export default IntersectAnalysis;
+export default UnionAnalysis;

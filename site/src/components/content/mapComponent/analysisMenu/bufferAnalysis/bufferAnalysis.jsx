@@ -63,7 +63,7 @@ function BufferAnalysis(props){
         setData(newLayer);
 
         //Clear input
-        clearInput();
+        // clearInput();
         closeWindow();
     }
 
