@@ -3,7 +3,7 @@
   width: 100vw;
   display: grid;
   /* grid-template-columns: 20vw 80vw; */
-  grid-template-rows: 10vh 90vh;
+  /* grid-template-rows: 10vh 90vh; */
 }
 
 #navbar{
