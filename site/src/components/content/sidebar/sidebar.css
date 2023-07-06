@@ -4,6 +4,11 @@ ul{
     margin: 0;
     padding: 0;
     margin-top: 10px;
+    width: 100%;
+}
+li{
+    width: 100%;
+
 }
  
 #layerCardContainer{

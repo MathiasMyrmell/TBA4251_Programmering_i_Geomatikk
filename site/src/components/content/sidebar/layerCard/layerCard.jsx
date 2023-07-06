@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import "@mui/material";
 import { MenuItem, Menu } from "@mui/material";
-import { LCard, ButtonIcon, ShowSwitch, CardName, LCardDropDown} from "../../../muiElements/styles";
+import { LCard, ButtonIcon, ShowSwitch, CardName, LCardDropDown, LayerCardButtons} from "../../../muiElements/styles";
 import { v4 as uuid } from "uuid";
 import { useData } from "../../../../contexts/DataContext";
 import { useEffect } from "react";
@@ -38,7 +38,6 @@ function LayerCard(props) {
     function setName(){
         let layer = data.find((layer) => layer.id === id);
         setCardName(layer.name);
-
     }
  
     function handleCheckbox(id){
@@ -67,21 +66,20 @@ function LayerCard(props) {
 
 
     const openColourChanger = e => {
-    setColourChanger(e.currentTarget);
+        setColourChanger(e.currentTarget);
     };
     const closeColourChanger = () => {
-    setColourChanger(null);
+        setColourChanger(null);
     };
 
     const openSettingsMenu = e => {
-    setSettingsMenu(e.currentTarget);
+        setSettingsMenu(e.currentTarget);
     };
     const closeSettingsMenu = () => {
-    setSettingsMenu(null);
+        setSettingsMenu(null);
     };
 
     function deleteLayer(){
-        console.log("delete layer");
         removeItemFromData(id);
     }
 
@@ -121,48 +119,52 @@ function LayerCard(props) {
             > 
                 {name}
             </CardName>
-            <ShowSwitch margin="auto" checked = {checkboxValue} onClick={()=>handleCheckbox(id)} />
-            <ButtonIcon
-                onClick={openColourChanger}
-                // disableRipple
-            >
-                <CircleIcon style={{color: colour}}/>
-            </ButtonIcon>
-            <LCardDropDown
-                id="simple-menu"
-                anchorEl={colourChanger}
-                keepMounted
-                open={Boolean(colourChanger)}
-                onClose={closeColourChanger}
-            >
-                {colours.map(colour => (
-                <MenuItem onClick={()=>handleColour(colour)} key={uuid()}>
-                    {/* {item.icon} */}
-                    {<CircleIcon style={{color:colour}}/>}
-                </MenuItem>
-                ))}
-            </LCardDropDown>
-            
-            <ButtonIcon
-                onClick={openSettingsMenu}
-            >
-                <SettingsIcon/>
-            </ButtonIcon>
-            <LCardDropDown 
-                id="settings-menu"
-                anchorEl = {settingsMenu}
-                keepMounted
-                open={Boolean(settingsMenu)}
-                onClose={closeSettingsMenu}
-            >
-                {settingsChoices.map(item => (
-                    <MenuItem key={uuid()} style={{width: "50px", padding:"0px"}}>
-                        <ButtonIcon onClick={()=> item.handler()}>{item.icon}</ButtonIcon>
+            <LayerCardButtons>
+                <ShowSwitch margin="auto" checked = {checkboxValue} onClick={()=>handleCheckbox(id)} />
+                
+                <ButtonIcon
+                    onClick={openColourChanger}
+                    // disableRipple
+                >
+                    <CircleIcon style={{color: colour}}/>
+                </ButtonIcon>
+                 
+                <LCardDropDown
+                    id="simple-menu"
+                    anchorEl={colourChanger}
+                    keepMounted
+                    open={Boolean(colourChanger)}
+                    onClose={closeColourChanger}
+                >
+                    {colours.map(colour => (
+                    <MenuItem onClick={()=>handleColour(colour)} key={uuid()}>
+                        {<CircleIcon style={{color:colour}}/>}
                     </MenuItem>
-                ))}
-            </LCardDropDown>
-            
-            <ChangeName id={id} name ={"Change Name"} oldName = {name} display={showChangeName} closeChangeName={closeChangeName}/>
+                    ))}
+                </LCardDropDown>
+                
+                <ButtonIcon
+                    onClick={openSettingsMenu}
+                >
+                    <SettingsIcon/>
+                </ButtonIcon>
+                
+                <LCardDropDown 
+                    id="settings-menu"
+                    anchorEl = {settingsMenu}
+                    keepMounted
+                    open={Boolean(settingsMenu)}
+                    onClose={closeSettingsMenu}
+                >
+                    {settingsChoices.map(item => (
+                        <MenuItem key={uuid()} style={{width: "50px", padding:"0px"}}>
+                            <ButtonIcon onClick={()=> item.handler()}>{item.icon}</ButtonIcon>
+                        </MenuItem>
+                    ))}
+                </LCardDropDown>
+                
+                <ChangeName id={id} name ={"Change Name"} oldName = {name} display={showChangeName} closeChangeName={closeChangeName}/>
+            </LayerCardButtons>
         </LCard>
     )
 }

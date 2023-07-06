@@ -1,14 +1,19 @@
 import React, {useEffect, useState, useCallback, useMemo} from "react";
 
-import { MapContainer, TileLayer,GeoJSON, Popup} from 'react-leaflet';
+import { MapContainer, TileLayer, GeoJSON, ZoomControl} from 'react-leaflet';
 import { useData } from "../../../contexts/DataContext";
 import "./mapComponent.css";
 
-import AnalysisMenu from "./analysisMenu/analysisMenu";
-import {HomeButton, ButtonIcon}from "../../muiElements/styles";
+import {MapContainerA, HomeButton, ButtonIcon, LatLongBox}from "../../muiElements/styles";
 import LocationOnSharpIcon from '@mui/icons-material/LocationOnSharp';
 import LayersIcon from '@mui/icons-material/Layers';
 import ChangeBaseMap from "./changeBaseMap/changeBaseMap";
+import AnalysisDropDown from "./analysisMenu/analysisDropDown";
+
+
+
+
+
 
 function DisplayPosition({ map }) {
     const [position, setPosition] = useState(() => map.getCenter())
@@ -30,10 +35,11 @@ function DisplayPosition({ map }) {
     }, [map, onMove])
     return (
         <>
-            <p style={{fontSize: "13px",position: "fixed", top:"97vh", right:"100px", zIndex: "2"}}>
-                lat: {position.lat}, lng: {position.lng}{' '}
-            </p>
-            <HomeButton style={{position:"fixed", top:"10vh", right:"0", zIndex: "2"}}>
+            <LatLongBox>
+                <div>lat: {position.lat},</div>
+                <div>lng: {position.lng}{' '}</div>
+            </LatLongBox>
+            <HomeButton>
                 <ButtonIcon>
                     <LocationOnSharpIcon 
                         style={{fontSize: "50px"}}
@@ -52,7 +58,7 @@ function MapLayerButton(props){
 
 
     return (
-        <HomeButton style={{position:"fixed", top:"20vh", right:"0", zIndex: "2"}}>
+        <HomeButton style={{top:"80px"}}>
                 <ButtonIcon>
                     <LayersIcon 
                         style={{fontSize: "50px"}}
@@ -100,6 +106,7 @@ function MapComponent () {
             <TileLayer
                 url={baseMap} style = {{mapStyle}}
             />
+            <ZoomControl position="bottomright" />
             <ul>
                 {data.map((layer, i) => {
                     return(
@@ -114,14 +121,22 @@ function MapComponent () {
         ),[data, baseMap],
     )
 
+
+
+
+
+
+
     return (
-        <>
-            {map ? <DisplayPosition map={map} /> : null}    
+        <MapContainerA id="MapContainer">
+            {map ? <DisplayPosition map={map} style={{top:"0"}} /> : null}    
             {displayMap}
-            {map ? <MapLayerButton map={map} setShow={setShow} show={show}/> : null}
-            <AnalysisMenu id = "analysis"/>
+            {map ? <MapLayerButton map={map} setShow={setShow} show={show} /> : null}
+            {/* <AnalysisMenu id = "analysis"/> */}
             <ChangeBaseMap name = {"Change Basemap"} display = {show} setShow={setShow} setBaseMap = {setBaseMap}/>
-        </>
+            <AnalysisDropDown id = "AnalysisDropDown"/>
+        
+        </MapContainerA>
     )
 }
 

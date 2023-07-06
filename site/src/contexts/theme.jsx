@@ -1,16 +1,5 @@
-import React, {createContext} from "react";
+import {createContext} from "react";
 export const themes = {
-    // standard: {
-    //     foreground: '#000000',
-    //     background: '#eeeeee',
-    //     color: "blue",
-    // },
-    // dark: {
-    //     foreground: '#ffffff',
-    //     background: '#222222',
-    //     color: "green",
-
-    // },
     fontSizes: {
         small: "12px",
         medium: "14px",

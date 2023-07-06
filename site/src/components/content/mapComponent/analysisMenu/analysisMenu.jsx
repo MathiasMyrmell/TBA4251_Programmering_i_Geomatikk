@@ -1,6 +1,5 @@
 import React from "react";
 import { useState, useEffect } from 'react';
-import { v4 as uuid } from "uuid";
 
 import _ from "lodash";
 
@@ -49,7 +48,7 @@ function AnalysisMenu() {
 
   return (
     <>
-      <AnalysisMenuContainer >
+      <AnalysisMenuContainer id = "AnalysisMenu">
         <AnalysisButton onClick={() => displayAnalysisWindow("featureSelection")}>Feature Selection</AnalysisButton>
         <AnalysisButton onClick={() => displayAnalysisWindow("bufferAnalysis")}>Buffer Analysis</AnalysisButton>
         <AnalysisButton onClick={() => displayAnalysisWindow("intersectAnalysis")}>Intersection Analysis</AnalysisButton>
