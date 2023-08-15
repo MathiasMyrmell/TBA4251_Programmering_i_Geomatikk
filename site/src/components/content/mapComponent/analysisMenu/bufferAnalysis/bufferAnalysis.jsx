@@ -2,8 +2,8 @@ import React from "react";
 import { useState } from 'react';
 import { useData } from "../../../../../contexts/DataContext";
 
-
-import { InputLabel, Select, MenuItem, FormHelperText} from "@mui/material";
+ 
+import { InputLabel, MenuItem} from "@mui/material";
 import { v4 as uuid } from "uuid";
 import * as turf from '@turf/turf';
 import { ButtonIcon, DropDownMenu, InputField, DropDownFieldError, DropDownField} from "../../../../muiElements/styles";
@@ -36,7 +36,7 @@ function BufferAnalysis(props){
     function choseLayer(target){
         setLayer(target);
     }
-    //Buffer Analysis
+    //Buffer Analysis new
     function bufferAnalysis(){
         let validBuffer= checkValidBufferDistance();
         let validLayer = checkValidLayer();
@@ -44,11 +44,111 @@ function BufferAnalysis(props){
             return;
         }
 
+
         //Get data from layer with given id
         let baseLayer = data.find((l) => l.id === layer.value);
+        console.log("---------"+baseLayer.name+"-----------")
+        console.log("baseLayer", baseLayer)
 
-        //Merge layer features if there are more than one
+        let collection = turf.featureCollection(baseLayer.data.features);
+        let buffer = turf.buffer(collection, bufferDistance, {units: 'meters'});
+
+        console.log("buffer", buffer)
+
+        // //Dissolve buffers
+        // split multi polygons into single polygons
+        // let splitted = {"type": buffer.type, "features": []}
+        let splitted = [];
+        for(var i = 0; i<buffer.features.length; i++){
+            let feature = buffer.features[i]
+            if(feature.geometry.type === "MultiPolygon"){
+                for(var j = 0; j<feature.geometry.coordinates.length; j++){
+                    // splitted.features.push({"type":feature.type, "properties":feature.properties, "geometry":{"type":"Polygon", "coordinates":feature.geometry.coordinates[j]}})
+                    splitted.push({"type":feature.type, "properties":feature.properties, "geometry":{"type":"Polygon", "coordinates":feature.geometry.coordinates[j]}})
+                }
+            }
+            else{
+                // splitted.features.push(feature)
+                splitted.push(feature)
+            }
+        }
+
+
+        let batchSize = null;
+        let batchSizes = [32, 16, 8, 4, 2, 1];
+        for(var i = 0; i<batchSizes.length; i++){
+            if(splitted.length%batchSizes[i] !=0){
+                batchSize = batchSizes[i];
+                break;
+            }
+        }
+
+        let batches = [];
+        let numInBatch = Math.ceil(splitted.length/batchSize);
+        for(var i=0; i<splitted.length; i+=numInBatch){
+            let batch = splitted.slice(i, i+numInBatch);
+
+            let featureCollection = turf.featureCollection(batch);
+            batches.push(featureCollection);
+        }
+        console.log("batches", batches)
+        console.log("num batches", batches.length)
+
+        let dissolved = dissolveBatches(batches);
+        console.log("dissolved", dissolved)
+
+
+
+        // Create new layer
+        let newLayer = {id:uuid(), name:baseLayer.name+"-buffer-"+bufferDistance+"m", colour:"", data:dissolved, value:true};
+        console.log("newLayer", newLayer)
+        //Add new layer to data
+        setData(newLayer);
+        console.log("new layer added to map")
+        //Clear input
+        clearInput();
+        closeWindow();
+
+    }
+
+
+    function dissolveBatches(batches){
+        let j = 1;
+        while (batches.length > 1){
+            let newBatches = [];
+            console.log("j", j)
+            for(var i = 0; i<batches.length; i+=2){
+                let batch1 = batches[i];
+                let batch2 = batches[i+1];
+                let fc1 = batch1.features;
+                let fc2 = batch2.features;
+
+                let dissolved = turf.dissolve(turf.featureCollection(fc1.concat(fc2)));
+                newBatches.push(dissolved);
+            }
+            j++;
+            batches = newBatches;
+        }   
+        return batches[0];
+    }
+
+
+    //Buffer Analysis old
+    function bufferAnalysis2(){
+        let validBuffer= checkValidBufferDistance();
+        let validLayer = checkValidLayer();
+        if(validBuffer !== true || validLayer !== true){
+            return;
+        }
+
+
+        //Get data from layer with given id
+        let baseLayer = data.find((l) => l.id === layer.value);
+        console.log("baseLayer", baseLayer)
+
+        // //Merge layer features if there are more than one
         let dissolve = mergeLayerFeatures(baseLayer.data);
+        console.log("dissolve", dissolve)
 
         //Get buffer area with given distance
         let buffer = turf.buffer(dissolve, bufferDistance, {units: 'meters'});
@@ -72,7 +172,23 @@ function BufferAnalysis(props){
         //Create one layer
         console.log("layer")
         console.log(layer)
-        var dissolve = turf.dissolve(layer);
+
+        // split multi polygons into single polygons
+        let splitted = {"type": layer.type, "features": []}
+        for(var i = 0; i<layer.features.length; i++){
+            let feature = layer.features[i]
+            if(feature.geometry.type === "MultiPolygon"){
+                for(var j = 0; j<feature.geometry.coordinates.length; j++){
+                    splitted.features.push({"type":feature.type, "properties":feature.properties, "geometry":{"type":"Polygon", "coordinates":feature.geometry.coordinates[j]}})
+                }
+            }
+            else{
+                splitted.features.push(feature)
+            }
+        }
+        console.log("splitted", splitted)
+
+        var dissolve = turf.dissolve(splitted);
         console.log("dissolve");
         console.log(dissolve);
         let features = [];

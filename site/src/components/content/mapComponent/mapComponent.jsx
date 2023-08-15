@@ -11,13 +11,10 @@ import ChangeBaseMap from "./changeBaseMap/changeBaseMap";
 import AnalysisDropDown from "./analysisMenu/analysisDropDown";
 
 
-
-
-
-
+// Button to set map view to standard position
 function DisplayPosition({ map }) {
     const [position, setPosition] = useState(() => map.getCenter())
-    const center = [63.42153656907081, 10.538810010949685]
+    const center = [63.42295075466846, 10.373325347900392]
     const zoom = 13
     const onClick = useCallback(() => {
         map.setView(center, zoom)
@@ -51,6 +48,7 @@ function DisplayPosition({ map }) {
     )
 }
 
+// Button for toggling map layers
 function MapLayerButton(props){
     const onClick = useCallback(() => {
         props.setShow((show) => (show === "none" ? "block" : "none"))
@@ -69,11 +67,10 @@ function MapLayerButton(props){
     )
 }
 
-
-
+// Map component
 function MapComponent () {
     const [data, _setData] = useData()
-    const [homePosition, setHomePosition] = useState([63.42153656907081, 10.538810010949685])
+    const [homePosition, setHomePosition] = useState([63.42295075466846, 10.373325347900392])
     const [map, setMap] = useState(null);
     const [baseMap, setBaseMap] = useState("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
     const [show, setShow] = useState("none");
@@ -85,7 +82,17 @@ function MapComponent () {
     }
     
     function _whenClick(e){
-        e.target.bindPopup(e.target.feature.properties.OBJTYPE).openPopup();
+        // console.log(e.target.feature.Type)
+        // console.log(e.target.feature.Shape_Area)
+        let type = e.target.feature.properties.Type
+        let area = Math.round(e.target.feature.properties.Shape_Area,2)
+        let popupContent = "<b>"+type+"</b>"+"<br>"+area + " m2" 
+        e.target.bindPopup(popupContent).openPopup();
+
+        // console.log(e.target.feature.properties.Type)
+        
+        // console.log(e.target.feature.properties.Shape_Area)
+        // e.target.bindPopup(e.target.feature.properties.OBJTYPE).openPopup();
     }
 
     // Mapstyle
@@ -94,7 +101,6 @@ function MapComponent () {
         width: "100vw",
         zIndex: "0",
     }
-
     const displayMap = useMemo(
         () => (
             <MapContainer 
@@ -120,12 +126,6 @@ function MapComponent () {
         </MapContainer>
         ),[data, baseMap],
     )
-
-
-
-
-
-
 
     return (
         <MapContainerA id="MapContainer">

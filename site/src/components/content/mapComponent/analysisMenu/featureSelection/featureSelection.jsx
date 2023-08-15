@@ -53,9 +53,12 @@ function FeatureSelection(props){
     function filterFeatures(data){
         setFeatures([]);
         let newFeatures = [];
-        newFeatures.push(data[0].properties.OBJTYPE)
+        console.log(data[0].properties.Type)
+        // newFeatures.push(data[0].properties.OBJTYPE)
+        newFeatures.push(data[0].properties.Type)
         compareLoop: for( let i = 0; i < data.length; i++){
-            let newFeature = data[i].properties.OBJTYPE;
+            // let newFeature = data[i].properties.OBJTYPE;
+            let newFeature = data[i].properties.Type;
             for(let j = 0; j <newFeatures.length; j++){
                 if(newFeatures[j] === newFeature){
                 continue compareLoop
@@ -88,19 +91,19 @@ function FeatureSelection(props){
         }
     
         console.log("Create new layer");
-        console.log(layer)
+        // console.log(layer)
         let baseLayer = data.find((l) => l.id === layer.value);
-        console.log(baseLayer);
+        // console.log(baseLayer);
         let newFeatures = [];
-        console.log(chosenFeatures);
+        // console.log(chosenFeatures);
         baseLayer.data.features.map(feature => {
-            if(_.includes(chosenFeatures,feature.properties.OBJTYPE)){
+            if(_.includes(chosenFeatures,feature.properties.Type)){
                 newFeatures.push(feature);
             }
         })
         let newData = {type:"FeatureCollection", features:newFeatures};
         let newLayer = {id:uuid(), name:baseLayer.name+"-feature-selecion", colour:"", data:newData, value:true};
-        console.log(newLayer);
+        // console.log(newLayer);
         setData(newLayer);
         closeWindow();
     }
