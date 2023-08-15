@@ -11,7 +11,7 @@ import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import AnalysisMenu from "./mapComponent/analysisMenu/analysisMenu";
 import ChangeBaseMap from "./mapComponent/changeBaseMap/changeBaseMap";
 
-
+import { v4 as uuid } from "uuid";
 
 function Content(){
     var [layers, setLayers] = useState([]);
@@ -104,6 +104,7 @@ function Content(){
 
     const [baseMap, setBaseMap] = useState("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
     const [show, setShow] = useState("none");
+
 
     return (
         <DataProvider>

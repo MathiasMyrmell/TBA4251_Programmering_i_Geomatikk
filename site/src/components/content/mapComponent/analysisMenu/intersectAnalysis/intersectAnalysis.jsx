@@ -4,13 +4,17 @@ import { useData } from "../../../../../contexts/DataContext";
 
 import * as turf from '@turf/turf';
 
-import { Box, Chip, InputLabel, Select, MenuItem, OutlinedInput} from "@mui/material";
+import { InputLabel, MenuItem} from "@mui/material";
 import { v4 as uuid } from "uuid";
-import _ from "lodash";
-import { DropDownMenu , ButtonIcon, DropDownFieldError, DropDownField, DropDownItem, DDChip, DropDownFeatureSelect} from "../../../../muiElements/styles";
+// import _ from "lodash";
+import { DropDownMenu , ButtonIcon, DropDownFieldError, DropDownField} from "../../../../muiElements/styles";
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
+import { divide, max, min, set } from 'lodash';
 
+import TreeStructure from "./treeStructure";
+import IntersectionAnalysis from './intersectionAnalysis';
 
+ 
 
 function IntersectAnalysis(props){
     const [firstLayer, setFirstLayer] = useState({id:"none", name:"none", colour:"none", data:"none", value:""});
@@ -57,12 +61,33 @@ function IntersectAnalysis(props){
         if(validLayer !== true){
             return;
         }
-        intersectionAnalysis();
+
+        // Execute analysys
+        // Get layers
+        let fL = data.find((layer) => layer.id === firstLayer.value);
+        let sL = data.find((layer) => layer.id === secondLayer.value);
+
+
+        // Dissolve layers
+        let fLD = _dissolveLayer(fL.data)
+        let sLD = _dissolveLayer(sL.data)
+        let layers = [fLD, sLD]
+
+        //Perform analysis
+        const analysis = new IntersectionAnalysis(layers)
+        analysis.performIntersection()
+
+        //Create new layer
+        let newlayer = {id:uuid(), name:"Intersection_"+fL.name+"_"+sL.name, colour:"", data:analysis.result, value:true}
+        console.log("newLayer",newlayer)
+
+        //Add new layer to data
+        setData(newlayer)
 
         closeWindow();
-        
     }
 
+    // Check if input layers are valid
     function _checkValidLayer(){
         if(firstLayer.id === "none" || secondLayer.id === "none"){
             setLayerErrorMessage("Both layers must be selected");
@@ -76,68 +101,57 @@ function IntersectAnalysis(props){
         }
     }
 
-    function intersectionAnalysis(){
-        //Get layers for analysis
-        let fL = data.find((layer) => layer.id === firstLayer.value);
-        let sL = data.find((layer) => layer.id === secondLayer.value);
-
-        // Dissolve layer data
-        let fLdissolved = turf.dissolve(fL.data);
-        let sLdissolved = turf.dissolve(sL.data);
-
-        // Find intersection between layers
-        let layerData = _intersection([fLdissolved, sLdissolved]);
-
-        // Create new layer with intersection data
-        let layerName = "Intersection_"+fL.name + "_" + sL.name;
-        let newLayer = {id:uuid(), name:layerName, colour:"", data:layerData, value:true};
-
-        // Display new layer on map
-        setData(newLayer)
+    // Dissolve layer
+    function _dissolveLayer(layer){
+        let featureCollection = _splitMultiPolygon(layer)
+    
+        let dissolved = _dissolve(featureCollection)
+        return dissolved
     }
 
-    function _intersection(layers){
-        let fL = layers[0]
-        let sL = layers[1]
-        // Extract polygons in layers
-        for(let i = 0; i<layers.length; i++){
-            if(layers[i].features.length == 1){
-                layers[i] = [layers[i].features[0].geometry]
-            }
-            else{
-                let polygons = []
-                for(let j = 0; j<layers[i].features.length; j++){
-                    polygons.push(layers[i].features[j].geometry)
+
+    function _splitMultiPolygon(layer){
+        let featureCollection = turf.featureCollection()
+        let newFeatures = []
+        for(let i = 0; i<layer.features.length; i++){
+            let feature = layer.features[i]
+            if(feature.geometry.type == "MultiPolygon"){
+                for(let j = 0; j<feature.geometry.coordinates.length; j++){
+                    let polygon = turf.polygon(feature.geometry.coordinates[j])
+                    newFeatures.push(polygon)
                 }
-                layers[i] = polygons
+            }else{
+                newFeatures.push(feature)
             }
         }
-
-        // Find intersection between layers
-        let intersections = []
-        for(let i = 0; i<layers[0].length; i++){
-            for(let j = 0; j<layers[1].length; j++){
-                let intersection = turf.intersect(layers[0][i], layers[1][j])
-                if(intersection != null){
-                    intersections.push(intersection)
-                }
-            }
-        }
-
-        // Create FeatureCollection
-        let nFeatures = [];
-        for(let j = 0; j<intersections.length; j++){
-            nFeatures.push({type:"Feature", geometry: intersections[j].geometry});
-        }
-        let featureCollection = {type:"FeatureCollection", features:nFeatures};
-
+        featureCollection.features = newFeatures
         return featureCollection
-
-
-
-
-
     }
+
+    function _dissolve(featureCollection){
+        let dissolved
+        try{
+            dissolved = turf.dissolve(featureCollection)
+        }
+        catch(err){
+            dissolved = null
+        }
+        if(dissolved !== null){
+            return dissolved
+        }
+        //Split featur collection into two lists
+        let split = Math.floor(featureCollection.features.length/2)
+        let firstPart = featureCollection.features.slice(0,split)
+        let secondPart = featureCollection.features.slice(split, featureCollection.features.length)
+        let fC1 = turf.featureCollection(firstPart)
+        let fC2 = turf.featureCollection(secondPart)
+        let dissolved1 = _dissolve(fC1)
+        let dissolved2 = _dissolve(fC2)
+        let dissolvedFeatures = dissolved1.features.concat(dissolved2.features)
+        dissolved = turf.featureCollection(dissolvedFeatures)
+        return dissolved
+    }
+
 
     return (
         <>
