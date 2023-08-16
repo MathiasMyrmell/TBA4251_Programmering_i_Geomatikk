@@ -18,7 +18,6 @@ import merge1 from "../../../filesOld/merge1.json";
 //New Files
 import arealbruk from "../../../files/arealbruk.json";
 import vann from "../../../files/vann.json";
-import veg from "../../../files/veg.json";
 import bygning from "../../../files/bygning.json";
 
 
@@ -102,7 +101,6 @@ function Sidebar(props) {
                     <FileContainer id= "FileContainer" display={showFileContainer} >
                         <FileCard fileName = {"Arealbruk"} file ={arealbruk}/>
                         <FileCard fileName = {"Vann"} file ={vann}/>
-                        <FileCard fileName = {"Veg"} file ={veg}/>
                         <FileCard fileName = {"Bygning"} file ={bygning}/>
                         {/* Gamle filer */}
                         <FileCard fileName = {"VannG"} file ={vannG}/>
