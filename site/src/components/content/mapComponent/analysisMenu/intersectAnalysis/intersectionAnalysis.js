@@ -10,7 +10,7 @@ class IntersectionAnalysis {
 
     performIntersection(){
         //Create tree structure
-        const tree = new TreeStructure("test", this.minMax)
+        const tree = new TreeStructure("intersection", this.minMax)
         console.log("empty tree", tree)
         
         //Fill tree structure with layers

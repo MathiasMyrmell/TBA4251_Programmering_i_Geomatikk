@@ -14,6 +14,7 @@ import FeatureSelection from "./featureSelection/featureSelection";
 import BufferAnalysis from "./bufferAnalysis/bufferAnalysis";
 import IntersectAnalysis from "./intersectAnalysis/intersectAnalysis";
 import UnionAnalysis from "./unionAnalysis/unionAnalysis";
+import DifferenceAnalysis from "./differenceAnalysis/differenceAnalysis.jsx";
 
 
 import { useData } from "../../../../contexts/DataContext";
@@ -42,18 +43,18 @@ function AnalysisDropDown(){
         if(show == "featureSelection"){
           setAnalysis({name: "Feature Analysis", analysis: <FeatureSelection displayAnalysisWindow = {displayAnalysisWindow}/>});
           setShow("block");
-        }
-    
-        else if(show == "bufferAnalysis"){
+        }else if(show == "bufferAnalysis"){
           setAnalysis({name: "Buffer Analysis", analysis: <BufferAnalysis  displayAnalysisWindow = {displayAnalysisWindow}/>});
           setShow("block");
-        }
-        else if(show == "intersectAnalysis"){
+        }else if(show == "intersectAnalysis"){
           setAnalysis({name: "Intersect Analysis", analysis: <IntersectAnalysis  displayAnalysisWindow = {displayAnalysisWindow}/>});
           setShow("block");
         }else if(show == "unionAnalysis"){
           setAnalysis({name: "Union Analysis", analysis: <UnionAnalysis  displayAnalysisWindow = {displayAnalysisWindow}/>});
           setShow("block");
+        }else if(show == "differenceAnalysis"){
+            setAnalysis({name: "Difference Analysis", analysis: <DifferenceAnalysis  displayAnalysisWindow = {displayAnalysisWindow}/>});
+            setShow("block");
         }
         else if(show=="close"){
      
@@ -103,6 +104,7 @@ function AnalysisDropDown(){
                         <MenuItem onClick={() => displayAnalysisWindow("bufferAnalysis")}>Buffer Analysis</MenuItem>
                         <MenuItem onClick={() => displayAnalysisWindow("intersectAnalysis")}>Intersection Analysis</MenuItem>
                         <MenuItem onClick={() => displayAnalysisWindow("unionAnalysis")}>Union Analysis</MenuItem>
+                        <MenuItem onClick={() => displayAnalysisWindow("differenceAnalysis")}>Difference Analysis</MenuItem>
                     </MenuList>
                     </ClickAwayListener>
                 </Paper>
