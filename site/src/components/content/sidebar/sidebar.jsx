@@ -103,8 +103,8 @@ function Sidebar(props) {
                         <FileCard fileName = {"Vann"} file ={vann}/>
                         <FileCard fileName = {"Bygning"} file ={bygning}/>
                         {/* Gamle filer */}
-                        <FileCard fileName = {"VannG"} file ={vannG}/>
                         <FileCard fileName = {"ArealbrukG"} file ={arealbrukG}/>
+                        <FileCard fileName = {"VannG"} file ={vannG}/>
                         <FileCard fileName = {"Merge1"} file ={merge1}/>
                         <FileCard fileName = {"Vann1"} file ={vann1}/>
                         <FileCard fileName = {"Arealbruk1"} file ={arealbruk1}/>

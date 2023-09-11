@@ -10,6 +10,7 @@ import FeatureSelection from "./featureSelection/featureSelection";
 import BufferAnalysis from "./bufferAnalysis/bufferAnalysis";
 import IntersectAnalysis from "./intersectAnalysis/intersectAnalysis";
 import UnionAnalysis from "./unionAnalysis/unionAnalysis";
+import DifferenceAnalysis from "./differenceAnalysis/differenceAnalysis.jsx";
 
 import { AnalysisButton, AnalysisMenuContainer } from "../../../muiElements/styles";
 
@@ -37,9 +38,11 @@ function AnalysisMenu() {
     }else if(show == "unionAnalysis"){
       setAnalysis({name: "Union Analysis", analysis: <UnionAnalysis  displayAnalysisWindow = {displayAnalysisWindow}/>});
       setShow("block");
+    }else if(show == "differenceAnalysis"){
+      setAnalysis({name: "Difference Analysis", analysis: <DifferenceAnalysis  displayAnalysisWindow = {displayAnalysisWindow}/>});
+      setShow("block");
     }
     else if(show=="close"){
- 
       setShow("none");
     }
   }
@@ -53,6 +56,7 @@ function AnalysisMenu() {
         <AnalysisButton onClick={() => displayAnalysisWindow("bufferAnalysis")}>Buffer Analysis</AnalysisButton>
         <AnalysisButton onClick={() => displayAnalysisWindow("intersectAnalysis")}>Intersection Analysis</AnalysisButton>
         <AnalysisButton onClick={() => displayAnalysisWindow("unionAnalysis")}>Union Analysis</AnalysisButton>
+        <AnalysisButton onClick={() => displayAnalysisWindow("differenceAnalysis")}>Difference Analysis</AnalysisButton>
       </AnalysisMenuContainer>
 
       <AnalysisContainer display = {show} name = {analysis.name} analysis ={analysis.analysis} displayAnalysisWindow = {displayAnalysisWindow}/>
