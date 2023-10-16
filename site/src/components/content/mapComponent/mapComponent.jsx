@@ -1,79 +1,31 @@
 import React, {useEffect, useState, useCallback, useMemo} from "react";
+//Components
+import ChangeBaseMap from "./changeBaseMap/changeBaseMap";
+import MapLayerButton from "./mapLayerButton/mapLayerButton";
+import DisplayPosition from "./displayPosition/displayPosition";
 
-import { MapContainer, TileLayer, GeoJSON, ZoomControl} from 'react-leaflet';
+
+//Contexts
 import { useData } from "../../../contexts/DataContext";
-import "./mapComponent.css";
+import { useMap } from "../../../contexts/MapContext";
 
+
+//Styles
 import {MapContainerA, HomeButton, ButtonIcon, LatLongBox}from "../../muiElements/styles";
 import LocationOnSharpIcon from '@mui/icons-material/LocationOnSharp';
 import LayersIcon from '@mui/icons-material/Layers';
-import ChangeBaseMap from "./changeBaseMap/changeBaseMap";
-import AnalysisDropDown from "./analysisMenu/analysisDropDown";
+import "./mapComponent.css";
 
 
-// Button to set map view to standard position
-function DisplayPosition({ map }) {
-    const [position, setPosition] = useState(() => map.getCenter())
-    const center = [63.42295075466846, 10.373325347900392]
-    const zoom = 13
-    const onClick = useCallback(() => {
-        map.setView(center, zoom)
-    }, [map])
+//Div
+import { MapContainer, TileLayer, GeoJSON, ZoomControl} from 'react-leaflet';
 
-    const onMove = useCallback(() => {
-        setPosition(map.getCenter())
-    }, [map])
-
-    useEffect(() => {
-        map.on('move', onMove)
-        return () => {
-        map.off('move', onMove)
-        }
-    }, [map, onMove])
-    return (
-        <>
-            <LatLongBox>
-                <div>lat: {position.lat},</div>
-                <div>lng: {position.lng}{' '}</div>
-            </LatLongBox>
-            <HomeButton>
-                <ButtonIcon>
-                    <LocationOnSharpIcon 
-                        style={{fontSize: "50px"}}
-                        onClick={onClick}
-                    />
-                </ButtonIcon>
-            </HomeButton>
-        </>
-    )
-}
-
-// Button for toggling map layers
-function MapLayerButton(props){
-    const onClick = useCallback(() => {
-        props.setShow((show) => (show === "none" ? "block" : "none"))
-    }, [props.map])
-
-
-    return (
-        <HomeButton style={{top:"80px"}}>
-                <ButtonIcon>
-                    <LayersIcon 
-                        style={{fontSize: "50px"}}
-                        onClick={onClick}
-                    />
-                </ButtonIcon>
-            </HomeButton>
-    )
-}
 
 // Map component
 function MapComponent () {
-    const [data, _setData] = useData()
     const [homePosition, setHomePosition] = useState([63.42295075466846, 10.373325347900392])
-    const [map, setMap] = useState(null);
-    const [baseMap, setBaseMap] = useState("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
     const [show, setShow] = useState("none");
+    const [map, setMap, baseMap, setBaseMap, data, _setData] = useMap();
 
 
     // Adding popup to geojson
@@ -101,6 +53,7 @@ function MapComponent () {
         width: "100vw",
         zIndex: "0",
     }
+
     const displayMap = useMemo(
         () => (
             <MapContainer 
@@ -129,12 +82,9 @@ function MapComponent () {
 
     return (
         <MapContainerA id="MapContainer">
-            {map ? <DisplayPosition map={map} style={{top:"0"}} /> : null}    
+            {map ? <DisplayPosition style={{top:"0"}} /> : null}
             {displayMap}
             {map ? <MapLayerButton map={map} setShow={setShow} show={show} /> : null}
-            {/* <AnalysisMenu id = "analysis"/> */}
-            <ChangeBaseMap name = {"Change Basemap"} display = {show} setShow={setShow} setBaseMap = {setBaseMap}/>
-            <AnalysisDropDown id = "AnalysisDropDown"/>
         
         </MapContainerA>
     )

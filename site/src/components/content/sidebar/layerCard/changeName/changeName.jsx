@@ -1,66 +1,61 @@
-import React from "react";
-import { useState, useEffect } from 'react';
-import { AnalysisBackground, AnalysisC, InputField, DropDownMenu , ButtonIcon} from "../../../../muiElements/styles";
-import { useData } from "../../../../../contexts/DataContext";
-import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
+import React, {useState } from "react";
+//Styles
+import { Headings, AnalysisC, InputField, ButtonIcon} from "../../../../muiElements/styles";
 import CloseIcon from '@mui/icons-material/Close';
+import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 
-function ChangeName(props){
-    const [show, setShow] = useState(props.display);
-    const [newName, setNewName] = useState("");
+
+function ChangeName(props) {
+    const [newName, setName] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
-    const [data, setData, layer, setLayer, bufferDistance, setBufferDistance, analysis, setAnalysis, clearData, removeItemFromData, handleCheckboxChange, handleColourChange, changeLayerName] = useData()
-    
 
-    useEffect(() => {
-        setShow(props.display);
-    }, [props.display]);
-
-
-    function setName(name){
-        setNewName(name);
-    }
-
-    function closeWindow(){
-        clearInput();
-        props.closeChangeName("close");
-    }
-
-    function clearInput(){
-        setNewName("");
-        setErrorMessage("");
+    function closeWindow() {
+        setName("")
+        setErrorMessage("")
+        props.setShow("none");
     }
 
     function changeName(){
-        let valid = checkValidName();
-        if(valid===true){
-            changeLayerName(props.id, newName);
+        if(validName(newName)){
+            props.setNewName(newName);
             closeWindow();
         }
-        else{
-            setErrorMessage(valid);
-        }
-        
     }
 
-    function checkValidName(){
-        if(newName === ""){
-            return "Name cannot be empty";
-        }else{
-            return true;
+    function setNewName(newName){
+        console.log("newName", newName)
+        validName(newName);
+        setName(newName);
+    }
+
+    function validName(name){
+        if(name === ""){
+            setErrorMessage("Name cannot be empty")
+            return false;
+        }else if(name.replace(/\s/g, '').length === 0){
+            setErrorMessage("Name cannot only contain spaces")
+            return false;
+        }else if(name[0] === " "){
+            setErrorMessage("Name cannot start with a space")
+            return false;
         }
+        setErrorMessage("")
+        return true;
     }
 
     return (
-        <AnalysisBackground style={{display: show}}>
-            <AnalysisC >
-                <h1>{props.name}</h1>
+        <>
+            <AnalysisC style = {{display: props.show}}>
+                <Headings>
+                    <h1>{"Change name"}</h1>
+                </Headings>
                 <ButtonIcon
                     onClick={() => closeWindow()}
                     style={{position: "fixed",right:"0", top: "0", margin: "10px"}}
                 >
-                    <CloseIcon style={{color: "black", fontSize: "40px"}}/>
+                    <CloseIcon style={{fontSize: "40px", position: "fixed",right:"0", top: "0", margin: "10px"}}/>
                 </ButtonIcon>
+
                 <InputField 
                     // id="outlined-basic"
                     label="Old name"
@@ -70,24 +65,26 @@ function ChangeName(props){
                         readOnly: true,
                       }}
                 />
+
                 <InputField 
                     // id="outlined-basic"
                     label="New name"
                     variant="outlined"
                     value={newName}
                     helperText = {errorMessage}
-                    onChange = {(e) => setName(e.target.value)}
+                    onChange = {(e) => setNewName(e.target.value)}
                 />
+
                 <ButtonIcon
                     onClick={()=> changeName()}
                     style={{position: "fixed",right:"0", bottom: "0", margin: "10px"}}
                 >
                     <DriveFileRenameOutlineIcon style={{width: "50px", fontSize: "40px"}}/>
                 </ButtonIcon>
+
+
             </AnalysisC>
-            
-        </AnalysisBackground>
+        </>
     )
 }
-
 export default ChangeName;

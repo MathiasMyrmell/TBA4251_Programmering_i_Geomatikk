@@ -96,6 +96,7 @@ export const SidebarToggler = styled(Button)({
         display: "block",
     },
 });
+
 //Sidebar container
 export const SidebarContainer = styled(Box)({
     // position: "fixed",
@@ -145,6 +146,23 @@ export const FileContainer = styled(Box)({
     transition: "opacity 200ms, display 200ms",
 });
 
+//FileCard
+export const FileCardContainer = styled(Card)({
+    width: "calc(100%-9px)",
+    margin: "5px 5px",
+    border: "4px solid",
+    borderColor: theme.palette.secondary.main,
+    padding: "10px",
+    display: "grid",
+    gridTemplateColumns: "auto 40px",
+    color: theme.palette.textColor.main,
+    backgroundColor: theme.palette.third.main,
+    "@media: (max-width: 200px)": {
+        gridTemplateColumns: "auto",
+    },
+
+});
+
 //Layer container
 export const LayerContainer = styled(Box)({
     // maxHeight: "500px",
@@ -153,6 +171,20 @@ export const LayerContainer = styled(Box)({
     margin: "0",
     padding: "0 0 5px 0",
     overflowY: "auto",
+});
+
+//ChangeNameContainer
+export const ChangeNameContainer = styled(Box)({
+    width: "500px",
+    top: "0",
+    height: "500px",
+    display: "grid",
+    gridTemplateColumns: "100px auto",
+    margin: "0px 20px 0px 5px",
+    position: "absolute",
+    backgroundColor: theme.palette.fourth.main,
+    zIndex: "100000",
+
 });
 
 //Headings
@@ -195,22 +227,7 @@ export const HeadingButton = styled(Button)({
 
 });
 
-//FileCard
-export const FileCardContainer = styled(Card)({
-    width: "calc(100%-9px)",
-    margin: "5px 5px",
-    border: "4px solid",
-    borderColor: theme.palette.secondary.main,
-    padding: "10px",
-    display: "grid",
-    gridTemplateColumns: "auto 40px",
-    color: theme.palette.textColor.main,
-    backgroundColor: theme.palette.third.main,
-    "@media: (max-width: 200px)": {
-        gridTemplateColumns: "auto",
-    },
 
-});
 
 ////MapComponent
 // HomeButton
@@ -311,6 +328,7 @@ export const ShowSwitch = styled(Switch)({
 
 //DropDownMenus
 export const LCardDropDown = styled(Menu)({
+    zIndex: "3",
     "& .MuiPaper-root": {
         backgroundColor: theme.palette.third.main,
         color: theme.palette.textColor.main,
@@ -330,9 +348,9 @@ export const AnalysisMenuContainer = styled(Card)({
     zIndex: "1", 
     display: "block",
 
-    "@media (max-width: 1250px)": {
-        display: "none",
-    },
+    // "@media (max-width: 1250px)": {
+    //     display: "none",
+    // },
 
 });
 
@@ -371,20 +389,20 @@ export const AnalysisDropDownContainer = styled(Box)({
     bottom: "0",
     right: "50px",
     zIndex: "11",
-    display: "none",
+    display: "block",
 
     "& .MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiPaper-root MuiMenu-paper MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation8 MuiPopover-paper css-1poimk-MuiPaper-root-MuiMenu-paper-MuiPaper-root-MuiPopover-paper":{
         width: "200px",
     },
 
-    "@media (max-width: 1250px)": {
-        display: "block",
-    },
-    "@media (max-width: 700px)": {
-        // left: "175px",
-        left: "0",
-        display: "block",
-    },
+    // "@media (max-width: 1250px)": {
+    //     display: "block",
+    // },
+    // "@media (max-width: 700px)": {
+    //     // left: "175px",
+    //     left: "0",
+    //     display: "block",
+    // },
 
 });
 
@@ -431,7 +449,7 @@ export const DropDownField = styled(Select)({
 export const InputField = styled(TextField)({
     width: "400px",
     margin: "0 0 15px 0",
-    zIndex: "3",
+    zIndex: "30000",
     "& .MuiInputBase-root": {
         backgroundColor: "rgba(256, 256, 256, 0.6)",
         color: theme.palette.textColor.main,

@@ -1,26 +1,31 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
+import { React, useState, useEffect } from 'react';
+//Components
+import IntersectionAnalysis from "./intersectionAnalysis";
+
+//Contexts
 import { useData } from "../../../../../contexts/DataContext";
+import { useAnalysis } from "../../../../../contexts/AnalysisContext";
 
-import * as turf from '@turf/turf';
-
+//Styles
 import { InputLabel, MenuItem} from "@mui/material";
-import { v4 as uuid } from "uuid";
-// import _ from "lodash";
 import { DropDownMenu , ButtonIcon, DropDownFieldError, DropDownField} from "../../../../muiElements/styles";
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
-import { divide, max, min, set } from 'lodash';
 
-import TreeStructure from "./treeStructure";
-import IntersectionAnalysis from './intersectionAnalysis';
-
+//Div
+import * as turf from '@turf/turf';
+import { v4 as uuid } from "uuid";
  
+
+
 
 function IntersectAnalysis(props){
     const [firstLayer, setFirstLayer] = useState({id:"none", name:"none", colour:"none", data:"none", value:""});
     const [secondLayer, setSecondLayer] = useState({id:"none", name:"none", colour:"none", data:"none", value:""});
-    const [data, setData] = useData()
     const [layerErrorMessage, setLayerErrorMessage] = useState("");
+    const [analysis, displayAnalysis,showAnalysis, setShowAnalysis, analyses, prepareLayersForAnalysis, addAreaToFeature] = useAnalysis();
+    const [data, setData] = useData()
+
+
 
     function choseFirstLayer(target){
         setFirstLayer(target);
@@ -47,12 +52,6 @@ function IntersectAnalysis(props){
         setLayerErrorMessage("");
     }
 
-    // Close Analysis window
-    function closeWindow(){
-        clearInput();
-        props.displayAnalysisWindow("close");
-    }
-
     // Perform intersection between two layers
     function executeIntersectAnalysis(){
 
@@ -61,30 +60,32 @@ function IntersectAnalysis(props){
         if(validLayer !== true){
             return;
         }
-
-        // Execute analysys
-        // Get layers
-        let fL = data.find((layer) => layer.id === firstLayer.value);
-        let sL = data.find((layer) => layer.id === secondLayer.value);
-
-
-        // Dissolve layers
-        let fLD = _dissolveLayer(fL.data)
-        let sLD = _dissolveLayer(sL.data)
-        let layers = [fLD, sLD]
+ 
+        // Prepare layers for analysis
+        let layers = prepareLayersForAnalysis(firstLayer, secondLayer)
+        let names = [layers[0].name, layers[1].name]
+        let data = [layers[0].data, layers[1].data]
 
         //Perform analysis
-        const analysis = new IntersectionAnalysis(layers)
-        analysis.performIntersection()
+        const analysis = new IntersectionAnalysis(data)
+        // analysis.performIntersection()
+        console.log("analysis",analysis)
+
+        // Add area to features
+        let layerData = turf.featureCollection([])
+        for(let i = 0; i < analysis.result.features.length; i++){
+            layerData.features.push(addAreaToFeature(analysis.result.features[i]));
+        }
 
         //Create new layer
-        let newlayer = {id:uuid(), name:"Intersection_"+fL.name+"_"+sL.name, colour:"", data:analysis.result, value:true}
+        let name = "Intersection_"+names[0].name + "_" + names[1].name
+        let newlayer = {id:uuid(), name:name, colour:"", data:layerData, value:true}
         console.log("newLayer",newlayer)
 
         //Add new layer to data
         setData(newlayer)
-
-        closeWindow();
+        clearInput();
+        setShowAnalysis("none");
     }
 
     // Check if input layers are valid
