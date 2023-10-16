@@ -1,9 +1,19 @@
-import React from "react";
+import React, {useEffect, useState, useCallback, useMemo} from "react";
+//Components
 
-import { AnalysisBackground, AnalysisC, DropDownMenu , ButtonIcon, Headings, MapLayerContainer, BaseMapContainer} from "../../../muiElements/styles";
-import CloseIcon from '@mui/icons-material/Close';
-import NoteAddIcon from '@mui/icons-material/NoteAdd';
 
+
+//Contexts
+import { useMap } from "../../../../contexts/MapContext";
+
+
+
+//Styles
+import { AnalysisBackground, AnalysisC, DropDownMenu , HomeButton, ButtonIcon, Headings, MapLayerContainer, BaseMapContainer} from "../../../muiElements/styles";
+import LayersIcon from '@mui/icons-material/Layers';
+
+
+//Div
 import map1 from "./img/map1.png";
 import map2 from "./img/map2.png";
 import map3 from "./img/map3.png";
@@ -11,9 +21,26 @@ import map4 from "./img/map4.png";
 import map5 from "./img/map5.png";
 import map6 from "./img/map6.png";
 
-function changeBaseMap(props){
+import CloseIcon from '@mui/icons-material/Close';
+import NoteAddIcon from '@mui/icons-material/NoteAdd';
 
 
+
+
+function MapLayerButton(props){
+    // const onClick = useCallback(() => {
+    //     props.setShow((show) => (show === "none" ? "block" : "none"))
+    // }, [props.map])
+    const [showChangeBaseMap, setShowChangeBaseMap] = useState("none");
+
+    function openWindow(){
+        setShowChangeBaseMap((show) => (show === "none" ? "block" : "none"))
+    }
+
+    const [map, setMap, baseMap, setBaseMap] = useMap();
+
+
+    // ChangeBaseMap
     const tileLayers = [
         {id: "1", name: "OpenStreetMap", url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", img: map1},
         {id: "2", name: "Stadia Maps", url: "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png", img: map2},
@@ -24,19 +51,32 @@ function changeBaseMap(props){
    
     ];
 
+    // function closeWindow(){
+    //     props.setShow("none");
+    // }
+
     function closeWindow(){
-        props.setShow("none");
+        setShowChangeBaseMap("none");
     }
     
     function changeLayer(baseMap){
-        props.setBaseMap(baseMap);
-        closeWindow();
+        setBaseMap(baseMap);
     }
 
+    
 
-    return(
-        <AnalysisBackground style={{display: props.display, zIndex: 10000}}>
-            <AnalysisC >
+    return (
+        <>
+            <HomeButton style={{top:"80px"}}>
+                <ButtonIcon>
+                    <LayersIcon 
+                        style={{fontSize: "50px"}}
+                        onClick={openWindow}
+                    />
+                </ButtonIcon>
+            </HomeButton>
+
+            <AnalysisC style={{display: showChangeBaseMap, zIndex: 10000}}>
                 <Headings>
                     <h1>{props.name}</h1>
                 </Headings>
@@ -52,15 +92,9 @@ function changeBaseMap(props){
                     </BaseMapContainer>
                     ))
                 }                
-                <ButtonIcon
-                    onClick={()=> changeLayer()}
-                    style={{position: "fixed",right:"0", bottom: "0", margin: "10px"}}
-                >
-                    <NoteAddIcon style={{width: "50px", color: "black", fontSize: "40px"}}/>
-                </ButtonIcon>
             </AnalysisC>
-        </AnalysisBackground>
+        </>
     )
 }
 
-export default changeBaseMap;
+export default MapLayerButton;

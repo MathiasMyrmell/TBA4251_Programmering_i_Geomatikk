@@ -1,29 +1,33 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
-import { useData } from "../../../../../contexts/DataContext";
+import { React, useState, useEffect } from 'react';
+//Components
 
+
+//Contexts
+import { useData } from "../../../../../contexts/DataContext";
+import { useAnalysis } from "../../../../../contexts/AnalysisContext";
+
+//Styles
 import { Box, Chip, InputLabel, Select, MenuItem, OutlinedInput} from "@mui/material";
-import { v4 as uuid } from "uuid";
-import { useTheme } from '@mui/material/styles';
-import _ from "lodash";
 import { DropDownMenu , ButtonIcon, DropDownFieldError, DropDownField, DropDownItem, DDChip, DropDownFeatureSelect} from "../../../../muiElements/styles";
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 
 
+//Div
+import { v4 as uuid } from "uuid";
+import _ from "lodash";
 
-function FeatureSelection(props){
+function FeatureSelection(){
+    const [analysis, displayAnalysis, showAnalysis, setShowAnalysis, analyses] = useAnalysis();
     const [features, setFeatures] = useState([]);
     const [chosenFeatures, setChosenFeatures] = useState([]);
     const [featureErrorMessage, setFeatureErrorMessage] = useState("");
     const [layerErrorMessage, setLayerErrorMessage] = useState("");
-    const [data, setData, layer, setLayer, analysis, setAnalysis] = useData()
-    const theme = useTheme();
+    const [layer, setLayer] = useState({id:"none", name:"none", colour:"none", data:"none", value:""});
+    const [data, setData] = useData()
 
     useEffect(() => {
 
     }, [chosenFeatures])
-
-
 
     // //Functions for execute button
     // Clear input fields
@@ -31,14 +35,7 @@ function FeatureSelection(props){
         setChosenFeatures([]);
         setLayer({id:"none", name:"none", colour:"none", data:"none", value:""});
         setFeatures([]);
-        setAnalysis("none");
-    }
-
-    // Close Analysis window
-    function closeWindow(){
-        clearInput();
-        setFeatureErrorMessage("");
-        props.displayAnalysisWindow("close");
+        
     }
 
     // //Functions for feature selection analysis
@@ -53,11 +50,12 @@ function FeatureSelection(props){
     function filterFeatures(data){
         setFeatures([]);
         let newFeatures = [];
+        console.log("layer", data)
+
         console.log(data[0].properties.Type)
         // newFeatures.push(data[0].properties.OBJTYPE)
         newFeatures.push(data[0].properties.Type)
         compareLoop: for( let i = 0; i < data.length; i++){
-            // let newFeature = data[i].properties.OBJTYPE;
             let newFeature = data[i].properties.Type;
             for(let j = 0; j <newFeatures.length; j++){
                 if(newFeatures[j] === newFeature){
@@ -96,6 +94,7 @@ function FeatureSelection(props){
         // console.log(baseLayer);
         let newFeatures = [];
         // console.log(chosenFeatures);
+
         baseLayer.data.features.map(feature => {
             if(_.includes(chosenFeatures,feature.properties.Type)){
                 newFeatures.push(feature);
@@ -105,7 +104,8 @@ function FeatureSelection(props){
         let newLayer = {id:uuid(), name:baseLayer.name+"-feature-selecion", colour:"", data:newData, value:true};
         // console.log(newLayer);
         setData(newLayer);
-        closeWindow();
+        clearInput();
+        setShowAnalysis("none");
     }
 
     function checkValidLayer(){
@@ -127,7 +127,6 @@ function FeatureSelection(props){
             return true;
         }
     }
-
 
     return (
         <>
@@ -182,8 +181,6 @@ function FeatureSelection(props){
                 </DropDownField>
                 <DropDownFieldError >{featureErrorMessage}</DropDownFieldError>
             </DropDownMenu>
-        
-
             <ButtonIcon
                 onClick={()=> createNewLayer()}
                 style={{position: "fixed",right:"0", bottom: "0", margin: "10px"}}
@@ -193,9 +190,6 @@ function FeatureSelection(props){
 
         </>
     );
-
-
-    
 }
 
 export default FeatureSelection;

@@ -5,7 +5,7 @@ class TreeStructure {
         this.name = name
         this.numChildren = 4
         this.maxY = minMax["maxY"]
-        this.minY = minMax["minY"]
+        this.minY = minMax["minY"] 
         this.maxX = minMax["maxX"]
         this.minX = minMax["minX"]
         this.depth = this.calcDepth()
@@ -16,6 +16,8 @@ class TreeStructure {
             this.dissolved = null
         }else if(name === "difference"){
            this.difference = null
+        }else if(name === "union"){
+            this.union = null
         }
     }
     
@@ -74,10 +76,10 @@ class TreeStructure {
         return dist;
     }
 
-
     ////Functions for intersection analysis
     //Fill tree with layers
     fillTree(layers) {
+        console.log("fillTree layers", layers)
         //For each layer
         for(let i = 0; i < layers.length; i++) {
             //Fill polygons in layer
@@ -144,6 +146,7 @@ class TreeStructure {
     ////Functions for difference analysis
     //Fill tree with layers
     fillTreeDifference(layers) {
+        console.log("fillTreeDifference layers", layers)
         // let index = 0
         // console.log("layers", layers)
         //For each layer
@@ -190,6 +193,30 @@ class TreeStructure {
     }
 
 
+    ////Functions for union analysis
+    //Fill tree with layers
+    fillTreeUnion(layers){
+        console.log("-layers", layers)
+        for(let i = 0; i< layers.length; i++){
+            let layer = layers[i]
+            //Fill each feature in layer
+            let features = layer.features
+            for(let j = 0; j<features.length; j++){
+                let feature = features[j]
+                this.root.fillFeatureUnion(feature, i)
+            }
+            // index+=1
+        }
+    }
+
+    splitLayersUnion(){
+        this.root.splitLayersUnion()
+    }
+
+    performUnion(){
+        this.root.union()
+    }
+
 
 }
 
@@ -234,6 +261,10 @@ class Node {
         }else if(treeStructure.name === "difference"){
             this.layers = [[],[]]
             this.differences = null
+        }
+        else if(treeStructure.name === "union"){
+            this.layers = [[],[]]
+            this.union = []
         }
         
     }
@@ -370,6 +401,12 @@ class Node {
             this.children[j].splitLayers()
         }
     }
+
+
+    
+
+
+
 
 
 
@@ -601,9 +638,7 @@ class Node {
     _internalDifference(){
         let layers0 = this.layers[0]
         let layers1 = this.layers[1]
-        // console.log("-----------------")
-        // console.log("layers0", layers0)
-        // console.log("layers1", layers1)
+
         //If only the first layer has features, keep this
         if(layers0.length > 0 && layers1.length === 0){
             // console.log("Returning dissolved layer0")
@@ -896,5 +931,166 @@ class Node {
         }
         return newFeatureCollection
     }
+
+
+
+    ////Functions for union analysis
+    fillFeatureUnion(feature, index){
+        if(this.children === null) {
+            this.layers[index].push(feature)
+            // Create union of all layers in this node
+            return
+        }
+        // Get min and max coordinates of feature
+        let minMaxCoordinates = this._getMinMaxCoordinates(feature)
+
+        // Check if feature is inside of one of the child node
+        for(let i = 0; i < this.children.length; i++) {
+            let child = this.children[i]
+            if(minMaxCoordinates[0] >= child.minX && minMaxCoordinates[1] <= child.maxX && minMaxCoordinates[2] >= child.minY && minMaxCoordinates[3] <= child.maxY) {
+                child.fillFeatureUnion(feature, index)
+                return
+            }
+        }
+        // If not inside any child node, add to this node
+        this.layers[index].push(feature)
+    
+    
+    }
+
+    splitLayersUnion(){
+        // If at root node, return 
+        if(this.children === null) {
+            return
+        }
+        // if not at root node, split every layer in this node into chunks and send to children
+        // console.log("this.layers", this.layers)
+        for(let index = 0; index < this.layers.length; index++) {
+            let layers = this.layers[index]
+            if(layers.length === 0) {
+                // console.log("layers0", layers)
+                continue
+            }
+            while(layers.length !== 0) {
+                let layer = layers.pop()
+    
+                //For every child, check if layer is inside child
+                for(let i = 0; i < this.children.length; i++) {
+                    //Bounding box of child
+                    let bbox = this.children[i].bbox
+                    //Clip layer to bounding box
+                    let intersection = turf.intersect(layer, bbox);
+                    //If layer is inside child, send to child
+                    if(intersection !== null) {
+                        if(intersection.geometry.type === "Polygon"){
+                            this.children[i].layers[index].push(intersection)
+                        }else{//If it is a multipolygon
+                            let coordinates = intersection.geometry.coordinates
+                            for(let j=0; j<coordinates.length;j++){
+                                let newPoly = turf.polygon(coordinates[j])
+                                this.children[i].layers[index].push(newPoly)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //For each child, split layer
+        for(let j = 0; j < this.children.length; j++) {
+            this.children[j].splitLayersUnion()
+        }
+
+    }
+
+    union(){
+        //If at leaf node, perform difference
+        if(this.children === null){
+            if(this.layers[0].length === 0){
+                return
+            }
+            //Perform difference
+            this._internalUnion()
+            return
+        }
+        //If not at leaf node, continue down
+        for(let i = 0; i < this.children.length; i++){
+            this.children[i].union()
+        }
+    }
+
+    _internalUnion(){
+        let layers0 = this.layers[0]
+        let layers1 = this.layers[1]
+
+        //If only the first layer has features, keep this
+        if(layers0.length > 0 && layers1.length === 0){
+            // console.log("Returning dissolved layer0")
+            let dissolved = turf.dissolve(turf.featureCollection(layers0))
+            this.differences = dissolved.features
+            return
+        }
+
+        let differences = []
+        //For each polygon in layers0
+        for(let l=0; l<layers0.length; l++){
+            let polygon0 = layers0[l]
+            // Find difference between polygon1 and all polygons in polygons2
+            let diff = []
+            for(let i = 0; i<layers1.length; i++){
+                let polygon1 = layers1[i]
+                let union = turf.union(polygon0, polygon1)
+                //If difference is null, continue to next polygon
+                if(union === null){
+                    continue
+                }
+                //If difference is a polygon/multipolygon, add to diff
+                diff.push(union)
+
+            }
+            // Perform intersection between every differences
+            //If no differences, continue to next layer
+            if(diff.length === 0){
+                continue
+            }
+            // console.log("diff", diff)
+            let intersection = diff.pop()
+            for(let i = 0; i<diff.length;i++){
+                let newIntersection = turf.union(intersection, diff[i])
+                intersection = newIntersection
+            }
+            // console.log("intersection", intersection)
+
+            // Add result to list of every difference in node
+            if(intersection.geometry.type === "Polygon"){
+                differences.push(intersection)
+            }else if(intersection.geometry.type === "MultiPolygon"){
+                let coordinates = intersection.geometry.coordinates
+                for(let c = 0; c <coordinates.length; c++){
+                    let polygon = turf.polygon(coordinates[c])
+                    differences.push(polygon)
+                }
+            }
+        }
+
+        //differences should be x number of polygons, whom are not intersecting. 
+        //Only needs to be dissolved
+        // console.log("differences", differences)
+
+        if(differences.length<1){
+            // console.log("if zero difference, returning empty ")
+            this.differences = null
+            return
+        }
+
+
+        //When differences are found, these polygons should not overlap
+        //Therefore, dissolve should not loose any data
+        let fC = turf.featureCollection(differences)
+        let dissolved = turf.dissolve(fC)
+        // console.log("diss", dissolved)
+        this.differences = dissolved.features
+    }
+
+
 
 }

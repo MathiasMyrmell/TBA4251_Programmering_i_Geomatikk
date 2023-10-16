@@ -5,6 +5,8 @@ import LayerCard from "./layerCard/layerCard";
 import { useData } from "../../../contexts/DataContext";
 import { FileContainer, LayerContainer, SidebarContainer, Headings, SidebarElement, HeadingButton} from "../../muiElements/styles";
 import FileCard from "./fileCard/fileCard";
+import { LayerCardContext } from "../../../contexts/LayerCardContext";
+//MUI
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 //Old Files
@@ -21,6 +23,8 @@ import vann from "../../../files/vann.json";
 import bygning from "../../../files/bygning.json";
 
 
+
+
 function Sidebar(props) {
 
     const [_data] = useData();
@@ -30,6 +34,7 @@ function Sidebar(props) {
     const [SidebarElementFHeight, SidebarElementFHeightHeight] = useState(60);
     const [SidebarElementLHeight, setSidebarElementLHeight] = useState(0);
     const [layerContainerHeight, setlayerContainerHeight] = useState(0);
+    const [layerList, setLayerList] = useState(<ul></ul>);
 
     const [showFileContainer, setShowFileContainer] = useState("none");
 
@@ -40,6 +45,20 @@ function Sidebar(props) {
             setShowFileContainer("none");
         }
     };
+
+    useEffect(() => {
+        setLayerList(<ul>
+            {_data.map((layer, i) => {
+                return(
+                    <li id={i} key={i} style={{position: "relative"}}>
+                        <LayerCardContext>
+                            <LayerCard key={layer.id} id = {layer.id} name = {layer.name} colour = {layer.colour} data = {layer.data} value = {layer.value} />
+                        </LayerCardContext>
+                    </li>
+                ) 
+            })}
+        </ul>)
+    }, [_data])
 
     useEffect(() => {
         if(showFileContainer === "none"){setFileIcon(<ArrowDropDownIcon />);}
@@ -118,20 +137,10 @@ function Sidebar(props) {
                     <h1>Layers</h1>
                 </Headings>
                     <LayerContainer id="LayerContainer"  maxHeight = {layerContainerHeight}>
-                        <ul>
-                            {_data.map((layer, i) => {
-                                return(
-                                    <li id={i} key={i}>
-                                        <LayerCard key={layer.id} id = {layer.id} name = {layer.name} colour = {layer.colour} data = {layer.data} value = {layer.value} />
-                                    </li>
-                                ) 
-                            })}
-                        </ul>
+                        {layerList}
                     </LayerContainer>
             </SidebarElement>
         </SidebarContainer>
-
-
     )
 }
 

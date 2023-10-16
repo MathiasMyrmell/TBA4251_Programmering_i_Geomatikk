@@ -1,20 +1,31 @@
-import React, {useEffect, useState, useCallback} from "react";
+import React, {useEffect, useState} from "react";
+
+//Components
 import Sidebar from "./sidebar/sidebar";
 import MapComponent from "./mapComponent/mapComponent";
-import "./content.css";
 import LayerCard from "./sidebar/layerCard/layerCard";
-import { DataProvider } from "../../contexts/DataContext";
-import {Container, Box, Button, IconButton} from '@mui/material';
+import Analysis from "./analysisMenu/Analysis";
 
+//Contexts
+import { DataProvider } from "../../contexts/DataContext";
+import { AnalysisContext } from "../../contexts/AnalysisContext";
+import { MapContext } from "../../contexts/MapContext";
+
+
+//Styles
+import {Container, Box, IconButton} from '@mui/material';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
-import AnalysisMenu from "./mapComponent/analysisMenu/analysisMenu";
 import ChangeBaseMap from "./mapComponent/changeBaseMap/changeBaseMap";
 
-import { v4 as uuid } from "uuid";
+//Div
+import "./content.css";
+
+
+
 
 function Content(){
-    var [layers, setLayers] = useState([]);
+    var [layers ] = useState([]);
     
     function addLayers(data){
         data.map(e =>{
@@ -62,6 +73,7 @@ function Content(){
         height: window.innerHeight,
         width: window.innerWidth
     })
+    
     function debounce(fn, ms) {
         let timer
         return _ => {
@@ -108,7 +120,10 @@ function Content(){
 
     return (
         <DataProvider>
-            <MapComponent layers={layers} setShow ={setShow}/>
+            <MapContext>
+                <MapComponent layers={layers} setShow ={setShow}/>
+                <ChangeBaseMap name = {"Change Basemap"} display = {show} setShow={setShow} setBaseMap = {setBaseMap}/>
+            </MapContext>
             <Container id="SidebarContainer"
                 sx={{
                         position: "absolute",
@@ -137,7 +152,7 @@ function Content(){
             >
                 <Sidebar addLayers={addLayers} handleChange={handleChange} display ={showSidebar}
                 />
-         
+        
                 <Box 
                     sx={{
                         width: "40px",
@@ -154,7 +169,7 @@ function Content(){
                         sx={{
                             color: "#FF8C32",
                             padding: "8px 0px",
-  
+
                             "& .MuiButtonBase-root": {
                                 height: "40px",
                                 maxWidth: "40px",
@@ -179,10 +194,12 @@ function Content(){
                         {icon}
                     </IconButton>
                 </Box>
+                
+
             </Container>
-            <AnalysisMenu id = "analysis"/>
-            <ChangeBaseMap name = {"Change Basemap"} display = {show} setShow={setShow} setBaseMap = {setBaseMap}/>
-        
+            <AnalysisContext>
+                <Analysis/>
+            </AnalysisContext>
         </DataProvider>
     );
 }

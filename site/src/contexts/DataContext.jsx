@@ -1,12 +1,15 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import uniqBy from 'lodash/uniqBy';
+import _ from 'lodash';
+
 const DataContext = createContext(undefined);
+
 
 const DataProvider = ({ children }) => {
   const [data, setDataRaw] = useState([]);
   const [layer, setLayer] = useState({id:"none", name:"none", colour:"none", data:"none", value:""});
-  const [bufferDistance, setBufferDistance] = useState("");
-  const [analysis, setAnalysis] = useState("none");
+  const [showContainer, setShowContainer] = useState("none");
+  const [backgroundContent, setBackgroundContent] = useState(null);
 
   const setData = (item, i = null) => {
     if(i === null){
@@ -22,18 +25,19 @@ const DataProvider = ({ children }) => {
   //   setChosenLayer(item);
   // }
 
-
+  const updateData = (newData) => {
+    setDataRaw(newData)
+  }
 
   const clearData = () => {
     setDataRaw([])
   }
 
-  const removeItemFromData = (id) => {
-    //Remove layer from map
-    setDataRaw(data.filter(item => item.id !== id))
-    //Remove layercard from sidebar
-
-  }
+  // const removeItemFromData = (id) => {
+  //   //Remove layer from map
+  //   setDataRaw(data.filter(item => item.id !== id))
+  //   //Remove layercard from sidebar
+  // }
 
   function getRandomColour(){
     var letters = '0123456789ABCDEF';
@@ -42,36 +46,12 @@ const DataProvider = ({ children }) => {
       colour += letters[Math.floor(Math.random() * 16)];
     }
     return colour;
-}
-
-  function handleCheckboxChange(id) {
-    let card = data.find(item => item.id === id);
-    let index = data.findIndex(item => item.id === id);
-    // removeItemFromData(id);
-    card.value = !card.value;
-    setData(card, index);
   }
-
-  const handleColourChange = (id, colour) => {
-    let card = data.find(item => item.id === id);
-    let index = data.findIndex(item => item.id === id);
-    // removeItemFromData(id);
-    card.colour = colour;
-    setData(card, index);
-
-  }
-
-  function changeLayerName(id, newName){
-    let layer = data.find(item => item.id === id);
-    layer.name = newName;
-    setData(layer);
-
-  }
-
+   
   
+  const value = [data, setData, layer, setLayer, clearData, updateData, showContainer, setShowContainer,backgroundContent, setBackgroundContent];
 
 
-  const value = [data, setData, layer, setLayer, bufferDistance, setBufferDistance, analysis, setAnalysis, clearData, removeItemFromData, handleCheckboxChange, handleColourChange, changeLayerName];
 
   return (
     <DataContext.Provider value={value}>

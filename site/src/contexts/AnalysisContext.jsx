@@ -1,67 +1,131 @@
 import React, { createContext, useContext, useState } from 'react';
-import arealbruk from "../files/arealbruk.json";
-import vann from "../files/vann.json";
-import uniqBy from 'lodash/uniqBy';
+
+import { useData } from "./DataContext";
+
+//Analyses
+import FeatureSelection from "../components/content/analysisMenu/analyses/featureSelection/featureSelection.jsx";
+import BufferAnalysis from "../components/content/analysisMenu/analyses/buffer/bufferAnalysis.jsx";
+import IntersectAnalysis from "../components/content/analysisMenu/analyses/intersection/intersectAnalysis.jsx";
+import UnionAnalysis from "../components/content/analysisMenu/analyses/union/unionAnalysis.jsx";
+import DifferenceAnalysis from "../components/content/analysisMenu/analyses/differrence/differenceAnalysis.jsx";
+
+//Div
+import * as turf from '@turf/turf';
+
+
 const DataContext = createContext(undefined);
 
-const DataProvider = ({ children }) => {
-  const [data, setDataRaw] = useState([]);
-
-
-  const setData = (item, i = null) => {
-    if(i === null){
-      item.colour = getRandomColour();
-      // console.log(item.data);
-      setDataRaw(data => uniqBy([...data, item], 'id'));
-    }else{
-      setDataRaw(data => uniqBy([...data.slice(0, i), item, ...data.slice(i + 1)], 'id'));
-    }
+const analyses = {
+  "featureSelection" : {
+      name:"Feature Analysis",
+      analysis: <FeatureSelection/>
+  },
+  "bufferAnalysis":{
+    name: "Buffer Analysis",
+    analysis: <BufferAnalysis/>
+  },
+  "intersectAnalysis":{
+    name: "Intersect Analysis",
+    analysis: <IntersectAnalysis/>
+  },
+  "unionAnalysis":{
+    name: "Union Analysis",
+    analysis: <UnionAnalysis/>
+  },
+  "differenceAnalysis":{
+    name: "Difference Analysis",
+    analysis: <DifferenceAnalysis/>
   }
-
-  const clearData = () => {
-    setDataRaw([])
-  }
-
-  const removeItemFromData = (id) => {
-    //Remove layer from map
-    setDataRaw(data.filter(item => item.id !== id))
-    //Remove layercard from sidebar
-
-  }
-
-  function getRandomColour(){
-    var letters = '0123456789ABCDEF';
-    var colour = '#';
-    for (var i = 0; i < 6; i++) {
-      colour += letters[Math.floor(Math.random() * 16)];
-    }
-    return colour;
 }
 
-  const handleCheckboxChange = (id) => {
-    let card = data.find(item => item.id === id);
-    let index = data.findIndex(item => item.id === id);
-    // removeItemFromData(id);
-    card.value = !card.value;
-    setData(card, index);
-    // console.log(data);
-    // console.log("checkbox changed");
+const AnalysisContext = ({ children }) => {
+  const [data, setData, layer, setLayer, clearData, updateData] = useData()
+  const [analysis, setAnalysis] = useState("none");
+  const [showAnalysis, setShowAnalysis] = useState("none")
+
+  function displayAnalysis(analysisName){
+    if(analysisName === "none"){
+      setAnalysis("none")
+      setShowAnalysis("none")
+    }
+    setAnalysis(analyses[analysisName])
+    setShowAnalysis("block")
   }
 
-  const handleColourChange = (id, colour) => {
-    let card = data.find(item => item.id === id);
-    let index = data.findIndex(item => item.id === id);
-    // removeItemFromData(id);
-    card.colour = colour;
-    setData(card, index);
-    // console.log(data);
-    // console.log("colour changed");
+  function prepareLayersForAnalysis(firstLayer, secondLayer){
+    let fL = data.find((layer) => layer.id === firstLayer.value);
+    let sL = data.find((layer) => layer.id === secondLayer.value);
+
+
+    // Dissolve layers
+    fL.data = _dissolveLayer(fL.data)
+    sL.data = _dissolveLayer(sL.data)
+
+    return [fL, sL]
   }
 
-  
+  // Dissolve layer
+  function _dissolveLayer(layer){
+    let featureCollection = _splitMultiPolygon(layer)
+
+    let dissolved = _dissolve(featureCollection)
+    return dissolved
+  }
+
+  function _splitMultiPolygon(layer){
+    let featureCollection = turf.featureCollection()
+    let newFeatures = []
+    for(let i = 0; i<layer.features.length; i++){
+        let feature = layer.features[i]
+        if(feature.geometry.type == "MultiPolygon"){
+            for(let j = 0; j<feature.geometry.coordinates.length; j++){
+                let polygon = turf.polygon(feature.geometry.coordinates[j])
+                newFeatures.push(polygon)
+            }
+        }else{
+            newFeatures.push(feature)
+        }
+    }
+    featureCollection.features = newFeatures
+    return featureCollection
+  }
 
 
-  const value = [data, setData, clearData, removeItemFromData, handleCheckboxChange, handleColourChange];
+  function _dissolve(featureCollection){
+    let dissolved
+    try{
+        dissolved = turf.dissolve(featureCollection)
+    }
+    catch(err){
+        dissolved = null
+    }
+    if(dissolved !== null){
+        return dissolved
+    }
+    //Split featur collection into two lists
+    let split = Math.floor(featureCollection.features.length/2)
+    let firstPart = featureCollection.features.slice(0,split)
+    let secondPart = featureCollection.features.slice(split, featureCollection.features.length)
+    let fC1 = turf.featureCollection(firstPart)
+    let fC2 = turf.featureCollection(secondPart)
+    let dissolved1 = _dissolve(fC1)
+    let dissolved2 = _dissolve(fC2)
+    let dissolvedFeatures = dissolved1.features.concat(dissolved2.features)
+    dissolved = turf.featureCollection(dissolvedFeatures)
+    return dissolved
+  }
+
+  // Add area to feature
+  function addAreaToFeature(feature){
+    feature.properties = {Shape_Area:0}
+    let area = turf.area(feature);
+    feature.properties.Shape_Area = area;
+    return feature;
+}
+
+
+  // Returning values and functions
+  const value = [analysis, displayAnalysis,showAnalysis, setShowAnalysis, analyses, prepareLayersForAnalysis, addAreaToFeature];
 
   return (
     <DataContext.Provider value={value}>
@@ -70,7 +134,7 @@ const DataProvider = ({ children }) => {
   );
 };
 
-const useData = () => {
+const useAnalysis = () => {
   const context = useContext(DataContext);
   if (context === undefined) {
     throw new Error('useData must be used within a DataProvider');
@@ -78,5 +142,5 @@ const useData = () => {
   return context;
 };
 
-export default useData;
-export { DataProvider, useData };
+export default useAnalysis;
+export { AnalysisContext, useAnalysis };

@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 // import './App.css';
-import Navbar from "./components/navbar/navbar";
+// import Navbar from "./components/navbar/navbar";
 import Content from "./components/content/content";
 import ThemeContext, {themes} from "./contexts/theme";
 import { Box } from "@mui/system";
