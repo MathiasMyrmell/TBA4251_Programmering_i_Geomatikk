@@ -232,7 +232,8 @@ export const HeadingButton = styled(Button)({
 ////MapComponent
 // HomeButton
 export const HomeButton = styled(Button)({
-    position:"fixed",  right:"0", zIndex: "2",
+    position:"fixed",  
+    zIndex: "2",
     height: "60px",
     width: "60px",
     margin: "20px 10px",

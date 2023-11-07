@@ -1,21 +1,31 @@
-import { createContext , useContext, useState} from "react";
+import { createContext , useContext, useEffect, useState} from "react";
 import {useData} from "./DataContext";
 
 
 const DataContext = createContext(undefined)
 
 const MapContext = ({ children}) => {
-    const [data, setData, layer, setLayer, clearData, updateData, showContainer, setShowContainer,backgroundContent, setBackgroundContent] = useData()
+    const [data, setData, layer, setLayer, clearData, updateData, showContainer, setShowContainer,backgroundContent, setBackgroundContent, hideContentElements, setHideContentElements] = useData()
 
     const [map, setMap] = useState(null);
     const [baseMap, setBaseMap] = useState("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
+    const [showMapLayerButton, setShowMapLayerButton] = useState(false);
+    const [showDisplayPosition, setShowDisplayPosition] = useState(false);
     
 
+    useEffect(() => {
+        if(hideContentElements){
+            setShowMapLayerButton(false);
+            setShowDisplayPosition(false);
+        }else{
+            setShowMapLayerButton(true);
+            setShowDisplayPosition(true);
+        }
 
+    }
+    , [hideContentElements])
 
-
-
-    const value = [map, setMap, baseMap, setBaseMap, data, setData]
+    const value = [map, setMap, baseMap, setBaseMap, data, setData, showMapLayerButton, setShowMapLayerButton, showDisplayPosition, setShowDisplayPosition]
 
     return (
         <DataContext.Provider value = {value}>

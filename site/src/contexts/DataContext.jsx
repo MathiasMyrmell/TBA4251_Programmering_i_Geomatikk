@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import uniqBy from 'lodash/uniqBy';
 import _ from 'lodash';
 
+
 const DataContext = createContext(undefined);
 
 
@@ -10,6 +11,11 @@ const DataProvider = ({ children }) => {
   const [layer, setLayer] = useState({id:"none", name:"none", colour:"none", data:"none", value:""});
   const [showContainer, setShowContainer] = useState("none");
   const [backgroundContent, setBackgroundContent] = useState(null);
+  const [hideContentElements, setHideContentElements] = useState(false);
+
+
+
+  
 
   const setData = (item, i = null) => {
     if(i === null){
@@ -47,9 +53,23 @@ const DataProvider = ({ children }) => {
     }
     return colour;
   }
+
+  // function hideContentElements(hide){
+  //   if(hide === true){
+  //     setShowContainer("none");
+  //     setShowSidebar("none");
+  //     // setShowDisplayPosition("none");
+  //   }else{
+  //     setShowContainer("block");
+  //     setShowSidebar("block");
+  //     // setShowDisplayPosition("block");
+  //   }
+
+
+  // }
    
   
-  const value = [data, setData, layer, setLayer, clearData, updateData, showContainer, setShowContainer,backgroundContent, setBackgroundContent];
+  const value = [data, setData, layer, setLayer, clearData, updateData, showContainer, setShowContainer,backgroundContent, setBackgroundContent, hideContentElements, setHideContentElements];
 
 
 

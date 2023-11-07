@@ -77,6 +77,10 @@ function DifferenceAnalysis(){
         let newLayer = {id : uuid(), name: name, colour: "", data: layerData, value: true}
         console.log("newLayer", newLayer)
         // Add new layer to data
+
+        console.log("newLayer", newLayer)
+
+
         setData(newLayer)
         clearInput();
         setShowAnalysis("none");

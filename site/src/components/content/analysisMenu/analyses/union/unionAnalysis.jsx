@@ -29,7 +29,7 @@ function UnionAnalysis(){
 
     function choseFirstLayer(target){
         setFirstLayer(target);
-    }
+    } 
 
     function choseSecondLayer(target){
         setSecondLayer(target);

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 import { useData } from "./DataContext";
 
@@ -8,6 +8,7 @@ import BufferAnalysis from "../components/content/analysisMenu/analyses/buffer/b
 import IntersectAnalysis from "../components/content/analysisMenu/analyses/intersection/intersectAnalysis.jsx";
 import UnionAnalysis from "../components/content/analysisMenu/analyses/union/unionAnalysis.jsx";
 import DifferenceAnalysis from "../components/content/analysisMenu/analyses/differrence/differenceAnalysis.jsx";
+import CreateLayer from "../components/content/analysisMenu/analyses/createLayer/createLayer.jsx";
 
 //Div
 import * as turf from '@turf/turf';
@@ -35,13 +36,29 @@ const analyses = {
   "differenceAnalysis":{
     name: "Difference Analysis",
     analysis: <DifferenceAnalysis/>
+  },
+  "createLayer":{
+    name: "Create Layer",
+    analysis: <CreateLayer/>
   }
 }
 
 const AnalysisContext = ({ children }) => {
-  const [data, setData, layer, setLayer, clearData, updateData] = useData()
+  const [data, setData, layer, setLayer, clearData, updateData, showContainer, setShowContainer,backgroundContent, setBackgroundContent, hideContentElements, setHideContentElements] = useData()
   const [analysis, setAnalysis] = useState("none");
   const [showAnalysis, setShowAnalysis] = useState("none")
+  const [showCreateLayerMode, setShowCreateLayerMode] = useState(false)
+  const [showAnalysisMenu, setShowAnalysisMenu] = useState("block")
+
+  useEffect(() => {
+    if(showCreateLayerMode ){
+      setShowAnalysisMenu("none");
+      setHideContentElements(true);
+    }else{
+      setHideContentElements(false);
+      setShowAnalysisMenu("inline");
+    }
+  }, [showCreateLayerMode])
 
   function displayAnalysis(analysisName){
     if(analysisName === "none"){
@@ -125,7 +142,7 @@ const AnalysisContext = ({ children }) => {
 
 
   // Returning values and functions
-  const value = [analysis, displayAnalysis,showAnalysis, setShowAnalysis, analyses, prepareLayersForAnalysis, addAreaToFeature];
+  const value = [analysis, displayAnalysis,showAnalysis, setShowAnalysis, analyses, prepareLayersForAnalysis, addAreaToFeature, showAnalysisMenu, setShowAnalysisMenu, showCreateLayerMode, setShowCreateLayerMode];
 
   return (
     <DataContext.Provider value={value}>
