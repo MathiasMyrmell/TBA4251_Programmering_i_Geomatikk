@@ -8,6 +8,7 @@ import Analysis from "./analysisMenu/Analysis";
 
 //Contexts
 import { DataProvider } from "../../contexts/DataContext";
+import { useData } from "../../contexts/DataContext";
 import { AnalysisContext } from "../../contexts/AnalysisContext";
 import { MapContext } from "../../contexts/MapContext";
 
@@ -25,7 +26,17 @@ import "./content.css";
 
 
 function Content(){
+    const [data, setData, layer, setLayer, clearData, updateData, showContainer, setShowContainer,backgroundContent, setBackgroundContent, hideContentElements, setHideContentElements] = useData() 
     var [layers ] = useState([]);
+
+    useEffect(() => {
+        if(hideContentElements === true){
+            setShowSidebar("none");
+        }else{
+            setShowSidebar("block");
+        }
+
+    }, [hideContentElements])
     
     function addLayers(data){
         data.map(e =>{
@@ -61,10 +72,9 @@ function Content(){
             setSidebarWidth(64);
             setIcon(<ArrowRightIcon/>);
         }
-
     }
 
-    const [showSidebar, setShowSidebar] = useState("block");
+
     const [sidebarWidth, setSidebarWidth] = useState(400);
     const [icon, setIcon] = useState(<ArrowLeftIcon/>);
 
@@ -115,16 +125,17 @@ function Content(){
 
 
     const [baseMap, setBaseMap] = useState("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
-    const [show, setShow] = useState("none");
-
+    const [showChangeBaseMap, setShowChangeBaseMap] = useState("none");
+    const [showSidebar, setShowSidebar] = useState("block");
 
     return (
-        <DataProvider>
+        <>
+        {/* <DataProvider> */}
             <MapContext>
-                <MapComponent layers={layers} setShow ={setShow}/>
-                <ChangeBaseMap name = {"Change Basemap"} display = {show} setShow={setShow} setBaseMap = {setBaseMap}/>
+                <MapComponent layers={layers} setShow ={setShowChangeBaseMap}/>
+                <ChangeBaseMap name = {"Change Basemap"} display = {showChangeBaseMap} setShow={setShowChangeBaseMap} setBaseMap = {setBaseMap}/>
             </MapContext>
-            <Container id="SidebarContainer"
+            <Container id="SidebarContainer" showSideBar = {showSidebar}
                 sx={{
                         position: "absolute",
                         top: "0px",
@@ -165,7 +176,7 @@ function Content(){
 
                     }}
                 >
-                    <IconButton  onClick={toggleSideBar}
+                    <IconButton onClick={toggleSideBar}
                         sx={{
                             color: "#FF8C32",
                             padding: "8px 0px",
@@ -200,7 +211,8 @@ function Content(){
             <AnalysisContext>
                 <Analysis/>
             </AnalysisContext>
-        </DataProvider>
+        {/* </DataProvider> */}
+        </>
     );
 }
 

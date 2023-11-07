@@ -27,7 +27,7 @@ import NoteAddIcon from '@mui/icons-material/NoteAdd';
 
 
 
-function MapLayerButton(props){
+function MapLayerButton(){
     // const onClick = useCallback(() => {
     //     props.setShow((show) => (show === "none" ? "block" : "none"))
     // }, [props.map])
@@ -37,7 +37,7 @@ function MapLayerButton(props){
         setShowChangeBaseMap((show) => (show === "none" ? "block" : "none"))
     }
 
-    const [map, setMap, baseMap, setBaseMap] = useMap();
+    const [map, setMap, baseMap, setBaseMap, data, setData, showMapLayerButton, setShowMapLayerButton, showDisplayPosition, setShowDisplayPosition] = useMap();
 
 
     // ChangeBaseMap
@@ -67,7 +67,11 @@ function MapLayerButton(props){
 
     return (
         <>
-            <HomeButton style={{top:"80px"}}>
+            <HomeButton 
+                sx={{
+                    top:"80px",
+                    right: "0",
+                }}>
                 <ButtonIcon>
                     <LayersIcon 
                         style={{fontSize: "50px"}}
@@ -78,7 +82,7 @@ function MapLayerButton(props){
 
             <AnalysisC style={{display: showChangeBaseMap, zIndex: 10000}}>
                 <Headings>
-                    <h1>{props.name}</h1>
+                    <h1>{"Change basemap"}</h1>
                 </Headings>
                 <ButtonIcon
                     onClick={() => closeWindow()}

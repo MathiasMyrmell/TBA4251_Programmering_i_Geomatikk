@@ -6,7 +6,8 @@ import LocationOnSharpIcon from '@mui/icons-material/LocationOnSharp';
 import { useMap } from "../../../../contexts/MapContext";
 
 function DisplayPosition() {
-    const [map, setMap] = useMap();
+    // const [show, setShow] = useState(props.show)
+    const [map, setMap, baseMap, setBaseMap, data, setData, showMapLayerButton, setShowMapLayerButton, showDisplayPosition, setShowDisplayPosition] = useMap();
 
     const [position, setPosition] = useState(() => map.getCenter())
     const center = [63.42295075466846, 10.373325347900392]
@@ -25,13 +26,21 @@ function DisplayPosition() {
         map.off('move', onMove)
         }
     }, [map, onMove])
+
+    // useEffect (() => {
+    //     console.log("show: ", props.show)
+    //     setShow(props.show)
+    // }, [props.show])
     return (
         <>
             <LatLongBox>
                 <div>lat: {position.lat},</div>
                 <div>lng: {position.lng}{' '}</div>
             </LatLongBox>
-            <HomeButton>
+            <HomeButton sx = {{
+                right: "0",
+                top: "0",
+                }}>
                 <ButtonIcon>
                     <LocationOnSharpIcon 
                         style={{fontSize: "50px"}}

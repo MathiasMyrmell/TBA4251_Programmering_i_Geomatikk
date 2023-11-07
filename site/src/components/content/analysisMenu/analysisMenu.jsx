@@ -15,11 +15,11 @@ import _ from 'lodash';
 
 
 function AnalysisMenu(){
-    const [analysis, displayAnalysis, showAnalysis, setShowAnalysis, analyses] = useAnalysis();
+    const [analysis, displayAnalysis,showAnalysis, setShowAnalysis, analyses, prepareLayersForAnalysis, addAreaToFeature, showAnalysisMenu, setShowAnalysisMenu, showCreateLayerMode, setShowCreateLayerMode] = useAnalysis();
     const [anchorEl, setAnchorEl] = React.useState(null);   
     const open = Boolean(anchorEl);
     const [icon, setIcon] = useState(<ArrowDropUpIcon />);
-
+    
     
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -38,8 +38,9 @@ function AnalysisMenu(){
 
     return (
         <>
-            <AnalysisDropDownContainer>
+            <AnalysisDropDownContainer >
                 <AnalysisButton
+                    sx = {{display: showAnalysisMenu}}
                     id="fade-button"
                     aria-controls={open ? 'fade-menu' : undefined}
                     aria-haspopup="true"

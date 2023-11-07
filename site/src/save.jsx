@@ -4,7 +4,7 @@ import React, {useState} from "react";
 import Content from "./components/content/content";
 import ThemeContext, {themes} from "./contexts/theme";
 import { Box } from "@mui/system";
-
+import { DataProvider } from "./contexts/DataContext";
 
 import {AppContainer, SideBarContainer, FileContainer} from "./components/muiElements/mainComponents";
 function Save() {
@@ -14,7 +14,9 @@ function Save() {
   return (
     <ThemeContext.Provider value={themes.standard}>
         <AppContainer id="App">
-          <Content />
+          <DataProvider>
+            <Content />
+          </DataProvider>
         </AppContainer>
     </ThemeContext.Provider>
   );
