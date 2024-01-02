@@ -40,13 +40,12 @@ function DisplayPosition() {
             <HomeButton sx = {{
                 right: "0",
                 top: "0",
-                }}>
-                <ButtonIcon>
-                    <LocationOnSharpIcon 
-                        style={{fontSize: "50px"}}
-                        onClick={onClick}
-                    />
-                </ButtonIcon>
+                }}
+                onClick={onClick}
+            >
+                <LocationOnSharpIcon 
+                    style={{fontSize: "50px"}}
+                />
             </HomeButton>
         </>
     )

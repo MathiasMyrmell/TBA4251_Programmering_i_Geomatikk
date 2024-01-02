@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useAnalysis } from "../../../contexts/AnalysisContext";
 
 //Styles
-import {MenuItem, Popper, Paper, ClickAwayListener, MenuList, Grow} from '@mui/material';
+import {MenuItem, Popper, Paper, ClickAwayListener, MenuList, Grow, Box} from '@mui/material';
 import { AnalysisButton, AnalysisDropDownContainer } from '../../muiElements/styles';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -47,7 +47,9 @@ function AnalysisMenu(){
                     aria-expanded={open ? 'true' : undefined}
                     onClick={handleClick}
                 >
-                    {icon} Analysis
+                    <Box>
+                        {icon} Analysis
+                    </Box>
                 </AnalysisButton>
                 <Popper
                     open={open}

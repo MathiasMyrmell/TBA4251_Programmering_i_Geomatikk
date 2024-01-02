@@ -29,7 +29,9 @@ import _ from "lodash";
 function MapComponent () {
     const [homePosition, setHomePosition] = useState([63.42295075466846, 10.373325347900392])
     const [map, setMap, baseMap, setBaseMap, data, setData, showMapLayerButton, setShowMapLayerButton, showDisplayPosition, setShowDisplayPosition] = useMap();
-    const [markers, setMarkers] = useState([]);
+    const [_data, _setData, layer, setLayer, clearData, updateData, showContainer, setShowContainer,backgroundContent, setBackgroundContent, hideContentElements, setHideContentElements, markers, setMarkers] = useData();
+
+    // const [markers, setMarkers] = useState([]);
     
 
     // Adding popup to geojson

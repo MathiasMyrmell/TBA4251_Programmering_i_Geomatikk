@@ -54,24 +54,20 @@ const DataProvider = ({ children }) => {
     return colour;
   }
 
-  // function hideContentElements(hide){
-  //   if(hide === true){
-  //     setShowContainer("none");
-  //     setShowSidebar("none");
-  //     // setShowDisplayPosition("none");
-  //   }else{
-  //     setShowContainer("block");
-  //     setShowSidebar("block");
-  //     // setShowDisplayPosition("block");
-  //   }
 
 
-  // }
+  //Functions for createlayer analysis
+  //Markers has to be accessed by both analysis context and data context
+  const [markers, setMarkers] = useState([]);
+
    
-  
-  const value = [data, setData, layer, setLayer, clearData, updateData, showContainer, setShowContainer,backgroundContent, setBackgroundContent, hideContentElements, setHideContentElements];
 
 
+
+
+
+
+  const value = [data, setData, layer, setLayer, clearData, updateData, showContainer, setShowContainer,backgroundContent, setBackgroundContent, hideContentElements, setHideContentElements, markers, setMarkers];
 
   return (
     <DataContext.Provider value={value}>

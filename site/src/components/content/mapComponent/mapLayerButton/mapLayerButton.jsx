@@ -71,13 +71,18 @@ function MapLayerButton(){
                 sx={{
                     top:"80px",
                     right: "0",
-                }}>
-                <ButtonIcon>
+                }}
+                onClick={openWindow}
+            >
+                {/* <ButtonIcon>
                     <LayersIcon 
                         style={{fontSize: "50px"}}
                         onClick={openWindow}
                     />
-                </ButtonIcon>
+                </ButtonIcon> */}
+                <LayersIcon 
+                        style={{fontSize: "50px"}}
+                    />
             </HomeButton>
 
             <AnalysisC style={{display: showChangeBaseMap, zIndex: 10000}}>

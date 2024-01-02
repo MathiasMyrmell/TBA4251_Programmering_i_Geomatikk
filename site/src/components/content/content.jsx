@@ -27,6 +27,10 @@ import "./content.css";
 
 function Content(){
     const [data, setData, layer, setLayer, clearData, updateData, showContainer, setShowContainer,backgroundContent, setBackgroundContent, hideContentElements, setHideContentElements] = useData() 
+    const [baseMap, setBaseMap] = useState("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
+    const [showChangeBaseMap, setShowChangeBaseMap] = useState("none");
+    const [showSidebar, setShowSidebar] = useState("block");
+    
     var [layers ] = useState([]);
 
     useEffect(() => {
@@ -124,9 +128,6 @@ function Content(){
     }, [dimensions.width])
 
 
-    const [baseMap, setBaseMap] = useState("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
-    const [showChangeBaseMap, setShowChangeBaseMap] = useState("none");
-    const [showSidebar, setShowSidebar] = useState("block");
 
     return (
         <>
@@ -135,7 +136,7 @@ function Content(){
                 <MapComponent layers={layers} setShow ={setShowChangeBaseMap}/>
                 <ChangeBaseMap name = {"Change Basemap"} display = {showChangeBaseMap} setShow={setShowChangeBaseMap} setBaseMap = {setBaseMap}/>
             </MapContext>
-            <Container id="SidebarContainer" showSideBar = {showSidebar}
+            <Container id="SidebarContainer" 
                 sx={{
                         position: "absolute",
                         top: "0px",

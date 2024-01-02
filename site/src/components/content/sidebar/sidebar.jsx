@@ -24,7 +24,6 @@ import bygning from "../../../files/bygning.json";
 
 
 
-
 function Sidebar(props) {
 
     const [_data] = useData();
@@ -45,6 +44,7 @@ function Sidebar(props) {
             setShowFileContainer("none");
         }
     };
+
 
     useEffect(() => {
         setLayerList(<ul>
@@ -106,6 +106,8 @@ function Sidebar(props) {
     }
 
 
+  
+
     return (
         <SidebarContainer id ="SideBar" height={sidebarHeight} maxHeight={sidebarHeight} sx={{display: props.display}}>
             <SidebarElement id = "SidebarElementF" height={SidebarElementFHeight} >
@@ -134,10 +136,14 @@ function Sidebar(props) {
             </SidebarElement>
             <SidebarElement id = "SidebarElementL"  height = {SidebarElementLHeight}>
                 <Headings>
-                    <h1>Layers</h1>
+                    <h1>Layers </h1><h1>#{_data.length}</h1>
                 </Headings>
-                    <LayerContainer id="LayerContainer"  maxHeight = {layerContainerHeight}>
+                    <LayerContainer 
+                        id="LayerContainer" 
+                        maxHeight = {layerContainerHeight}
+                    >
                         {layerList}
+
                     </LayerContainer>
             </SidebarElement>
         </SidebarContainer>

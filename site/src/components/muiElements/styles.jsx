@@ -144,6 +144,16 @@ export const FileContainer = styled(Box)({
     margin: "auto",
     overflowY: "auto",
     transition: "opacity 200ms, display 200ms",
+    "&::-webkit-scrollbar": {
+        width: "5px",
+      },
+      "&::-webkit-scrollbar-track": {
+        // backgroundColor: "green"
+      },
+      "&::-webkit-scrollbar-thumb": {
+        backgroundColor: theme.palette.textColor.main,
+        borderRadius: 2.5
+      },
 });
 
 //FileCard
@@ -170,8 +180,19 @@ export const LayerContainer = styled(Box)({
     overflowX: "none",
     margin: "0",
     padding: "0 0 5px 0",
-    overflowY: "auto",
-});
+    "&::-webkit-scrollbar": {
+        width: "5px",
+      },
+      "&::-webkit-scrollbar-track": {
+        // backgroundColor: "green"
+      },
+      "&::-webkit-scrollbar-thumb": {
+        backgroundColor: theme.palette.textColor.main,
+        borderRadius: 2.5
+      },
+
+     
+    });
 
 //ChangeNameContainer
 export const ChangeNameContainer = styled(Box)({
@@ -193,7 +214,7 @@ export const Headings = styled(Box) ({
     color: theme.palette.textColor.main,
     margin: "0 0 0 0",
     display: "grid",
-    gridTemplateColumns: "auto 70px",
+    gridTemplateColumns: "auto 75px",
     "h1" : {
         margin: "0px",
         fontSize: "30px",
@@ -239,12 +260,16 @@ export const HomeButton = styled(Button)({
     margin: "20px 10px",
     border: "1px solid black",
     borderRadius: "30px",
+    color: theme.palette.textColor.main,
 
     backgroundColor: theme.palette.third.main,
     "&:hover": {
         backgroundColor: theme.palette.hover.main,
     },
 });
+
+
+
 
 
 //Lat Long box
@@ -269,7 +294,7 @@ export const LatLongBox = styled(Box)({
 export const AddButton = styled(IconButton)({
     width: "40px",
     color: theme.palette.textColor.main,
-});
+}); 
 
 
 ////LayerCard
@@ -357,8 +382,9 @@ export const AnalysisMenuContainer = styled(Card)({
 
 //Analysis Button
 export const AnalysisButton = styled(Button)({
-    height: "40px",
-    margin: "10px 20px",
+    height: "50px",
+    width: "150px",
+    margin: "0px 20px",
     border: "4px solid ",
     borderColor: theme.palette.secondary.main,
     borderRadius: "20px",
@@ -379,6 +405,14 @@ export const AnalysisButton = styled(Button)({
         color: theme.palette.textColor.main,
     },
     "& .MuiSvgIcon-root": {
+        color: theme.palette.textColor.main,
+    },
+    "& .MuiBox-root": {
+        height: "24px",
+        width: "100%",
+        color: "white",
+        display: "grid",
+        gridTemplateColumns: "40px 75px",
         color: theme.palette.textColor.main,
     },
 

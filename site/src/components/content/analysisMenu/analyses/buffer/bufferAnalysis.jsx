@@ -69,6 +69,7 @@ function BufferAnalysis(){
         
         clearInput();
         setShowAnalysis("none");
+        
 
     }
 
@@ -99,7 +100,10 @@ function BufferAnalysis(){
             return true;
         }
     }
-    
+
+
+
+
     return(
         <>
             <DropDownMenu >
@@ -141,6 +145,7 @@ function BufferAnalysis(){
             >
                 <NoteAddIcon style={{fontSize: "40px"}}/>
             </ButtonIcon>
+         
         </>
     )
 };

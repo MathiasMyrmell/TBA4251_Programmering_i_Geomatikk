@@ -10,7 +10,27 @@ li{
     width: 100%;
 }
  
-#layerCardContainer{
+/* #layerCardContainer{
     height: 100%;
     overflow: scroll;
-}
+} */
+
+
+
+/* 
+width
+::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  } */

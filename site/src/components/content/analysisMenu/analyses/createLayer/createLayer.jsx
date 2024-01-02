@@ -7,7 +7,7 @@ import { useData } from "../../../../../contexts/DataContext.jsx";
 import { useAnalysis } from "../../../../../contexts/AnalysisContext.jsx";
 
 //Styles
-import { Box, Chip, InputLabel, Select, MenuItem, OutlinedInput, TextField} from "@mui/material";
+import { Box, Chip, InputLabel, Select, MenuItem, OutlinedInput, TextField, Card} from "@mui/material";
 import {  ButtonIcon } from "../../../../muiElements/styles.jsx";
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import CheckIcon from '@mui/icons-material/Check';
@@ -30,9 +30,9 @@ function CreateLayer(){
 
     return (
         <>
-            <TextField>
-                {"Hello"}
-            </TextField>
+            <Card>
+                hello
+            </Card>
             <ButtonIcon
                 onClick={()=> startCreateLayer()}
                 style={{position: "fixed",right:"0", bottom: "0", margin: "10px"}}
