@@ -1,14 +1,13 @@
 import { React, useState, useEffect } from 'react';
 //Components
-import DiffAnalysis from "./differenceAnalysis.jsx";
+import DiffAnalysis from "./differenceAnalysis";
 
 //Contexts 
 import { useData } from "../../../../../contexts/DataContext.jsx";
-import { useAnalysis } from "../../../../../contexts/AnalysisContext.jsx";
 
 //Styles
-import { Box, Chip, InputLabel, Select, MenuItem, OutlinedInput} from "@mui/material";
-import { DropDownMenu , ButtonIcon, DropDownFieldError, DropDownField, DropDownItem, DDChip, DropDownFeatureSelect} from "../../../../muiElements/styles.jsx";
+import { InputLabel, MenuItem } from "@mui/material";
+import { DropDownMenu , ButtonIcon, DropDownFieldError, DropDownField } from "../../../../muiElements/styles.jsx";
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 
 
@@ -19,11 +18,10 @@ import _ from "lodash";
 
 
 function DifferenceAnalysis(){
+    const [data, setData, removeData, analysis, prepareLayersForAnalysis, displayAnalysis,showAnalysis, setShowAnalysis] = useData()
     const [firstLayer, setFirstLayer] = useState({id:"none", name:"none", colour:"none", data:"none", value:""});
     const [secondLayer, setSecondLayer] = useState({id:"none", name:"none", colour:"none", data:"none", value:""});
     const [layerErrorMessage, setLayerErrorMessage] = useState("");
-    const [data, setData] = useData()
-    const [analysis, displayAnalysis,showAnalysis, setShowAnalysis, analyses, prepareLayersForAnalysis, addAreaToFeature] = useAnalysis();
 
     function clearInput(){
         setFirstLayer({id:"none", name:"none", colour:"none", data:"none", value:""});
@@ -48,7 +46,7 @@ function DifferenceAnalysis(){
 
     }, [firstLayer,secondLayer])
 
-
+ 
     function executeDifferenceAnalysis(){
         //Check if chosen layers are valid
         let validLayer = _checkValidLayer();
@@ -68,8 +66,9 @@ function DifferenceAnalysis(){
         // Add area to features
         let layerData = turf.featureCollection([])
         for(let i = 0; i < analysis.result.features.length; i++){
-            layerData.features.push(addAreaToFeature(analysis.result.features[i]));
+            layerData.features.push(analysis.result.features[i]);
         }
+        console.log("layerData", layerData)
 
         // FINAL REPRESENTATION
         // Add new layer to data

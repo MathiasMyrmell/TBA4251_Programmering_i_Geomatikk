@@ -145,13 +145,11 @@ class Node {
             return dataFromChildren[0]
         }
 
-
-
         //If more than one featureCollection, merge featureCollections and dissolve them
         //Merge
         let combinedFeatureCollections  = this._combineFeatureCollectionsDifference(dataFromChildren)
+        
         //Dissolve
-
         //TODO: Finn ut av dette
         //ligger inne issues på githuben demmes om at denne ikke funker
         let dissolved

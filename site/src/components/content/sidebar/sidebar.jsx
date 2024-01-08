@@ -23,9 +23,7 @@ import vann from "../../../files/vann.json";
 import bygning from "../../../files/bygning.json";
 
 
-
 function Sidebar(props) {
-
     const [_data] = useData();
     const [fileIcon, setFileIcon] = useState(<ArrowDropDownIcon />);
 
@@ -143,7 +141,6 @@ function Sidebar(props) {
                         maxHeight = {layerContainerHeight}
                     >
                         {layerList}
-
                     </LayerContainer>
             </SidebarElement>
         </SidebarContainer>

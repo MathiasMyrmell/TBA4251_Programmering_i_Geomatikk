@@ -2,21 +2,23 @@ import React, {useState, useEffect } from "react";
 
 //Components
 import ChangeName from "./changeName/changeName";
+import Colourchanger from "./colourChanger/colourChanger";
 
 //Contexts
 import { useLayer } from "../../../../contexts/LayerCardContext";
 
-
 //Styles
-import { MenuItem } from "@mui/material";
-import { LCard, ButtonIcon, ShowSwitch, CardName, LCardDropDown, LayerCardButtons} from "../../../muiElements/styles";
+import { MenuItem, Box } from "@mui/material";
+import { Colourchangercontainer, LCard, ButtonIcon, ShowSwitch, CardName, LCardDropDown, LayerCardButtons} from "../../../muiElements/styles";
 import CircleIcon from '@mui/icons-material/Circle';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import SettingsIcon from '@mui/icons-material/Settings';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
+import CloseIcon from '@mui/icons-material/Close';
 
 //Div
 import { v4 as uuid } from "uuid";
+import { SliderPicker } from 'react-color';
 
 
 function LayerCard(props) {
@@ -27,75 +29,46 @@ function LayerCard(props) {
     const [colourChanger, setColourChanger] = useState(null);
     const [settingsMenu, setSettingsMenu] = useState(null);
     const [showChangeName, setShowChangeName] = useState("none");
-
     const [removeItemFromDataL, handleCheckboxChangeL, handleColourChangeL, changeLayerNameL, getLayerName] = useLayer();
-    const [errorMessage, setErrorMessage] = useState("");
-
 
     //checkbox value
     const [checkboxValue, setCheckboxValue] = useState(props.value);
     
-    useEffect (() => {
+    //Change colour on colourchange button to match layer colour
+    useEffect(() => {
         setColour(props.colour);
-        setName();
-    }, [])
+    }, [props.colour])
 
-
-    function setName(){
-        // let layer = data.find((layer) => layer.id === id);
-        // setCardName(layer.name);
-        let layerName = getLayerName(id);
-        setCardName(layerName);
-    }
- 
+    //Change checkbox value on checkbox change
     function handleCheckbox(id){
         setCheckboxValue(!checkboxValue)
         handleCheckboxChangeL(id);
-        // handleCheckboxChange(id);
     }
-
-    function handleColour(c){
-        setColour(c);
-        handleColourChangeL(id, c);
-        // handleColourChange(id, c);
-        closeColourChanger();
-    }
-
-    const colours = [
-        "red",
-        "blue",
-        "green",
-        "yellow",
-        "orange",
-        "purple",
-        "pink",
-        "brown",
-        "grey",
-        "black",
-        "white"
-    ]
 
     // ColorChangerToggler
     const openColourChanger = e => {
-        console.log("openColourChanger", e.currentTarget)
         setColourChanger(e.currentTarget);
     };
+    
+    //Close colour changer
     const closeColourChanger = () => {
         setColourChanger(null);
     };
 
+    //Open settings menu
     const openSettingsMenu = e => {
         setSettingsMenu(e.currentTarget);
     };
+
+    //Close Settings menu
     const closeSettingsMenu = () => {
         setSettingsMenu(null);
     };
 
+    //Remove this layer from data
     function deleteLayer(){
         removeItemFromDataL(id);
-        // removeItemFromData(id);
     }
-
 
     //Change name
     function changeName(){
@@ -106,13 +79,11 @@ function LayerCard(props) {
         }
     }
 
+    //Change name on layercard
     function changeCardName(newName){
-        // updateName(id, newName);
         changeLayerNameL(id, newName)
         setCardName(newName);
     }
-
-
 
     return (
         <>
@@ -148,12 +119,26 @@ function LayerCard(props) {
                         keepMounted
                         open={Boolean(colourChanger)}
                         onClose={closeColourChanger}
+
+                        sx={{
+                            position: "absolute",
+                            top: "0px",
+                            left: "-100px",
+                        }}
                     >
-                        {colours.map(colour => (
-                            <MenuItem onClick={()=>handleColour(colour)} key={uuid()}>
-                                {<CircleIcon style={{color:colour}}/>}
-                            </MenuItem>
-                        ))}
+                        <Colourchangercontainer>
+                            <Colourchanger id = {id} colour = {props.colour}/>
+                            <ButtonIcon
+                                onClick={() => closeColourChanger()}
+                                style={{
+                                    position: "absolute",
+                                    right:"0", 
+                                    top: "0",
+                                    margin: "10px"}}
+                            >
+                                <CloseIcon style={{fontSize: "30px"}}/>
+                            </ButtonIcon>
+                        </Colourchangercontainer>
                     </LCardDropDown>
                     
                     {/* Settings button */}

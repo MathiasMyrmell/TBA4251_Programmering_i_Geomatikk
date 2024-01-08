@@ -194,6 +194,14 @@ export const LayerContainer = styled(Box)({
      
     });
 
+export const Colourchangercontainer = styled(Box)({
+    width: "400px",
+    margin: "0 0 0 10px",
+    display: "grid",
+    gridTemplateColumns: "350px 30px",
+
+});
+
 //ChangeNameContainer
 export const ChangeNameContainer = styled(Box)({
     width: "500px",
@@ -351,7 +359,7 @@ export const ShowSwitch = styled(Switch)({
             backgroundColor: theme.palette.textColor.main,
         },
 });
-
+ 
 //DropDownMenus
 export const LCardDropDown = styled(Menu)({
     zIndex: "3",

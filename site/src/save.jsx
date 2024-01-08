@@ -7,10 +7,8 @@ import { Box } from "@mui/system";
 import { DataProvider } from "./contexts/DataContext";
 
 import {AppContainer, SideBarContainer, FileContainer} from "./components/muiElements/mainComponents";
+
 function Save() {
-
-  
-
   return (
     <ThemeContext.Provider value={themes.standard}>
         <AppContainer id="App">

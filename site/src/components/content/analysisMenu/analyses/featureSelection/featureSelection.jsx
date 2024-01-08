@@ -17,13 +17,13 @@ import { v4 as uuid } from "uuid";
 import _ from "lodash";
 
 function FeatureSelection(){
-    const [analysis, displayAnalysis, showAnalysis, setShowAnalysis, analyses] = useAnalysis();
+    // const [analysis, displayAnalysis, showAnalysis, setShowAnalysis, analyses] = useAnalysis();
     const [features, setFeatures] = useState([]);
     const [chosenFeatures, setChosenFeatures] = useState([]);
     const [featureErrorMessage, setFeatureErrorMessage] = useState("");
     const [layerErrorMessage, setLayerErrorMessage] = useState("");
     const [layer, setLayer] = useState({id:"none", name:"none", colour:"none", data:"none", value:""});
-    const [data, setData] = useData()
+    const [data, setData, removeData, analysis, prepareLayersForAnalysis, displayAnalysis,showAnalysis, setShowAnalysis, analyses, showAnalysisMenu, setShowAnalysisMenu, showCreateLayerMode, setShowCreateLayerMode, showContainer, setShowContainer,backgroundContent, setBackgroundContent, hideContentElements, setHideContentElements, markers, setMarkers] = useData()
 
     useEffect(() => {
 
@@ -50,10 +50,6 @@ function FeatureSelection(){
     function filterFeatures(data){
         setFeatures([]);
         let newFeatures = [];
-        console.log("layer", data)
-
-        console.log(data[0].properties.Type)
-        // newFeatures.push(data[0].properties.OBJTYPE)
         newFeatures.push(data[0].properties.Type)
         compareLoop: for( let i = 0; i < data.length; i++){
             let newFeature = data[i].properties.Type;

@@ -18,13 +18,11 @@ import * as turf from '@turf/turf';
  
  
 function BufferAnalysis(){
+    const [data, setData, removeData, analysis, prepareLayersForAnalysis, displayAnalysis,showAnalysis, setShowAnalysis, analyses, showAnalysisMenu, setShowAnalysisMenu, showCreateLayerMode, setShowCreateLayerMode, showContainer, setShowContainer,backgroundContent, setBackgroundContent, hideContentElements, setHideContentElements, markers, setMarkers] = useData()
     const [layer, setLayer] = useState({id:"none", name:"none", colour:"none", data:"none", value:""});
     const [bufferDistance, setBufferDistance] = useState("");
     const [bufferDistanceErrorMessage, setbufferDistanceErrorMessage] = useState(" ");
     const [layerErrorMessage, setLayerErrorMessage] = useState("");
-    const [data, setData] = useData()
-
-    const [analysis, displayAnalysis,showAnalysis, setShowAnalysis, analyses] = useAnalysis();
 
     // //Functions for execute button
     // Clear input fields
@@ -57,10 +55,10 @@ function BufferAnalysis(){
         // Dissolve buffers
         let dissolved = turf.dissolve(buffer);
 
-        // Calculate area of dissolved buffers
+        // Create feature collection
         let layerData = turf.featureCollection([])
         for(let i = 0; i < dissolved.features.length; i++){
-            layerData.features.push(_addAreaToFeature(dissolved.features[i]));
+            layerData.features.push(dissolved.features[i]);
         }
 
         //Create new layer
@@ -73,12 +71,12 @@ function BufferAnalysis(){
 
     }
 
-    function _addAreaToFeature(feature){
-        feature.properties = {Shape_Area:0}
-        let area = turf.area(feature);
-        feature.properties.Shape_Area = area;
-        return feature;
-    }
+    // function _addAreaToFeature(feature){
+    //     feature.properties = {Shape_Area:0}
+    //     let area = turf.area(feature);
+    //     feature.properties.Shape_Area = area;
+    //     return feature;
+    // }
 
 
     function checkValidLayer(){

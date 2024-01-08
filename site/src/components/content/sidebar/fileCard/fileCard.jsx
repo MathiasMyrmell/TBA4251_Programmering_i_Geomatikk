@@ -8,7 +8,7 @@ import AddIcon from '@mui/icons-material/Add';
 function FileCard(props){
     const [file, _setFile] = useState(props.file);
     const [fileName, _setFileName] = useState(props.fileName);
-    const [_data, setData] = useData();
+    const [_data, setData, removeData, analysis, prepareLayersForAnalysis, displayAnalysis,showAnalysis, setShowAnalysis, analyses, showAnalysisMenu, setShowAnalysisMenu, showCreateLayerMode, setShowCreateLayerMode, showContainer, setShowContainer,backgroundContent, setBackgroundContent, hideContentElements, setHideContentElements, markers, setMarkers] = useData();
 
     return(
         <FileCardContainer>

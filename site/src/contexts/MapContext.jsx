@@ -5,7 +5,7 @@ import {useData} from "./DataContext";
 const DataContext = createContext(undefined)
 
 const MapContext = ({ children}) => {
-    const [data, setData, layer, setLayer, clearData, updateData, showContainer, setShowContainer,backgroundContent, setBackgroundContent, hideContentElements, setHideContentElements] = useData()
+    const [data, setData, removeData, prepareLayersForAnalysis, showContainer, setShowContainer,backgroundContent, setBackgroundContent, hideContentElements, setHideContentElements, markers, setMarkers] = useData()
 
     const [map, setMap] = useState(null);
     const [baseMap, setBaseMap] = useState("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")

@@ -3,6 +3,7 @@ import { useState } from 'react';
 
 //Contexts
 import { useAnalysis } from "../../../contexts/AnalysisContext";
+import { useData } from "../../../contexts/DataContext";
 
 //Styles
 import {MenuItem, Popper, Paper, ClickAwayListener, MenuList, Grow, Box} from '@mui/material';
@@ -15,7 +16,8 @@ import _ from 'lodash';
 
 
 function AnalysisMenu(){
-    const [analysis, displayAnalysis,showAnalysis, setShowAnalysis, analyses, prepareLayersForAnalysis, addAreaToFeature, showAnalysisMenu, setShowAnalysisMenu, showCreateLayerMode, setShowCreateLayerMode] = useAnalysis();
+    const [data, setData, removeData, analysis, prepareLayersForAnalysis, displayAnalysis,showAnalysis, setShowAnalysis, analyses, showAnalysisMenu, setShowAnalysisMenu, showCreateLayerMode, setShowCreateLayerMode, showContainer, setShowContainer,backgroundContent, setBackgroundContent, hideContentElements, setHideContentElements, markers, setMarkers] = useData();
+    // const [analysis, displayAnalysis,showAnalysis, setShowAnalysis, analyses, prepareLayersForAnalysis, addAreaToFeature, showAnalysisMenu, setShowAnalysisMenu, showCreateLayerMode, setShowCreateLayerMode] = useAnalysis();
     const [anchorEl, setAnchorEl] = React.useState(null);   
     const open = Boolean(anchorEl);
     const [icon, setIcon] = useState(<ArrowDropUpIcon />);

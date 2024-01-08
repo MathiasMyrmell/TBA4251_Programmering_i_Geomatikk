@@ -10,7 +10,7 @@ class UAnalysis{
         this.result = null
         this.performUnion()
     }
-
+ 
     performUnion(){
         //Create tree structure
         const tree = new UnionTree("union", this.minMax)
