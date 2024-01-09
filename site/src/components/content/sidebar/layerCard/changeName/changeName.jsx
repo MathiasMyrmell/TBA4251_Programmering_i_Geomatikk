@@ -1,4 +1,5 @@
 import React, {useState } from "react";
+
 //Styles
 import { Headings, AnalysisC, InputField, ButtonIcon} from "../../../../muiElements/styles";
 import CloseIcon from '@mui/icons-material/Close';
@@ -23,7 +24,6 @@ function ChangeName(props) {
     }
 
     function setNewName(newName){
-        console.log("newName", newName)
         validName(newName);
         setName(newName);
     }
@@ -57,7 +57,6 @@ function ChangeName(props) {
                 </ButtonIcon>
 
                 <InputField 
-                    // id="outlined-basic"
                     label="Old name"
                     variant="outlined"
                     value={props.oldName}
@@ -67,7 +66,6 @@ function ChangeName(props) {
                 />
 
                 <InputField 
-                    // id="outlined-basic"
                     label="New name"
                     variant="outlined"
                     value={newName}

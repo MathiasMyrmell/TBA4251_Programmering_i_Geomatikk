@@ -1,29 +1,25 @@
 import { React, useState, useEffect } from 'react';
-//Components
-
 
 //Contexts
 import { useData } from "../../../../../contexts/DataContext";
-import { useAnalysis } from "../../../../../contexts/AnalysisContext";
 
 //Styles
-import { Box, Chip, InputLabel, Select, MenuItem, OutlinedInput} from "@mui/material";
-import { DropDownMenu , ButtonIcon, DropDownFieldError, DropDownField, DropDownItem, DDChip, DropDownFeatureSelect} from "../../../../muiElements/styles";
+import { Chip, InputLabel } from "@mui/material";
+import { DropDownMenu , ButtonIcon, DropDownFieldError, DropDownField, DropDownItem, DropDownFeatureSelect} from "../../../../muiElements/styles";
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
-
 
 //Div
 import { v4 as uuid } from "uuid";
 import _ from "lodash";
+import * as turf from '@turf/turf';
 
 function FeatureSelection(){
-    const [analysis, displayAnalysis, showAnalysis, setShowAnalysis, analyses] = useAnalysis();
     const [features, setFeatures] = useState([]);
     const [chosenFeatures, setChosenFeatures] = useState([]);
     const [featureErrorMessage, setFeatureErrorMessage] = useState("");
     const [layerErrorMessage, setLayerErrorMessage] = useState("");
     const [layer, setLayer] = useState({id:"none", name:"none", colour:"none", data:"none", value:""});
-    const [data, setData] = useData()
+    const [data, setData, removeData, analysis, prepareLayersForAnalysis, displayAnalysis,showAnalysis, setShowAnalysis] = useData()
 
     useEffect(() => {
 
@@ -50,10 +46,6 @@ function FeatureSelection(){
     function filterFeatures(data){
         setFeatures([]);
         let newFeatures = [];
-        console.log("layer", data)
-
-        console.log(data[0].properties.Type)
-        // newFeatures.push(data[0].properties.OBJTYPE)
         newFeatures.push(data[0].properties.Type)
         compareLoop: for( let i = 0; i < data.length; i++){
             let newFeature = data[i].properties.Type;
@@ -88,21 +80,16 @@ function FeatureSelection(){
             return;
         }
     
-        console.log("Create new layer");
-        // console.log(layer)
         let baseLayer = data.find((l) => l.id === layer.value);
-        // console.log(baseLayer);
         let newFeatures = [];
-        // console.log(chosenFeatures);
-
         baseLayer.data.features.map(feature => {
             if(_.includes(chosenFeatures,feature.properties.Type)){
                 newFeatures.push(feature);
             }
         })
-        let newData = {type:"FeatureCollection", features:newFeatures};
+        let newData = turf.featureCollection(newFeatures);
         let newLayer = {id:uuid(), name:baseLayer.name+"-feature-selecion", colour:"", data:newData, value:true};
-        // console.log(newLayer);
+        
         setData(newLayer);
         clearInput();
         setShowAnalysis("none");

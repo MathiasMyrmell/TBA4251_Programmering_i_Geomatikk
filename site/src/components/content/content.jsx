@@ -4,12 +4,10 @@ import React, {useEffect, useState} from "react";
 import Sidebar from "./sidebar/sidebar";
 import MapComponent from "./mapComponent/mapComponent";
 import LayerCard from "./sidebar/layerCard/layerCard";
-import Analysis from "./analysisMenu/Analysis";
+import Analysis from "./analysisMenu/analysis";
 
 //Contexts
-import { DataProvider } from "../../contexts/DataContext";
 import { useData } from "../../contexts/DataContext";
-import { AnalysisContext } from "../../contexts/AnalysisContext";
 import { MapContext } from "../../contexts/MapContext";
 
 
@@ -17,16 +15,14 @@ import { MapContext } from "../../contexts/MapContext";
 import {Container, Box, IconButton} from '@mui/material';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
-import ChangeBaseMap from "./mapComponent/changeBaseMap/changeBaseMap";
-
-//Div
-import "./content.css";
-
-
 
 
 function Content(){
-    const [data, setData, layer, setLayer, clearData, updateData, showContainer, setShowContainer,backgroundContent, setBackgroundContent, hideContentElements, setHideContentElements] = useData() 
+    const [data, setData, removeData, analysis, prepareLayersForAnalysis, displayAnalysis,showAnalysis, setShowAnalysis, analyses, showAnalysisMenu, setShowAnalysisMenu, showCreateLayerMode, setShowCreateLayerMode, showContainer, setShowContainer,backgroundContent, setBackgroundContent, hideContentElements, setHideContentElements, markers, setMarkers] = useData() 
+    const [baseMap, setBaseMap] = useState("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
+    const [showChangeBaseMap, setShowChangeBaseMap] = useState("none");
+    const [showSidebar, setShowSidebar] = useState("block");
+    
     var [layers ] = useState([]);
 
     useEffect(() => {
@@ -74,11 +70,8 @@ function Content(){
         }
     }
 
-
     const [sidebarWidth, setSidebarWidth] = useState(400);
     const [icon, setIcon] = useState(<ArrowLeftIcon/>);
-
-
     const [dimensions, setDimensions] = React.useState({ 
         height: window.innerHeight,
         width: window.innerWidth
@@ -102,12 +95,9 @@ function Content(){
                 width: window.innerWidth
             })
         }, 0)
-
         window.addEventListener('resize', debouncedHandleResize)
-
         return _ => {
             window.removeEventListener('resize', debouncedHandleResize)
-
         }
     })
 
@@ -123,19 +113,13 @@ function Content(){
         }
     }, [dimensions.width])
 
-
-    const [baseMap, setBaseMap] = useState("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
-    const [showChangeBaseMap, setShowChangeBaseMap] = useState("none");
-    const [showSidebar, setShowSidebar] = useState("block");
-
     return (
         <>
         {/* <DataProvider> */}
             <MapContext>
                 <MapComponent layers={layers} setShow ={setShowChangeBaseMap}/>
-                <ChangeBaseMap name = {"Change Basemap"} display = {showChangeBaseMap} setShow={setShowChangeBaseMap} setBaseMap = {setBaseMap}/>
             </MapContext>
-            <Container id="SidebarContainer" showSideBar = {showSidebar}
+            <Container id="SidebarContainer" 
                 sx={{
                         position: "absolute",
                         top: "0px",
@@ -156,14 +140,14 @@ function Content(){
                         },
                         "@media (max-width: 700px)": {
                             width: "calc(950px/3)",
-                    
                         },
-
                 }}
             >
-                <Sidebar addLayers={addLayers} handleChange={handleChange} display ={showSidebar}
+                <Sidebar 
+                    addLayers={addLayers} 
+                    handleChange={handleChange} 
+                    display ={showSidebar}
                 />
-        
                 <Box 
                     sx={{
                         width: "40px",
@@ -173,14 +157,12 @@ function Content(){
                         border: "2px solid #FF8C32",
                         borderLeft: "none",
                         backgroundColor: "#06113C",
-
                     }}
                 >
                     <IconButton onClick={toggleSideBar}
                         sx={{
                             color: "#FF8C32",
                             padding: "8px 0px",
-
                             "& .MuiButtonBase-root": {
                                 height: "40px",
                                 maxWidth: "40px",
@@ -188,30 +170,23 @@ function Content(){
                                 alignSelf: "center",
                                 justifySelf: "center",
                             },
-                            
                             "& .MuiSvgIcon-root": {
                                 height: "40px",
                                 width: "40px " ,
                                 color: "#FF8C32",
                                 fontSize: "40px",
-                        
                             },
                             "& .MuiTouchRipple-child": {
                                 backgroundColor: "#FF8C32",
                             },
-                            
                         }}
                     >
                         {icon}
                     </IconButton>
                 </Box>
-                
-
             </Container>
-            <AnalysisContext>
-                <Analysis/>
-            </AnalysisContext>
-        {/* </DataProvider> */}
+            <Analysis/>
+        
         </>
     );
 }

@@ -1,14 +1,18 @@
 import React, {useEffect, useLayoutEffect, useState} from "react";
-import "./sidebar.css";
-import LayerCard from "./layerCard/layerCard";
 
-import { useData } from "../../../contexts/DataContext";
-import { FileContainer, LayerContainer, SidebarContainer, Headings, SidebarElement, HeadingButton} from "../../muiElements/styles";
+//Components
+import LayerCard from "./layerCard/layerCard";
 import FileCard from "./fileCard/fileCard";
+
+//Contexts
+import { useData } from "../../../contexts/DataContext";
 import { LayerCardContext } from "../../../contexts/LayerCardContext";
-//MUI
+
+//Styles
+import { FileContainer, LayerContainer, SidebarContainer, Headings, SidebarElement, HeadingButton} from "../../muiElements/styles";
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+
 //Old Files
 import arealbrukG from "../../../filesOld/arealbrukG.json";
 import vannG from "../../../filesOld/vannG.json";
@@ -26,7 +30,6 @@ import bygning from "../../../files/bygning.json";
 
 
 function Sidebar(props) {
-
     const [_data] = useData();
     const [fileIcon, setFileIcon] = useState(<ArrowDropDownIcon />);
 
@@ -39,18 +42,14 @@ function Sidebar(props) {
     const [showFileContainer, setShowFileContainer] = useState("none");
 
     const toggleFileDisplay = () => {
-        if(showFileContainer === "none"){
-            setShowFileContainer("block");
-        }else{
-            setShowFileContainer("none");
-        }
+        showFileContainer === "none" ? setShowFileContainer("block") : setShowFileContainer("none");
     };
 
     useEffect(() => {
-        setLayerList(<ul>
+        setLayerList(<ul style = {{listStyleType: "none",margin: "0",padding: "0",marginTop: "10px",width: "100%"}}>
             {_data.map((layer, i) => {
                 return(
-                    <li id={i} key={i} style={{position: "relative"}}>
+                    <li id={i} key={i} style={{position: "relative", width: "100%"}}>
                         <LayerCardContext>
                             <LayerCard key={layer.id} id = {layer.id} name = {layer.name} colour = {layer.colour} data = {layer.data} value = {layer.value} />
                         </LayerCardContext>
@@ -61,8 +60,7 @@ function Sidebar(props) {
     }, [_data])
 
     useEffect(() => {
-        if(showFileContainer === "none"){setFileIcon(<ArrowDropDownIcon />);}
-        else{setFileIcon(<ArrowDropUpIcon />);}
+        showFileContainer === "none" ? setFileIcon(<ArrowDropDownIcon />) : setFileIcon(<ArrowDropUpIcon />);
     }, [showFileContainer])
 
 
@@ -84,11 +82,7 @@ function Sidebar(props) {
         ////Calculate height of SidebarElementF
         //SidebarElementF height
         let SidebarElementFHeight;
-        if(showFileContainer === "block"){
-            SidebarElementFHeight = 260;
-        }else{
-            SidebarElementFHeight = 60;
-        }
+        showFileContainer === "block" ? SidebarElementFHeight = 260 : SidebarElementFHeight = 60;
 
         ////Calculate height of SidebarElementL
         //SidebarElementL height
@@ -104,7 +98,6 @@ function Sidebar(props) {
         setSidebarElementLHeight(SidebarElementLHeight);
         setlayerContainerHeight(layerContainerHeight);
     }
-
 
     return (
         <SidebarContainer id ="SideBar" height={sidebarHeight} maxHeight={sidebarHeight} sx={{display: props.display}}>
@@ -134,9 +127,12 @@ function Sidebar(props) {
             </SidebarElement>
             <SidebarElement id = "SidebarElementL"  height = {SidebarElementLHeight}>
                 <Headings>
-                    <h1>Layers</h1>
+                    <h1>Layers </h1><h1>#{_data.length}</h1>
                 </Headings>
-                    <LayerContainer id="LayerContainer"  maxHeight = {layerContainerHeight}>
+                    <LayerContainer 
+                        id="LayerContainer" 
+                        maxHeight = {layerContainerHeight}
+                    >
                         {layerList}
                     </LayerContainer>
             </SidebarElement>

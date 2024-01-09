@@ -2,10 +2,10 @@ import * as React from 'react';
 import { useState } from 'react';
 
 //Contexts
-import { useAnalysis } from "../../../contexts/AnalysisContext";
+import { useData } from "../../../contexts/DataContext";
 
 //Styles
-import {MenuItem, Popper, Paper, ClickAwayListener, MenuList, Grow} from '@mui/material';
+import {MenuItem, Popper, Paper, ClickAwayListener, MenuList, Grow, Box} from '@mui/material';
 import { AnalysisButton, AnalysisDropDownContainer } from '../../muiElements/styles';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -13,10 +13,9 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 //Div
 import _ from 'lodash';
 
-
 function AnalysisMenu(){
-    const [analysis, displayAnalysis,showAnalysis, setShowAnalysis, analyses, prepareLayersForAnalysis, addAreaToFeature, showAnalysisMenu, setShowAnalysisMenu, showCreateLayerMode, setShowCreateLayerMode] = useAnalysis();
-    const [anchorEl, setAnchorEl] = React.useState(null);   
+    const [data, setData, removeData, analysis, prepareLayersForAnalysis, displayAnalysis,showAnalysis, setShowAnalysis, analyses, showAnalysisMenu, setShowAnalysisMenu, showCreateLayerMode, setShowCreateLayerMode] = useData();
+    const [anchorEl, setAnchorEl] = useState(null);   
     const open = Boolean(anchorEl);
     const [icon, setIcon] = useState(<ArrowDropUpIcon />);
     
@@ -35,6 +34,12 @@ function AnalysisMenu(){
         displayAnalysis(analysisName)
         handleClose();
     };
+    
+
+    function displayCreateLayer(){
+        handleClose();
+        setShowCreateLayerMode(true)
+    }
 
     return (
         <>
@@ -47,7 +52,9 @@ function AnalysisMenu(){
                     aria-expanded={open ? 'true' : undefined}
                     onClick={handleClick}
                 >
-                    {icon} Analysis
+                    <Box>
+                        {icon} Analysis
+                    </Box>
                 </AnalysisButton>
                 <Popper
                     open={open}
@@ -77,6 +84,7 @@ function AnalysisMenu(){
                                         <MenuItem id={i} key={i} onClick={() => displayAnalysisWindow(key)}>{analyses[key].name}</MenuItem>
                                     ) 
                                 })}
+                                <MenuItem id = {0} key = {0} onClick={() => displayCreateLayer()}>Create Layer</MenuItem>
                             </MenuList>
                             </ClickAwayListener>
                         </Paper>

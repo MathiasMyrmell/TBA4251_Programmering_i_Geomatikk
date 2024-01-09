@@ -10,39 +10,33 @@ class UAnalysis{
         this.result = null
         this.performUnion()
     }
-
+ 
     performUnion(){
         //Create tree structure
         const tree = new UnionTree("union", this.minMax)
      
         //Fill tree structure with layers
-        console.log("---Filling tree---")
         tree.fillTree(this.layers)
-        console.log("Filled tree", tree)
      
         //Split layers to fit child nodes, until there is only layers in leaf nodes
-        console.log("---Split layers---")
         tree.splitLayers()
-        console.log("Splitted layers", tree)
     
         //Dissolve layers in leaf nodes
-        console.log("---Dissolving leaf nodes---")
         tree.dissolveLeafNodes()
-        console.log("Leafnodes dissolved", tree)
     
         //Perform difference analysis in each leaf node
-        console.log("---Union on nodes---")
         tree.performUnion()
-        console.log("Union on nodes", tree)
     
         //Dissolve nodes from bottom to top, until there is only one layer in root node
-        console.log("---Combine nodes---")
         tree.dissolveNodes()
-        console.log("nodes combined", tree)
-    
+
+        //If analysis was stopped, return 
+        if(tree.stopAnalysis){
+            this.result = false
+            return
+        }
         this.result = tree.dissolved
     }
-
 
     _findMinMax(layers){
         let minMax = {"minX":[], "maxX":[], "minY":[], "maxY":[]}
@@ -112,6 +106,7 @@ class UnionTree extends TreeStructure {
     constructor(name, minMax) {
         super(name, minMax)
         this.root = new UnionNode(this, this.numChildren, this.depth, this.minX, this.maxX, this.minY, this.maxY, "root")
+        this.stopAnalysis = false
     }
 
     performUnion(){
@@ -181,10 +176,7 @@ class UnionNode extends Node {
             let layer1 = layers[0][i]
             for(let j = 0; j<layers[1].length; j++){
                 let layer2 = layers[1][j]
-                // console.log("layer1", layer1)
-                // console.log("layer2", layer2)
                 let union = turf.union(layer1.geometry, layer2.geometry)
-                // console.log("union", union)
                 unions.push(union)
             }
         }

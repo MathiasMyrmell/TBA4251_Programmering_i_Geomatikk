@@ -10,6 +10,7 @@ class DiffAnalysis {
         this.result = null
         this.performDifference()
     } 
+    
     performDifference() {
     
         //Create tree structure
@@ -193,13 +194,11 @@ class DifferenceNode extends Node{
             if(diff.length === 0){
                 continue
             }
-            // console.log("diff", diff)
             let intersection = diff.pop()
             for(let i = 0; i<diff.length;i++){
                 let newIntersection = turf.intersect(intersection, diff[i])
                 intersection = newIntersection
             }
-            // console.log("intersection", intersection)
 
             // Add result to list of every difference in node
             if(intersection.geometry.type === "Polygon"){
@@ -215,10 +214,7 @@ class DifferenceNode extends Node{
 
         //differences should be x number of polygons, whom are not intersecting. 
         //Only needs to be dissolved
-        // console.log("differences", differences)
-
         if(differences.length<1){
-            // console.log("if zero difference, returning empty ")
             this.analysisResult = null
             return
         }
@@ -227,7 +223,6 @@ class DifferenceNode extends Node{
         //Therefore, dissolve should not loose any data
         let fC = turf.featureCollection(differences)
         let dissolved = turf.dissolve(fC)
-        // console.log("diss", dissolved)
         this.analysisResult = dissolved.features
     }
 }

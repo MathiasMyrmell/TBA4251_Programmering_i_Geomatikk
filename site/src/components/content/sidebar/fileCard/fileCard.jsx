@@ -1,9 +1,14 @@
 import React, {useState} from "react";
-import { FileCardContainer, AddButton } from "../../../muiElements/styles";
+
+//Contexts
 import { useData } from "../../../../contexts/DataContext";
-import { v4 as uuid } from "uuid";
-import { Button, IconButton } from "@mui/material";
+
+//Styles
+import { FileCardContainer, AddButton } from "../../../muiElements/styles";
 import AddIcon from '@mui/icons-material/Add';
+
+//Div
+import { v4 as uuid } from "uuid";
 
 function FileCard(props){
     const [file, _setFile] = useState(props.file);

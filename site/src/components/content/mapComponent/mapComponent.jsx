@@ -1,23 +1,17 @@
-import React, {useEffect, useState, useCallback, useMemo} from "react";
-import { useMapEvent } from 'react-leaflet/hooks'
+import React, { useState, useMemo} from "react";
 
 //Components
-import ChangeBaseMap from "./changeBaseMap/changeBaseMap";
 import MapLayerButton from "./mapLayerButton/mapLayerButton";
 import DisplayPosition from "./displayPosition/displayPosition";
-
 
 //Contexts
 import { useData } from "../../../contexts/DataContext";
 import { useMap } from "../../../contexts/MapContext";
 
-
 //Styles
 import {MapContainerA, ButtonIcon}from "../../muiElements/styles";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import "./mapComponent.css";
-
-
 
 //Div
 import { MapContainer, TileLayer, GeoJSON, ZoomControl, Marker, Popup, useMapEvents} from 'react-leaflet';
@@ -28,9 +22,8 @@ import _ from "lodash";
 // Map component
 function MapComponent () {
     const [homePosition, setHomePosition] = useState([63.42295075466846, 10.373325347900392])
-    const [map, setMap, baseMap, setBaseMap, data, setData, showMapLayerButton, setShowMapLayerButton, showDisplayPosition, setShowDisplayPosition] = useMap();
-    const [markers, setMarkers] = useState([]);
-    
+    const [map, setMap, baseMap, _setBaseMap] = useMap();
+    const [data, setData, removeData, analysis, prepareLayersForAnalysis, displayAnalysis,showAnalysis, setShowAnalysis, analyses, showAnalysisMenu, setShowAnalysisMenu, showCreateLayerMode, setShowCreateLayerMode, showContainer, setShowContainer,backgroundContent, setBackgroundContent, hideContentElements, setHideContentElements, markers, setMarkers] = useData();
 
     // Adding popup to geojson
     function onEachFeature(feature, layer){
@@ -38,17 +31,10 @@ function MapComponent () {
     }
     
     function _whenClick(e){
-        // console.log(e.target.feature.Type)
-        // console.log(e.target.feature.Shape_Area)
         let type = e.target.feature.properties.Type
         let area = Math.round(e.target.feature.properties.Shape_Area,2)
         let popupContent = "<b>"+type+"</b>"+"<br>"+area + " m2" 
         e.target.bindPopup(popupContent).openPopup();
-
-        // console.log(e.target.feature.properties.Type)
-        
-        // console.log(e.target.feature.properties.Shape_Area)
-        // e.target.bindPopup(e.target.feature.properties.OBJTYPE).openPopup();
     }
 
     // Mapstyle
@@ -61,7 +47,7 @@ function MapComponent () {
     function AddPopUp(){
         const popUpAdder = useMapEvents({
             click(e) {
-                if(e.originalEvent.altKey && markers.length < 10){
+                if(e.originalEvent.altKey){
                     addNewMarker([e.latlng.lat,e.latlng.lng])
                 }
             },
@@ -74,16 +60,12 @@ function MapComponent () {
     }
 
     function addNewMarker(position){
-        let marker = {
-            id: uuid(),
-            position: position,
-        }
+        let marker = {id: uuid(), position: position,}
         updateMarkers([...markers, marker])
     }
 
     function removeMarker(marker){
         updateMarkers(_.without(markers, marker))
-        // setMarkers(_.without(markers, marker))
     }
 
     function updateMarkerPosition(marker){
@@ -92,10 +74,8 @@ function MapComponent () {
     }
 
 
-    // tesselate, explode
     function ShowNewCreateLayer(){
         var polygon = turf.polygon([]);
-        var explode = null;
         if(markers.length > 2){
             let polygonCoordinates = []
             for(let i = 0; i < markers.length; i++){
@@ -148,7 +128,6 @@ function MapComponent () {
         )
     }
 
-
     const displayMap = useMemo(
         () => (
             <MapContainer 
@@ -157,8 +136,7 @@ function MapComponent () {
                 scrollWheelZoom={true}
                 ref={setMap}
             >
-                {!showDisplayPosition ? <AddPopUp /> : null}
-                {/* {!showDisplayPosition ? <ShowNewCreateLayer /> : null} */}
+                {showCreateLayerMode ? <AddPopUp /> : null}
                 <ShowNewCreateLayer />
                 
                 <TileLayer
@@ -175,39 +153,20 @@ function MapComponent () {
                         )
                     })}
                 </ul>
-                {/* <MyComponent /> */}
             </MapContainer>
-        ),[data, baseMap, markers, showDisplayPosition],
+        ),[data, baseMap, markers, showCreateLayerMode],
     )
     
-
-
     return (
         <MapContainerA id="MapContainer" >
-            {map && showDisplayPosition ? <DisplayPosition sx={{top:"0"}}/> : null}
+            {map && !showCreateLayerMode ? <DisplayPosition sx={{top:"0"}}/> : null}
             {displayMap}
-            {map && showDisplayPosition ? <MapLayerButton/> : null}
+            {map && !showCreateLayerMode ? <MapLayerButton/> : null}
         </MapContainerA>
     )
 }
 
-// function MyComponent() {
-//     // const map = useMapEvent('click', () => {
-//     //   console.log('click')
-//     // })
-//     const map = useMapEvent({
-//         click(e) {
-//           // setState your coords here
-//           // coords exist in "e.latlng.lat" and "e.latlng.lng"
-//           console.log(e.latlng.lat);
-//           console.log(e.latlng.lng);
-//         },
-//       });
-//     return null
-// }
-
 export default MapComponent;
 
-// setShow={setShowMapLayerButton} show={showMapLayerButton} 
 
 

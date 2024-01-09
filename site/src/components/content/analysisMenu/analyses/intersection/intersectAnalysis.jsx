@@ -4,11 +4,10 @@ import IntersectionAnalysis from "./intersectionAnalysis";
 
 //Contexts
 import { useData } from "../../../../../contexts/DataContext";
-import { useAnalysis } from "../../../../../contexts/AnalysisContext";
 
 //Styles
-import { InputLabel, MenuItem} from "@mui/material";
-import { DropDownMenu , ButtonIcon, DropDownFieldError, DropDownField} from "../../../../muiElements/styles";
+import { InputLabel, MenuItem } from "@mui/material";
+import { DropDownMenu , ButtonIcon, DropDownFieldError, DropDownField } from "../../../../muiElements/styles";
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 
 //Div
@@ -18,14 +17,11 @@ import { v4 as uuid } from "uuid";
 
 
 
-function IntersectAnalysis(props){
+function IntersectAnalysis(){
+    const [data, setData, removeData, analysis, prepareLayersForAnalysis, displayAnalysis,showAnalysis, setShowAnalysis] = useData()
     const [firstLayer, setFirstLayer] = useState({id:"none", name:"none", colour:"none", data:"none", value:""});
     const [secondLayer, setSecondLayer] = useState({id:"none", name:"none", colour:"none", data:"none", value:""});
     const [layerErrorMessage, setLayerErrorMessage] = useState("");
-    const [analysis, displayAnalysis,showAnalysis, setShowAnalysis, analyses, prepareLayersForAnalysis, addAreaToFeature] = useAnalysis();
-    const [data, setData] = useData()
-
-
 
     function choseFirstLayer(target){
         setFirstLayer(target);
@@ -68,25 +64,43 @@ function IntersectAnalysis(props){
 
         //Perform analysis
         const analysis = new IntersectionAnalysis(data)
-        // analysis.performIntersection()
-        console.log("analysis",analysis)
 
-        // Add area to features
+        // Create feature collection
         let layerData = turf.featureCollection([])
         for(let i = 0; i < analysis.result.features.length; i++){
-            layerData.features.push(addAreaToFeature(analysis.result.features[i]));
+            layerData.features.push(analysis.result.features[i]);
         }
-
         //Create new layer
-        let name = "Intersection_"+names[0].name + "_" + names[1].name
+        let name = "Intersection_"+names[0] + "_" + names[1]
         let newlayer = {id:uuid(), name:name, colour:"", data:layerData, value:true}
-        console.log("newLayer",newlayer)
 
         //Add new layer to data
         setData(newlayer)
         clearInput();
         setShowAnalysis("none");
     }
+
+
+    function addPropertiesToLayer(layer){
+        console.log("addPropertiesToLayer: layer", layer)
+        let oldLayerData = layer.data
+        console.log("oldLayerData", oldLayerData)
+        let newLayerData = turf.featureCollection([])
+        console.log("newLayerData", newLayerData)
+        for(let i = 0; i < oldLayerData.features.length; i++){
+          let feature = oldLayerData.features[i]
+          let area = turf.area(feature);
+          let type = feature.properties.Type
+          if(feature.properties === undefined){
+            type = "Area"
+          }
+          feature.properties["Shape_Area"] = area
+          feature.properties["Type"] = type
+          newLayerData.features.push(feature)
+        }
+    
+        console.log("newLayerData", newLayerData)
+        }
 
     // Check if input layers are valid
     function _checkValidLayer(){

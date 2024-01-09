@@ -4,20 +4,17 @@ import {useData} from "./DataContext";
 const DataContext = createContext(undefined)
 
 const LayerCardContext = ({ children}) => {
-    const [data, setData, layer, setLayer, clearData, updateData] = useData();
+    const [data, setData, removeData] = useData();
+    
     //remove item from data
     function removeItemFromDataL(id){
-        // let updatedData= data.filter(item => item.id !== id)
-        updateData(data.filter(item => item.id !== id))
-        // console.log("a", a)
-        // setData(data.filter(item => item.id !== id))
+        removeData(id)
     }
 
     //handleCheckboxChange
     function handleCheckboxChangeL(id) {
         let card = data.find(item => item.id === id);
         let index = data.findIndex(item => item.id === id);
-        // removeItemFromData(id);
         card.value = !card.value;
         setData(card, index);
     }
@@ -26,7 +23,6 @@ const LayerCardContext = ({ children}) => {
     const handleColourChangeL = (id, colour) => {
         let card = data.find(item => item.id === id);
         let index = data.findIndex(item => item.id === id);
-        // removeItemFromData(id);
         card.colour = colour;
         setData(card, index);
     }

@@ -1,22 +1,22 @@
-import React, {useState} from "react";
+import React from "react";
 import './App.css';
-// import Navbar from "./components/navbar/navbar";
 import Content from "./components/content/content";
 import ThemeContext, {themes} from "./contexts/theme";
-
+import { DataProvider } from "./contexts/DataContext";
+import {AppContainer} from "./components/muiElements/styles";
 
 function App() {
-
-  
-
   return (
     <ThemeContext.Provider value={themes.standard}>
-      <div id="App">
-        {/* <div id="navbar" className="appComponents"><Navbar/></div> */}
-        <div id="content" className="appComponents"><Content/></div>
-      </div>
+        <AppContainer id="App">
+          <DataProvider>
+            <Content />
+          </DataProvider>
+        </AppContainer>
     </ThemeContext.Provider>
   );
 }
 
 export default App;
+
+

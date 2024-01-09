@@ -1,13 +1,13 @@
-import { React, useEffect} from 'react';
+import { React } from 'react';
 //Contexts
-import { useAnalysis } from "../../../contexts/AnalysisContext";
+import { useData } from "../../../contexts/DataContext";
 
 //Styles
 import { AnalysisBackground, AnalysisC, ButtonIcon, Headings} from "../../muiElements/styles";
 import CloseIcon from '@mui/icons-material/Close';
 
 function AnalysisContainer(){
-    const [analysis, displayAnalysis, showAnalysis, setShowAnalysis] = useAnalysis();
+    const [data, setData, removeData, analysis, prepareLayersForAnalysis, displayAnalysis,showAnalysis, setShowAnalysis] = useData();
     
     
     return(
