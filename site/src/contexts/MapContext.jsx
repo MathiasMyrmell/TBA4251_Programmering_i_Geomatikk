@@ -1,11 +1,11 @@
 import { createContext, useContext, useState, useEffect } from "react";
 
-import map1 from "./img/map1.png";
-import map2 from "./img/map2.png";
-import map3 from "./img/map3.png";
-import map4 from "./img/map4.png";
-import map5 from "./img/map5.png";
-import map6 from "./img/map6.png";
+import map1 from "../images/map1.png";
+import map2 from "../images/map2.png";
+import map3 from "../images/map3.png";
+import map4 from "../images/map4.png";
+import map5 from "../images/map5.png";
+import map6 from "../images/map6.png";
 
 const tileLayers = {
   1: {

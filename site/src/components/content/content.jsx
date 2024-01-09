@@ -18,8 +18,7 @@ import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 
 
 function Content(){
-    const [data, setData, removeData, analysis, prepareLayersForAnalysis, displayAnalysis,showAnalysis, setShowAnalysis, analyses, showAnalysisMenu, setShowAnalysisMenu, showCreateLayerMode, setShowCreateLayerMode, showContainer, setShowContainer,backgroundContent, setBackgroundContent, hideContentElements, setHideContentElements, markers, setMarkers] = useData() 
-    const [baseMap, setBaseMap] = useState("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
+    const [data, setData, removeData, analysis, prepareLayersForAnalysis, displayAnalysis,showAnalysis, setShowAnalysis, analyses, showAnalysisMenu, setShowAnalysisMenu, showCreateLayerMode, setShowCreateLayerMode, showContainer, setShowContainer,backgroundContent, setBackgroundContent, hideContentElements] = useData() 
     const [showChangeBaseMap, setShowChangeBaseMap] = useState("none");
     const [showSidebar, setShowSidebar] = useState("block");
     
@@ -42,7 +41,6 @@ function Content(){
     }
  
     function handleChange(data){
-        // data = [id,value]
         var newList = [];
         for(var i=0;i<layers.length;i++){
             if(layers[i].id===data[0]){
@@ -115,7 +113,6 @@ function Content(){
 
     return (
         <>
-        {/* <DataProvider> */}
             <MapContext>
                 <MapComponent layers={layers} setShow ={setShowChangeBaseMap}/>
             </MapContext>
