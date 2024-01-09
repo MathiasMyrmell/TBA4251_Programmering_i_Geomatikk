@@ -8,7 +8,7 @@ import Colourchanger from "./colourChanger/colourChanger";
 import { useLayer } from "../../../../contexts/LayerCardContext";
 
 //Styles
-import { MenuItem, Box } from "@mui/material";
+import { MenuItem } from "@mui/material";
 import { Colourchangercontainer, LCard, ButtonIcon, ShowSwitch, CardName, LCardDropDown, LayerCardButtons} from "../../../muiElements/styles";
 import CircleIcon from '@mui/icons-material/Circle';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
@@ -18,18 +18,17 @@ import CloseIcon from '@mui/icons-material/Close';
 
 //Div
 import { v4 as uuid } from "uuid";
-import { SliderPicker } from 'react-color';
 
 
 function LayerCard(props) {
     //initialize layer object
     const [id, setId] = useState(props.id);
-    const [name, setCardName] = useState(props.name);//props.name
+    const [name, setCardName] = useState(props.name);
     const [colour, setColour] = useState(props.colour);
     const [colourChanger, setColourChanger] = useState(null);
     const [settingsMenu, setSettingsMenu] = useState(null);
     const [showChangeName, setShowChangeName] = useState("none");
-    const [removeItemFromDataL, handleCheckboxChangeL, handleColourChangeL, changeLayerNameL, getLayerName] = useLayer();
+    const [removeItemFromDataL, handleCheckboxChangeL, handleColourChangeL, changeLayerNameL] = useLayer();
 
     //checkbox value
     const [checkboxValue, setCheckboxValue] = useState(props.value);
@@ -72,11 +71,7 @@ function LayerCard(props) {
 
     //Change name
     function changeName(){
-        if(showChangeName === "none"){
-            setShowChangeName("block");
-        }else{
-            setShowChangeName("none");
-        }
+        showChangeName === "none" ? setShowChangeName("block") : setShowChangeName("none");
     }
 
     //Change name on layercard
@@ -101,18 +96,14 @@ function LayerCard(props) {
                 </CardName>
 
                 <LayerCardButtons>
-                    {/* Switch visibility */}
                     <ShowSwitch margin="auto" checked = {checkboxValue} onClick={()=>handleCheckbox(id)} />
                     
-                    {/* Color changer button */}
                     <ButtonIcon
                         onClick={openColourChanger}
-                        // disableRipple
                     >
                         <CircleIcon style={{color: colour}}/>
                     </ButtonIcon>
                     
-                    {/* Color changer menu */}
                     <LCardDropDown
                         id="simple-menu"
                         anchorEl={colourChanger}
@@ -141,14 +132,12 @@ function LayerCard(props) {
                         </Colourchangercontainer>
                     </LCardDropDown>
                     
-                    {/* Settings button */}
                     <ButtonIcon
                         onClick={openSettingsMenu}
                     >
                         <SettingsIcon/>
                     </ButtonIcon>
 
-                    {/* Settings menu */}
                     <LCardDropDown 
                         id="settings-menu"
                         anchorEl = {settingsMenu}
@@ -156,11 +145,9 @@ function LayerCard(props) {
                         open={Boolean(settingsMenu)}
                         onClose={closeSettingsMenu}
                     >
-                        {/* Change name */}
                         <MenuItem key={uuid()} style={{width: "50px", padding:"0px"}}>
                             <ButtonIcon onClick={()=> changeName()}>{<DriveFileRenameOutlineIcon/>}</ButtonIcon>
                         </MenuItem>
-                        {/* Delete layer */}
                         <MenuItem key={uuid()} style={{width: "50px", padding:"0px"}}>
                             <ButtonIcon onClick={()=> deleteLayer()}>{<DeleteForeverIcon />}</ButtonIcon>
                         </MenuItem>

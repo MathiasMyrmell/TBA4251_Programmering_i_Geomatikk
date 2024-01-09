@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useState } from 'react';
 
 //Contexts
-import { useAnalysis } from "../../../contexts/AnalysisContext";
 import { useData } from "../../../contexts/DataContext";
 
 //Styles
@@ -14,11 +13,9 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 //Div
 import _ from 'lodash';
 
-
 function AnalysisMenu(){
-    const [data, setData, removeData, analysis, prepareLayersForAnalysis, displayAnalysis,showAnalysis, setShowAnalysis, analyses, showAnalysisMenu, setShowAnalysisMenu, showCreateLayerMode, setShowCreateLayerMode, showContainer, setShowContainer,backgroundContent, setBackgroundContent, hideContentElements, setHideContentElements, markers, setMarkers] = useData();
-    // const [analysis, displayAnalysis,showAnalysis, setShowAnalysis, analyses, prepareLayersForAnalysis, addAreaToFeature, showAnalysisMenu, setShowAnalysisMenu, showCreateLayerMode, setShowCreateLayerMode] = useAnalysis();
-    const [anchorEl, setAnchorEl] = React.useState(null);   
+    const [data, setData, removeData, analysis, prepareLayersForAnalysis, displayAnalysis,showAnalysis, setShowAnalysis, analyses, showAnalysisMenu, setShowAnalysisMenu, showCreateLayerMode, setShowCreateLayerMode] = useData();
+    const [anchorEl, setAnchorEl] = useState(null);   
     const open = Boolean(anchorEl);
     const [icon, setIcon] = useState(<ArrowDropUpIcon />);
     
@@ -37,6 +34,12 @@ function AnalysisMenu(){
         displayAnalysis(analysisName)
         handleClose();
     };
+    
+
+    function displayCreateLayer(){
+        handleClose();
+        setShowCreateLayerMode(true)
+    }
 
     return (
         <>
@@ -81,6 +84,7 @@ function AnalysisMenu(){
                                         <MenuItem id={i} key={i} onClick={() => displayAnalysisWindow(key)}>{analyses[key].name}</MenuItem>
                                     ) 
                                 })}
+                                <MenuItem id = {0} key = {0} onClick={() => displayCreateLayer()}>Create Layer</MenuItem>
                             </MenuList>
                             </ClickAwayListener>
                         </Paper>

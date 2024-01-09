@@ -7,7 +7,7 @@ import { SliderPicker } from 'react-color';
 import { useLayer } from "../../../../../contexts/LayerCardContext";
 
 function Colourchanger(props){
-  const [removeItemFromDataL, handleCheckboxChangeL, handleColourChangeL, changeLayerNameL, getLayerName] = useLayer();
+  const [removeItemFromDataL, handleCheckboxChangeL, handleColourChangeL] = useLayer();
   const [colour, setColour] = useState(props.colour);
   const handleChangeComplete = (color) => {
     setColour(color.hex);

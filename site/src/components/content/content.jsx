@@ -4,10 +4,9 @@ import React, {useEffect, useState} from "react";
 import Sidebar from "./sidebar/sidebar";
 import MapComponent from "./mapComponent/mapComponent";
 import LayerCard from "./sidebar/layerCard/layerCard";
-import Analysis from "./analysisMenu/Analysis";
+import Analysis from "./analysisMenu/analysis";
 
 //Contexts
-// import { DataProvider } from "../../contexts/DataContext";
 import { useData } from "../../contexts/DataContext";
 import { MapContext } from "../../contexts/MapContext";
 
@@ -16,13 +15,6 @@ import { MapContext } from "../../contexts/MapContext";
 import {Container, Box, IconButton} from '@mui/material';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
-import ChangeBaseMap from "./mapComponent/changeBaseMap/changeBaseMap";
-
-//Div
-import "./content.css";
-
-
-
 
 
 function Content(){
@@ -126,7 +118,6 @@ function Content(){
         {/* <DataProvider> */}
             <MapContext>
                 <MapComponent layers={layers} setShow ={setShowChangeBaseMap}/>
-                <ChangeBaseMap name = {"Change Basemap"} display = {showChangeBaseMap} setShow={setShowChangeBaseMap} setBaseMap = {setBaseMap}/>
             </MapContext>
             <Container id="SidebarContainer" 
                 sx={{
@@ -193,13 +184,9 @@ function Content(){
                         {icon}
                     </IconButton>
                 </Box>
-                
-
             </Container>
-            {/* <AnalysisContext> */}
-                <Analysis/>
-            {/* </AnalysisContext> */}
-        {/* </DataProvider> */}
+            <Analysis/>
+        
         </>
     );
 }

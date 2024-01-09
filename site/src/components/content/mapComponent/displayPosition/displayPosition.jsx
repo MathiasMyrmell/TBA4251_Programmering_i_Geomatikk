@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
-import { MapContainer, TileLayer, GeoJSON, ZoomControl} from 'react-leaflet';
-import {MapContainerA, HomeButton, ButtonIcon, LatLongBox}from "../../../muiElements/styles";
-import LocationOnSharpIcon from '@mui/icons-material/LocationOnSharp';
+//Contexts
 import { useMap } from "../../../../contexts/MapContext";
 
+//Styles
+import { HomeButton, LatLongBox}from "../../../muiElements/styles";
+import LocationOnSharpIcon from '@mui/icons-material/LocationOnSharp';
+
 function DisplayPosition() {
-    // const [show, setShow] = useState(props.show)
-    const [map, setMap, baseMap, setBaseMap, data, setData, showMapLayerButton, setShowMapLayerButton, showDisplayPosition, setShowDisplayPosition] = useMap();
+    const [map] = useMap();
 
     const [position, setPosition] = useState(() => map.getCenter())
     const center = [63.42295075466846, 10.373325347900392]
@@ -27,10 +28,6 @@ function DisplayPosition() {
         }
     }, [map, onMove])
 
-    // useEffect (() => {
-    //     console.log("show: ", props.show)
-    //     setShow(props.show)
-    // }, [props.show])
     return (
         <>
             <LatLongBox>

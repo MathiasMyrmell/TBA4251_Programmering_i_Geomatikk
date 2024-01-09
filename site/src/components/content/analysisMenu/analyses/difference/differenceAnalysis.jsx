@@ -58,28 +58,20 @@ function DifferenceAnalysis(){
         let layers = prepareLayersForAnalysis(firstLayer, secondLayer)
         let names = [layers[0].name, layers[1].name]
         let data = [layers[0].data, layers[1].data]
-        
  
         const analysis = new DiffAnalysis(data);
-        console.log("analysis", analysis)
 
         // Add area to features
         let layerData = turf.featureCollection([])
         for(let i = 0; i < analysis.result.features.length; i++){
             layerData.features.push(analysis.result.features[i]);
         }
-        console.log("layerData", layerData)
 
-        // FINAL REPRESENTATION
         // Add new layer to data
-        let name = "Difference_"+names[0].name + "_" + names[1].name
+        let name = "Difference_"+names[0] + "_" + names[1]
         let newLayer = {id : uuid(), name: name, colour: "", data: layerData, value: true}
-        console.log("newLayer", newLayer)
+        
         // Add new layer to data
-
-        console.log("newLayer", newLayer)
-
-
         setData(newLayer)
         clearInput();
         setShowAnalysis("none");

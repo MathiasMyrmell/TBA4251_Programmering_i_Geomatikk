@@ -14,33 +14,21 @@ class IntersectionAnalysis {
     performIntersection(){
         //Create tree structure
         const tree = new IntersectionTree("intersection", this.minMax)
-        console.log("empty tree", tree)
          
         //Fill tree structure with layers
-        console.log("---Filling tree---")
         tree.fillTree(this.layers)
-        console.log("Filled tree", tree)
     
         //Split layers to fit child nodes, until there is only layers in leaf nodes
-        console.log("---Split layers---")
         tree.splitLayers()
-        console.log("Splitted layers", tree)
     
         // //Dissolve layers in leaf nodes
-        console.log("---Dissolving leaf nodes---")
         tree.dissolveLeafNodes()
-        console.log("Leafnodes dissolved", tree)
     
         //Perform difference analysis in each leaf node
-        console.log("---Intersection on nodes---")
         tree.performIntersect()
-        console.log("Intersection on nodes", tree)
-        //Funker fram til hit
     
         //Dissolve nodes from bottom to top, until there is only one layer in root node
-        console.log("---Combine nodes---")
         tree.dissolveNodes()
-        console.log("nodes combined", tree)
 
         //Set result
         console.log("result", tree.dissolved)
@@ -118,8 +106,6 @@ class IntersectionNode extends Node{
     constructor(treeStructure, numChildren, depth,  minX, maxX, minY, maxY, name) {
         super(treeStructure, numChildren, depth,  minX, maxX, minY, maxY, name)
         this.intersections = []
-        //Create Bounding box
-        // this.bbox = turf.bboxPolygon([minX, minY, maxX, maxY]);
         //Create Children
         if(this.depth > 1) {
             let midX = (maxX + minX) / 2
@@ -198,8 +184,6 @@ class IntersectionNode extends Node{
                 let features = layer[j]
                 if(features.geometry.type === "Polygon"){
                     multiPolygon.geometry.coordinates.push(features.geometry.coordinates)
-                }else{
-                    console.log("MULTIPOLYGON")
                 }
             }
             newLayers.push(multiPolygon)

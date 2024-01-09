@@ -7,7 +7,7 @@ import { AnalysisBackground, AnalysisC, ButtonIcon, Headings} from "../../muiEle
 import CloseIcon from '@mui/icons-material/Close';
 
 function AnalysisContainer(){
-    const [data, setData, removeData, analysis, prepareLayersForAnalysis, displayAnalysis,showAnalysis, setShowAnalysis, analyses, showAnalysisMenu, setShowAnalysisMenu, showCreateLayerMode, setShowCreateLayerMode, showContainer, setShowContainer,backgroundContent, setBackgroundContent, hideContentElements, setHideContentElements, markers, setMarkers] = useData();
+    const [data, setData, removeData, analysis, prepareLayersForAnalysis, displayAnalysis,showAnalysis, setShowAnalysis] = useData();
     
     
     return(

@@ -1,3 +1,5 @@
+
+//Components
 import AnalysisMenu from "./analysisMenu";
 import AnalysisContainer from "./analysisContainer";
 import CreateLayerMode from "./analyses/createLayer/createLayerMode";

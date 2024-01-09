@@ -1,11 +1,10 @@
 import React from "react";
 import { useState } from 'react';
 //Components
-
+import BuffAnalysis from "./bufferAnalysis";
 
 //Contexts
 import { useData } from "../../../../../contexts/DataContext";
-import { useAnalysis } from "../../../../../contexts/AnalysisContext";
 
 //Styles
 import { InputLabel, MenuItem} from "@mui/material";
@@ -14,11 +13,10 @@ import NoteAddIcon from '@mui/icons-material/NoteAdd';
 
 //Div
 import { v4 as uuid } from "uuid";
-import * as turf from '@turf/turf';
  
  
 function BufferAnalysis(){
-    const [data, setData, removeData, analysis, prepareLayersForAnalysis, displayAnalysis,showAnalysis, setShowAnalysis, analyses, showAnalysisMenu, setShowAnalysisMenu, showCreateLayerMode, setShowCreateLayerMode, showContainer, setShowContainer,backgroundContent, setBackgroundContent, hideContentElements, setHideContentElements, markers, setMarkers] = useData()
+    const [data, setData, removeData, analysis, prepareLayersForAnalysis, displayAnalysis,showAnalysis, setShowAnalysis] = useData()
     const [layer, setLayer] = useState({id:"none", name:"none", colour:"none", data:"none", value:""});
     const [bufferDistance, setBufferDistance] = useState("");
     const [bufferDistanceErrorMessage, setbufferDistanceErrorMessage] = useState(" ");
@@ -31,8 +29,7 @@ function BufferAnalysis(){
         setLayer({id:"none", name:"none", colour:"none", data:"none", value:""});
     }
 
-
-    // //Functions for buffer analysis
+    ////Functions for buffer analysis
     //Chose layer for feature selection
     function choseLayer(target){
         setLayer(target);
@@ -46,39 +43,24 @@ function BufferAnalysis(){
             return;
         }
 
-        //Get data from layer with given id
-        let baseLayer = data.find((l) => l.id === layer.value);
-
-        // Create buffer around layer
-        let buffer = turf.buffer(baseLayer.data, bufferDistance, {units: 'meters'});
-
-        // Dissolve buffers
-        let dissolved = turf.dissolve(buffer);
-
-        // Create feature collection
-        let layerData = turf.featureCollection([])
-        for(let i = 0; i < dissolved.features.length; i++){
-            layerData.features.push(dissolved.features[i]);
-        }
-
-        //Create new layer
-        let newLayer = {id:uuid(), name:baseLayer.name+"-buffer-"+bufferDistance+"m", colour:"", data:layerData, value:true};
-        setData(newLayer);
+        //Prepare layer for analysis
+        let baseLayer = prepareLayersForAnalysis(layer);
         
+        //Create buffer around layer
+        const analysis = new BuffAnalysis(baseLayer.data, bufferDistance)
+
+        //Create layer
+        let newLayer = {id:uuid(), name:baseLayer.name+"-buffer-"+bufferDistance+"m", colour:"", data:analysis.result, value:true};
+        setData(newLayer);
+
+        //Clear input fields
         clearInput();
         setShowAnalysis("none");
         
 
     }
 
-    // function _addAreaToFeature(feature){
-    //     feature.properties = {Shape_Area:0}
-    //     let area = turf.area(feature);
-    //     feature.properties.Shape_Area = area;
-    //     return feature;
-    // }
-
-
+    //Check if layer is valid
     function checkValidLayer(){
         if(layer.id === "none"){
             setLayerErrorMessage("A layer must be selected");
@@ -89,6 +71,7 @@ function BufferAnalysis(){
         }
     }
 
+    //Check if buffer distance is valid
     function checkValidBufferDistance(){
         if(bufferDistance <=0){
             setbufferDistanceErrorMessage("At least one feature must be selected");
@@ -98,8 +81,6 @@ function BufferAnalysis(){
             return true;
         }
     }
-
-
 
 
     return(

@@ -67,7 +67,6 @@ class TreeStructure {
 
     // Fill tree with layers 
     fillTree(layers) {
-        //For each layer
         for(let i = 0; i < layers.length; i++) {
             //Fill polygons in layer
             let layer = layers[i]

@@ -1,17 +1,16 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import uniqBy from 'lodash/uniqBy';
-import _ from 'lodash';
-
-import * as turf from '@turf/turf';
-
 
 //Analyses
 import FeatureSelection from "../components/content/analysisMenu/analyses/featureSelection/featureSelection.jsx";
 import BufferAnalysis from "../components/content/analysisMenu/analyses/buffer/bufferAnalysis.jsx";
 import IntersectAnalysis from "../components/content/analysisMenu/analyses/intersection/intersectAnalysis.jsx";
 import UnionAnalysis from "../components/content/analysisMenu/analyses/union/unionAnalysis.jsx";
-import DifferenceAnalysis from "../components/content/analysisMenu/analyses/differrence/differenceAnalysis.jsx";
-import CreateLayer from "../components/content/analysisMenu/analyses/createLayer/createLayer.jsx";
+import DifferenceAnalysis from "../components/content/analysisMenu/analyses/difference/differenceAnalysis.jsx";
+
+//Div
+import uniqBy from 'lodash/uniqBy';
+import _ from 'lodash';
+import * as turf from '@turf/turf';
 
 const DataContext = createContext(undefined);
 const analyses = {
@@ -34,10 +33,6 @@ const analyses = {
   "differenceAnalysis":{
     name: "Difference Analysis",
     analysis: <DifferenceAnalysis/>
-  },
-  "createLayer":{
-    name: "Create Layer",
-    analysis: <CreateLayer/>
   }
 }
 
@@ -69,11 +64,6 @@ const DataProvider = ({ children }) => {
   function removeData(id){
     updateData(data.filter(item => item.id !== id))
 }
-
-  // Remove all data
-  const clearData = () => {
-    setDataRaw([])
-  }
 
   function addPropertiesToLayer(layer){
     let newLayerData = turf.featureCollection([])
@@ -112,20 +102,25 @@ const DataProvider = ({ children }) => {
     return colour;
   }
 
-
-//Prepare layers for analysis where two layers are required.
-//Makes sure the layers are on a standard format
-function prepareLayersForAnalysis(firstLayer, secondLayer){
-  let fL = data.find((layer) => layer.id === firstLayer.value);
-  let sL = data.find((layer) => layer.id === secondLayer.value);
-
-
-  // Dissolve layers
-  fL.data = _dissolveLayer(fL.data)
-  sL.data = _dissolveLayer(sL.data)
-
-  return [fL, sL]
+//Prepare layers for analysis
+//Make sure all layers are on same format
+function prepareLayersForAnalysis(firstLayer, secondLayer = null){
+  let fL
+  let sL
+  if(secondLayer === null){
+    fL = data.find((layer) => layer.id === firstLayer.value);
+    fL.data = _dissolveLayer(fL.data)
+    return fL
+  }
+  else{
+    fL = data.find((layer) => layer.id === firstLayer.value);
+    sL = data.find((layer) => layer.id === secondLayer.value);
+    fL.data = _dissolveLayer(fL.data)
+    sL.data = _dissolveLayer(sL.data)
+    return [fL, sL]
+  }
 }
+
 
 // Dissolve layer
 function _dissolveLayer(layer){
@@ -182,26 +177,14 @@ function _dissolve(featureCollection){
 
 
   //Functions for createlayer analysis
-  //Markers has to be accessed by both analysis context and data context
-  
-  
   useEffect(() => {
-    if(showCreateLayerMode ){
-      setShowAnalysisMenu("none");
-      setHideContentElements(true);
-    }else{
-      setHideContentElements(false);
-      setShowAnalysisMenu("inline");
-    }
+    showCreateLayerMode ? setShowAnalysisMenu("none") : setShowAnalysisMenu("inline");
+    showCreateLayerMode ? setHideContentElements(true) : setHideContentElements(false);
   }, [showCreateLayerMode])
 
   function displayAnalysis(analysisName){
-    if(analysisName === "none"){
-      setAnalysis("none")
-      setShowAnalysis("none")
-    }
-    setAnalysis(analyses[analysisName])
-    setShowAnalysis("block")
+    analysisName === "none" ? setShowAnalysis("none") : setShowAnalysis("block")
+    analysisName === "none" ? setAnalysis("none") : setAnalysis(analyses[analysisName])
   } 
    
   const value = [data, setData, removeData, analysis, prepareLayersForAnalysis, displayAnalysis,showAnalysis, setShowAnalysis, analyses, showAnalysisMenu, setShowAnalysisMenu, showCreateLayerMode, setShowCreateLayerMode, showContainer, setShowContainer,backgroundContent, setBackgroundContent, hideContentElements, setHideContentElements, markers, setMarkers];

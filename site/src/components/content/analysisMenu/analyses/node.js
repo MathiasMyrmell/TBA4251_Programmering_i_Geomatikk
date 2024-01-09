@@ -78,11 +78,9 @@ class Node {
             return
         }
         // if not at root node, split every layer in this node into chunks and send to children
-        // console.log("this.layers", this.layers)
         for(let index = 0; index < this.layers.length; index++) {
             let layers = this.layers[index]
             if(layers.length === 0) {
-                // console.log("layers0", layers)
                 continue
             }
             while(layers.length !== 0) {
@@ -116,7 +114,7 @@ class Node {
     }
 
     dissolveNodes(){
-        //If at root node
+        //If at leaf node
         if(this.children === null){
             if(this.analysisResult !== null){
                 return turf.featureCollection(this.analysisResult)
@@ -127,21 +125,21 @@ class Node {
         //Dissolve every children in node, and return to parent node
         let dataFromChildren = []
         for(let c = 0; c <this.children.length; c++){
+            if(this.treeStructure.stopAnalysis){
+                break
+            }
             let data = this.children[c].dissolveNodes()
             if(data !== null){
                 dataFromChildren.push(data)
             }
         }
-        // console.log("--data"+this.name, dataFromChildren)
         //If no data, return null
         if(dataFromChildren.length === 0){
-            // console.log("returning null")
             return null
         }
 
         //If only one featureCollection, return this
         if(dataFromChildren.length === 1){
-            // console.log("Returning ", dataFromChildren, dataFromChildren[0])
             return dataFromChildren[0]
         }
 
@@ -150,14 +148,13 @@ class Node {
         let combinedFeatureCollections  = this._combineFeatureCollectionsDifference(dataFromChildren)
         
         //Dissolve
-        //TODO: Finn ut av dette
-        //ligger inne issues på githuben demmes om at denne ikke funker
         let dissolved
         try{
             dissolved = turf.dissolve(combinedFeatureCollections)
         }
         catch(error){
             console.log("error", error)
+            this.treeStructure.stopAnalysis = true
             return null
         }
         return dissolved
@@ -176,7 +173,6 @@ class Node {
                
                 //If feature is a polygon, add to featurecollection 
                 if(feature.geometry.type === "Polygon"){
-                    // console.log("polygon", feature)
                     newFeatureCollection.features.push(feature)
                     continue
                 }
@@ -185,7 +181,6 @@ class Node {
                 let coordinates = feature.geometry.coordinates
                 for(let c = 0; c < coordinates.length; c++){
                     let polygon = turf.polygon(coordinates[c])
-                    // console.log("newPolygon",polygon)
                     featureCollection.features.push(polygon)
                 }
             }

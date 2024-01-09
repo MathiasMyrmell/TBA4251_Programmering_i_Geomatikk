@@ -1,44 +1,42 @@
+import React, { useEffect, useState } from 'react';
 
-import React, { useEffect } from 'react';
-import { useState } from 'react';
-import { useAnalysis } from "../../../../../contexts/AnalysisContext.jsx";
-import { HomeButton, ButtonIcon } from "../../../../muiElements/styles.jsx";
-import LocationOnSharpIcon from '@mui/icons-material/LocationOnSharp';
+//Contexts
+import { useData } from "../../../../../contexts/DataContext.jsx";
+
+//Styles
+import { Headings, HomeButton, ButtonIcon } from "../../../../muiElements/styles.jsx";
+import {Card, Box, List, ListItem, Snackbar} from '@mui/material';
+import MuiAlert from '@mui/material/Alert';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import CloseIcon from '@mui/icons-material/Close';
+import KeyboardOptionKeyIcon from '@mui/icons-material/KeyboardOptionKey';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-// import { useData } from "../../../contexts/DataContext";
-
-import { useData } from "../../../../../contexts/DataContext.jsx";
+//Div
 import { v4 as uuid } from "uuid";
 import * as turf from '@turf/turf';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
-import { set } from 'lodash';
-
 
 
 function CreateLayerMode(){
-    // const [analysis, displayAnalysis,showAnalysis, setShowAnalysis, analyses, prepareLayersForAnalysis, addAreaToFeature, showAnalysisMenu, setShowAnalysisMenu, showCreateLayerMode, setShowCreateLayerMode] = useAnalysis();
-    const [data, setData, removeData, analysis, prepareLayersForAnalysis, displayAnalysis,showAnalysis, setShowAnalysis, analyses, showAnalysisMenu, setShowAnalysisMenu, showCreateLayerMode, setShowCreateLayerMode, showContainer, setShowContainer,backgroundContent, setBackgroundContent, hideContentElements, setHideContentElements, markers, setMarkers] = useData();
-
+    const [data, setData, removeData, analysis, prepareLayersForAnalysis, displayAnalysis, showAnalysis, setShowAnalysis, analyses, showAnalysisMenu, setShowAnalysisMenu, showCreateLayerMode, setShowCreateLayerMode, showContainer, setShowContainer,backgroundContent, setBackgroundContent, hideContentElements, setHideContentElements, markers, setMarkers] = useData();
     const [show, setShow] = useState("block")
     const [alertMessageOpen, setAlertMessageOpen] = useState(false)
+    const [alertMessage, setAlertMessage] = useState("")
+    const [alertType, setAlertType] = useState("success")
+    const [showList, setShowList] = useState(true)
+    const Alert = React.forwardRef(function Alert(props, ref) {
+        return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+    });
 
+    //Show this when create layer mode is active
     useEffect (() => {
-        if(showCreateLayerMode){
-            setShow("block")
-        }else{
-            setShow("none")
-        }
+        showCreateLayerMode ? setShow("block") : setShow("none")
     }, [showCreateLayerMode])
 
 
-
-    function displayElements(){
-        setShowCreateLayerMode(false)
-    }
-
+    // Cresate layer from markers, and add it to data
     function createLayer(){
         if(markers.length < 3){
             setAlertMessage("To few markers to create layer. Minimum three markers needed.")
@@ -75,26 +73,72 @@ function CreateLayerMode(){
 
     }
 
+    // Close create layer mode
     function close(){
+        setShowList(true)
         setMarkers([])
-        displayElements();
+        setShowCreateLayerMode(false)
     }
 
+    // Close alert message
     const closeAlert = (event, reason) => {
         if (reason === 'clickaway') {
           return;
         }
         setAlertMessageOpen(false);
     }
-    const Alert = React.forwardRef(function Alert(props, ref) {
-        return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-      });
 
-    const [alertMessage, setAlertMessage] = useState("")
-    const [alertType, setAlertType] = useState("success")
-    
     return(
         <>
+            <Card
+                sx={{
+                    display: show,
+                    width: "450px",
+                    padding: "20px",
+                    backgroundColor: "#EEEEEE",
+                    position: "fixed",
+                    top: "0",
+                    left: "50%",
+                    transform: "translate(-50%)",
+                    zIndex: "11",
+                }}
+            >
+                <Headings>
+                    <h1>{"Create layer"}</h1>
+                </Headings>
+                <ButtonIcon
+                    onClick={() => setShowList(!showList)}
+                    style={{position: "fixed",right:"0", top: "0", margin: "10px"}}
+                >
+                    {showList ? <ExpandLessIcon style = {{fontSize: '40px'}}/> : <ExpandMoreIcon style = {{fontSize: '40px'}}/>}
+                </ButtonIcon>
+                <Box
+                    sx={{
+                        display: showList ? "block" : "none"
+                    }}
+                >
+                    <List>
+                        <ListItem>
+                            Hold down alt (<KeyboardOptionKeyIcon style = {{fontSize: '20px'}}/> on Mac) and click to add markers.
+                        </ListItem>
+                        <ListItem>
+                            To move a placed marker, click and drag it.
+                        </ListItem>
+                        <ListItem>
+                            To remove a marker, click on it and press <DeleteForeverIcon style = {{fontSize: '20px'}}/>
+                        </ListItem>
+                        <ListItem>
+                            Minimum three markers needed to create a layer.
+                        </ListItem>
+                        <ListItem>
+                            Click on <NoteAddIcon style = {{fontSize: '20px'}}/> when finished creating layer.
+                        </ListItem>
+                        <ListItem>
+                            Press <CloseIcon style = {{fontSize: '20px'}}/> to cancel create layer mode.
+                        </ListItem>
+                    </List>
+                </Box>
+            </Card>
             <HomeButton 
                 sx = {{
                     display: show,
@@ -121,6 +165,7 @@ function CreateLayerMode(){
                     style={{fontSize: "50px"}}
                 />
             </HomeButton>
+
             <Snackbar open={alertMessageOpen} autoHideDuration={5000} onClose={closeAlert}>
                 <Alert onClose={closeAlert} severity={alertType} sx={{ width: '100%' }}>
                     {alertMessage}

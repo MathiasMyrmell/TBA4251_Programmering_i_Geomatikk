@@ -16,13 +16,9 @@ export const themes = {
         error: "#f44336",
         warning: "#ff9800",
         info: "#2196f3",
-    
-
     },
 };
 
 
 const ThemeContext = createContext(themes);
-
-
 export default ThemeContext;

@@ -74,7 +74,12 @@ function UnionAnalysis(){
         let data = [layers[0].data, layers[1].data]
   
         const analysis = new UAnalysis(data);
-        console.log("analysis", analysis)
+
+        // If analysis failed
+        if(analysis.result === false){
+            setLayerErrorMessage("Analysis failed. Layers to big. Try with smaller layers.")
+            return;
+        }
 
         // Add area to features
         let layerData = turf.featureCollection([])
@@ -84,9 +89,8 @@ function UnionAnalysis(){
 
         // FINAL REPRESENTATION
         // Add new layer to data
-        let name = "Union_"+names[0].name + "_" + names[1].name
+        let name = "Union_"+names[0] + "_" + names[1]
         let newLayer = {id : uuid(), name: name, colour: "", data: layerData, value: true}
-        console.log("newLayer", newLayer)
         
         // Add new layer to data
         setData(newLayer)

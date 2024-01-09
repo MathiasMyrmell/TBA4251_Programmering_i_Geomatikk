@@ -64,22 +64,16 @@ function IntersectAnalysis(){
 
         //Perform analysis
         const analysis = new IntersectionAnalysis(data)
-        // analysis.performIntersection()
-        console.log("analysis",analysis)
 
         // Create feature collection
         let layerData = turf.featureCollection([])
         for(let i = 0; i < analysis.result.features.length; i++){
             layerData.features.push(analysis.result.features[i]);
         }
-        console.log("layerData",layerData)
         //Create new layer
-        let name = "Intersection_"+names[0].name + "_" + names[1].name
+        let name = "Intersection_"+names[0] + "_" + names[1]
         let newlayer = {id:uuid(), name:name, colour:"", data:layerData, value:true}
-        console.log("newLayer",newlayer)
 
-        
-        
         //Add new layer to data
         setData(newlayer)
         clearInput();

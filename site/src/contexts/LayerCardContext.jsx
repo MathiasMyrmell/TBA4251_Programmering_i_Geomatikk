@@ -4,7 +4,7 @@ import {useData} from "./DataContext";
 const DataContext = createContext(undefined)
 
 const LayerCardContext = ({ children}) => {
-    const [data, setData, removeData, prepareLayersForAnalysis, showContainer, setShowContainer,backgroundContent, setBackgroundContent, hideContentElements, setHideContentElements, markers, setMarkers] = useData();
+    const [data, setData, removeData] = useData();
     
     //remove item from data
     function removeItemFromDataL(id){
@@ -15,7 +15,6 @@ const LayerCardContext = ({ children}) => {
     function handleCheckboxChangeL(id) {
         let card = data.find(item => item.id === id);
         let index = data.findIndex(item => item.id === id);
-        // removeItemFromData(id);
         card.value = !card.value;
         setData(card, index);
     }
@@ -24,7 +23,6 @@ const LayerCardContext = ({ children}) => {
     const handleColourChangeL = (id, colour) => {
         let card = data.find(item => item.id === id);
         let index = data.findIndex(item => item.id === id);
-        // removeItemFromData(id);
         card.colour = colour;
         setData(card, index);
     }
