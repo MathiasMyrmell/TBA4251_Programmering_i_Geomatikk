@@ -1,0 +1,51 @@
+.leaflet-container {
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+
+  #map{
+    height: 100%;
+  }
+#test{
+  height:200px;
+}
+
+.leaflet-control-container > .leaflet-top{
+  display: none !important;
+}
+
+
+/* Zoom control container */
+.leaflet-control-container > .leaflet-bottom > .leaflet-control-zoom{
+  background-color: red !important;
+  height: 71px !important;
+  width: 30px !important;
+  z-index: 100000 !important;
+  border-radius: 20px !important;
+  border: 1px solid black !important;
+}
+
+
+/* Zoom inn button */
+.leaflet-control-container > .leaflet-bottom > .leaflet-control-zoom > .leaflet-control-zoom-in{
+  height: 35px !important;
+  width: 30px !important;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  z-index: 100000 !important;
+  /* border: 1px solid black!important; */
+  border-bottom: 1px solid black !important;
+  color: orange;
+}
+
+/* Zoom out button */
+.leaflet-control-container > .leaflet-bottom > .leaflet-control-zoom > .leaflet-control-zoom-out{
+  height: 35px !important;
+  width: 30px !important;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  z-index: 100000 !important;
+  border: 1 !important;
+  color: orange;
+}
