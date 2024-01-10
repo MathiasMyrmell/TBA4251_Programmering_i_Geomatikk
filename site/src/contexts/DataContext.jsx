@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 //Analyses
-import FeatureSelection from "../components/content/analysisMenu/analyses/featureSelection/featureSelection.jsx";
-import BufferAnalysis from "../components/content/analysisMenu/analyses/buffer/bufferAnalysis.jsx";
-import IntersectAnalysis from "../components/content/analysisMenu/analyses/intersection/intersectAnalysis.jsx";
-import UnionAnalysis from "../components/content/analysisMenu/analyses/union/unionAnalysis.jsx";
-import DifferenceAnalysis from "../components/content/analysisMenu/analyses/difference/differenceAnalysis.jsx";
+import FeatureSelection from "../components/analysisMenu/analyses/featureSelection/featureSelection.jsx";
+import BufferAnalysis from "../components/analysisMenu/analyses/buffer/bufferAnalysis.jsx";
+import IntersectAnalysis from "../components/analysisMenu/analyses/intersection/intersectAnalysis.jsx";
+import UnionAnalysis from "../components/analysisMenu/analyses/union/unionAnalysis.jsx";
+import DifferenceAnalysis from "../components/analysisMenu/analyses/difference/differenceAnalysis.jsx";
 
 //Div
 import uniqBy from 'lodash/uniqBy';
@@ -14,8 +14,8 @@ import * as turf from '@turf/turf';
 
 const DataContext = createContext(undefined);
 const analyses = {
-  "featureSelection" : {
-      name:"Feature Analysis",
+  "featureExtraction" : {
+      name:"Feature Extraction",
       analysis: <FeatureSelection/>
   },
   "bufferAnalysis":{
