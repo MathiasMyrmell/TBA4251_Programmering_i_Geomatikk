@@ -1,3 +1,3 @@
 # progGeo
 
-...in progress
+Hostet på: https://proggeo-ae3fd.web.app/
